@@ -1,0 +1,121 @@
+/* Site-wide custom code (moved from Webflow head/embed custom code). */
+
+/* Stan początkowy - sekcje rozmazane i niewidoczne */
+.reveal-section {
+  opacity: 0;
+  filter: blur(40px);
+  transform: translateY(10px);
+  transition: opacity 0.8s ease, filter 0.8s ease, transform 0.8s ease;
+}
+/* Stan po załadowaniu */
+.reveal-section.is-visible {
+  opacity: 1;
+  filter: blur(0px);
+  transform: translateY(0);
+}
+/* ⬇️ KLUCZOWA ZMIANA - usuń filter po animacji ⬇️ */
+.reveal-section.animation-done {
+  filter: none;
+  transform: none;
+  transition: none;
+  will-change: auto;
+}
+/* Body nadal ukryte podczas ładowania */
+body {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+body.loaded {
+  opacity: 1;
+}
+/* Users who ask for less motion: plain fade, no blur or slide. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-section,
+  .reveal-section.is-visible {
+    filter: none;
+    transform: none;
+    transition: opacity 0.3s ease;
+  }
+}
+
+video, img {
+  image-rendering: auto;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* SVG widoczność w Safari */
+.button-arrow._02 svg,
+.button-arrow svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+.button-arrow._02 svg path,
+.button-arrow svg path {
+  fill: currentColor;
+}
+/* Wrapper embed */
+.button-arrow._02.w-embed {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+/* ⬇️ KOLOR IKONY ⬇️ */
+/* Default - ikona czarna (bo siedzi na pomarańczowym kółku) */
+.button-arrow._02 {
+  color: black;
+}
+/* Hover - ikona biała */
+.main-button:hover .button-arrow._02,
+.button-wrapper:hover .button-arrow._02 {
+  color: white;
+}
+
+/* From code embeds on index/my-project (work covers) */
+  .work-image--embed{
+    display: inline-block;
+    vertical-align: baseline;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    object-fit: cover;
+    object-position: center center;
+    aspect-ratio: auto;
+    border: 0;
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+/* From code embeds on case studies */
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.media-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  display: block;
+  transform: scale(1.01);
+}
