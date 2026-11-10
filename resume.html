@@ -1,0 +1,706 @@
+<!DOCTYPE html><!--  This site was created in Webflow. https://webflow.com  --><!--  Last Published: Thu Nov 05 2026 09:14:18 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="6a3e843d7fa882bed70394a4" data-wf-site="69cf9e034333913e1b7d7dcf" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Resume</title>
+  <meta content="Resume" property="og:title">
+  <meta content="Resume" name="twitter:title">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta content="Webflow" name="generator">
+  <link href="css/normalize.css" rel="stylesheet" type="text/css">
+  <link href="css/webflow.css" rel="stylesheet" type="text/css">
+  <link href="css/mateuszs-my-site.webflow.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+  <script type="text/javascript">WebFont.load({  google: {    families: ["DM Sans:100,200,300,400,500,600,700,800,900","Funnel Display:300,400,500,600,700","Geist Mono:400,500"]  }});</script>
+  <script type="text/javascript">!function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script>
+  <link href="images/favicon.png" rel="shortcut icon" type="image/x-icon">
+  <link href="images/webclip.svg" rel="apple-touch-icon">
+  <style>
+/* Stan początkowy - sekcje rozmazane i niewidoczne */
+.reveal-section {
+  opacity: 0;
+  filter: blur(40px);
+  transform: translateY(10px);
+  transition: opacity 0.8s ease, filter 0.8s ease, transform 0.8s ease;
+}
+/* Stan po załadowaniu */
+.reveal-section.is-visible {
+  opacity: 1;
+  filter: blur(0px);
+  transform: translateY(0);
+}
+/* ⬇️ KLUCZOWA ZMIANA - usuń filter po animacji ⬇️ */
+.reveal-section.animation-done {
+  filter: none;
+  transform: none;
+  transition: none;
+  will-change: auto;
+}
+/* Body nadal ukryte podczas ładowania */
+body {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+body.loaded {
+  opacity: 1;
+}
+</style>
+  <style>
+video, img {
+  image-rendering: auto;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+</style>
+  <style>
+/* SVG widoczność w Safari */
+.button-arrow._02 svg,
+.button-arrow svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+.button-arrow._02 svg path,
+.button-arrow svg path {
+  fill: currentColor;
+}
+/* Wrapper embed */
+.button-arrow._02.w-embed {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+/* ⬇️ KOLOR IKONY ⬇️ */
+/* Default - ikona czarna (bo siedzi na pomarańczowym kółku) */
+.button-arrow._02 {
+  color: black;
+}
+/* Hover - ikona biała */
+.main-button:hover .button-arrow._02,
+.button-wrapper:hover .button-arrow._02 {
+  color: white;
+}
+</style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="nav-area">
+      <div data-animation="default" class="navbar navbar-2 navbar-3 reveal-section w-nav" data-wf--navbar--variant="base" data-easing2="ease" data-wf-component-id="0af068c5-c31b-4e2b-556e-105d1c21b070" data-easing="ease" data-wf-variant-state="base" data-collapse="medium" role="banner" data-duration="0" id="nav">
+        <div class="padding-global blur">
+          <div class="container-large">
+            <div class="w-layout-grid nav-grid">
+              <div id="w-node-_7b966349-fb0d-322a-2ead-ca05b0044bef-1c21b070" class="logo">
+                <a href="index.html" class="logo-link w-inline-block">
+                  <div class="lottie-animation-2 lottie-animation-3" data-w-id="16297902-1ba5-3251-182a-768c46b6cb11" data-animation-type="lottie" data-src="documents/matj.json" data-loop="0" data-direction="1" data-autoplay="1" data-is-ix2-target="0" data-renderer="svg" data-default-duration="1" data-duration="0" data-loading="eager"></div>
+                  <div class="logo-letters">
+                    <div class="letter">
+                      <div class="text-block-2">Mat</div>
+                    </div>
+                    <div class="letter opacity-30">
+                      <div class="text-block-3">e</div>
+                    </div>
+                    <div class="letter opacity-30">
+                      <div class="text-block-4">u</div>
+                    </div>
+                    <div class="letter opacity-30">
+                      <div class="text-block-5">s</div>
+                    </div>
+                    <div class="letter opacity-30">
+                      <div class="text-block-6">z</div>
+                    </div>
+                    <div class="letter letter-padding">
+                      <div class="text-block-7">J<span class="text-span-5">.</span></div>
+                    </div>
+                  </div>
+                  <div class="code-embed-4 w-embed"><lottie-player id="logo-lottie" src="https://pub-91c4ff256d874448bf2335f84f556cdb.r2.dev/matj.json" background="transparent" speed="1" style="width: 160px;"></lottie-player></div>
+                </a>
+              </div>
+              <nav role="navigation" id="w-node-_0af068c5-c31b-4e2b-556e-105d1c21b079-1c21b070" class="navigation w-nav-menu">
+                <div class="navigation-container div-block-8">
+                  <a data-w-id="0af068c5-c31b-4e2b-556e-105d1c21b07b" href="index.html" class="nav-link w-inline-block">
+                    <div class="nav-text">Home</div>
+                    <div class="nav-text text-color-secondary">Home</div>
+                  </a>
+                  <a data-w-id="0af068c5-c31b-4e2b-556e-105d1c21b085" href="my-project.html" class="nav-link w-inline-block">
+                    <div class="nav-text">Work</div>
+                    <div class="nav-text text-color-secondary">Work</div>
+                  </a>
+                  <a data-w-id="cb387781-914d-1b34-2516-3203dcc68165" href="resume.html" aria-current="page" class="nav-link w-inline-block w--current">
+                    <div class="nav-text">Resume</div>
+                    <div class="nav-text text-color-secondary">Resume</div>
+                  </a>
+                  <div class="nav-button-wrap">
+                    <a data-w-id="0af068c5-c31b-4e2b-556e-105d1c21b08b" href="contact.html" class="main-button w-inline-block">
+                      <div class="hi-wrapper"><img width="20" height="20" alt="" src="images/profile-thumbnail.jpg" loading="lazy" srcset="images/profile-thumbnail-p-500.jpg 500w, images/profile-thumbnail.jpg 680w" sizes="(max-width: 991px) 100vw, (max-width: 1279px) 2vw, (max-width: 1439px) 20px, 1vw" class="button-image">
+                        <div class="hi-text">Hi</div>
+                      </div>
+                      <div class="button-wrapper">
+                        <div class="button-text-wrap">
+                          <div class="text-button">Get in touch</div>
+                          <div class="text-button _2">Let&#x27;s Talk</div>
+                        </div>
+                        <div class="button-icon-block">
+                          <div class="button-arrow w-embed"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor">
+                              <path d="M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z"></path>
+                            </svg></div>
+                        </div>
+                        <div class="button-background-circle">
+                          <div class="button-arrow _02 w-embed"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor">
+                              <path d="M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z"></path>
+                            </svg></div>
+                        </div>
+                      </div>
+                      <div class="button-animation"></div>
+                    </a>
+                  </div>
+                </div>
+              </nav>
+              <div id="w-node-_0af068c5-c31b-4e2b-556e-105d1c21b09b-1c21b070" data-w-id="0af068c5-c31b-4e2b-556e-105d1c21b09b" class="menu-button w-nav-button">
+                <div class="menu-icon-wrap">
+                  <div class="menu-icon-block">
+                    <div class="menu-icon_line-top"></div>
+                    <div class="menu-icon_line-bottom"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="main-wrapper">
+        <section class="rsm-wrap reveal-section">
+          <div class="rsm-container">
+            <div class="rsm-grid">
+              <aside class="rsm-left">
+                <h1 class="rsm-name">Mateusz<br>Jurkiewicz</h1>
+                <p class="rsm-role">Senior UI/UX Designer</p>
+                <div class="rsm-divider"></div>
+                <div class="rsm-info">
+                  <div class="rsm-info-row"><span class="rsm-info-label">Location</span><span class="rsm-info-val">Krakow</span></div>
+                  <div class="rsm-info-row"><span class="rsm-info-label">Phone</span><span class="rsm-info-val">+48 784 826 994</span></div>
+                  <div class="rsm-info-row"><span class="rsm-info-label">E-mail</span><span class="rsm-info-val">uiuxme@gmail.com</span></div>
+                  <div class="rsm-info-row"><span class="rsm-info-label">Linkedin</span><span class="rsm-info-val">
+                      <a href="https://www.linkedin.com/" class="rsm-link">My profile</a>
+                    </span></div>
+                </div>
+                <div class="rsm-divider"></div>
+                <h3 class="rsm-sec-title">Summary</h3>
+                <div class="spacer-small"></div>
+                <p class="rsm-summary">Senior UI/UX Designer with 10 years of experience across digital products. Specialised in design systems, product redesign, and end-to-end design processes — from research to implementation. I work closely with developers and stakeholders to deliver scalable, user-centred solutions.</p>
+              </aside>
+              <div class="rsm-right">
+                <div class="rsm-sec">
+                  <div class="rsm-sec-head">
+                    <h3 class="rsm-sec-title">Highlights</h3>
+                    <div class="rsm-toggle">Hide</div>
+                  </div>
+                  <div class="rsm-sec-body">
+                    <div class="rsm-row">
+                      <div class="rsm-row-label">
+                        <div class="rsm-line"></div>
+                        <div class="rsm-label-txt">Industries:</div>
+                      </div>
+                      <div class="rsm-tags"><span class="rsm-tag">Fintech (mobile banking, enterprise)</span><span class="rsm-tag">B2B (fuel payment, digital wallet, fleet)</span><span class="rsm-tag">social media (geosocial)</span></div>
+                    </div>
+                    <div class="rsm-row">
+                      <div class="rsm-row-label">
+                        <div class="rsm-line"></div>
+                        <div class="rsm-label-txt">Experience:</div>
+                      </div>
+                      <div class="rsm-tags"><span class="rsm-tag">10 years in UI/UX design — Product Design methodology</span><span class="rsm-tag">web &amp; mobile applications</span></div>
+                    </div>
+                    <div class="rsm-row no-boredr">
+                      <div class="rsm-row-label">
+                        <div class="rsm-line"></div>
+                        <div class="rsm-label-txt">Design Systems:</div>
+                      </div>
+                      <div class="rsm-tags"><span class="rsm-tag">End-to-end creation &amp; rollout in a product organisation — tokens, components, UI Blocks, governance.</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="rsm-sec">
+                  <div class="rsm-sec-head">
+                    <h3 class="rsm-sec-title">Core Skills</h3>
+                    <div class="rsm-toggle">Hide</div>
+                  </div>
+                  <div class="rsm-sec-body">
+                    <div class="rsm-row">
+                      <div class="rsm-row-label">
+                        <div class="rsm-line"></div>
+                        <div class="rsm-label-txt">Research &amp; Discovery:</div>
+                      </div>
+                      <div class="rsm-tags"><span class="rsm-tag">design thinking</span><span class="rsm-tag">user research &amp; interviews</span><span class="rsm-tag">competitive analysis</span><span class="rsm-tag">heuristic evaluation</span><span class="rsm-tag">usability testing</span><span class="rsm-tag">A/B testing</span><span class="rsm-tag">defining pain points &amp; user needs</span></div>
+                    </div>
+                    <div class="rsm-row">
+                      <div class="rsm-row-label">
+                        <div class="rsm-line"></div>
+                        <div class="rsm-label-txt">Design &amp; Architecture:</div>
+                      </div>
+                      <div class="rsm-tags"><span class="rsm-tag">information architecture</span><span class="rsm-tag">user flows &amp; wireframing</span><span class="rsm-tag">UI design</span><span class="rsm-tag">motion design</span><span class="rsm-tag">prototyping &amp; micro-interactions</span><span class="rsm-tag">accessibility (WCAG)</span></div>
+                    </div>
+                    <div class="rsm-row no-boredr">
+                      <div class="rsm-row-label">
+                        <div class="rsm-line"></div>
+                        <div class="rsm-label-txt">Additional:</div>
+                      </div>
+                      <div class="rsm-tags"><span class="rsm-tag">AI-supported design</span><span class="rsm-tag">developer collaboration &amp; handoff</span><span class="rsm-tag">stakeholder communication</span><span class="rsm-tag">mentoring &amp; coaching</span><span class="rsm-tag">requirements gathering</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="rsm-sec">
+                  <div class="rsm-sec-head">
+                    <h3 class="rsm-sec-title">Tools</h3>
+                    <div class="rsm-toggle">Hide</div>
+                  </div>
+                  <div class="rsm-sec-body">
+                    <div class="rsm-row">
+                      <div class="rsm-row-label">
+                        <div class="rsm-line"></div>
+                        <div class="rsm-label-txt">Design:</div>
+                      </div>
+                      <div class="rsm-tags"><span class="rsm-tag">Figma</span><span class="rsm-tag">FigJam</span><span class="rsm-tag">Miro</span></div>
+                    </div>
+                    <div class="rsm-row">
+                      <div class="rsm-row-label">
+                        <div class="rsm-line"></div>
+                        <div class="rsm-label-txt">Prototyping/AI:</div>
+                      </div>
+                      <div class="rsm-tags"><span class="rsm-tag">Figma Make</span><span class="rsm-tag">v0</span><span class="rsm-tag">Lovable</span></div>
+                    </div>
+                    <div class="rsm-row">
+                      <div class="rsm-row-label">
+                        <div class="rsm-line"></div>
+                        <div class="rsm-label-txt">AI assistants:</div>
+                      </div>
+                      <div class="rsm-tags"><span class="rsm-tag">Claude</span><span class="rsm-tag">GPT</span><span class="rsm-tag">Codex</span></div>
+                    </div>
+                    <div class="rsm-row no-boredr">
+                      <div class="rsm-row-label">
+                        <div class="rsm-line"></div>
+                        <div class="rsm-label-txt">Design-to-dev:</div>
+                      </div>
+                      <div class="rsm-tags"><span class="rsm-tag">Storybook</span><span class="rsm-tag">Figma Dev Mode</span><span class="rsm-tag">Web: Webflow</span><span class="rsm-tag">Motion: After Effects, Lottie</span><span class="rsm-tag">Collaboration: Jira, Confluence</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="rsm-sec">
+                  <div class="rsm-sec-head">
+                    <h3 class="rsm-sec-title">Experience</h3>
+                    <div class="rsm-toggle">Hide</div>
+                  </div>
+                  <div class="rsm-sec-body">
+                    <div>
+                      <div class="rsm-exp">
+                        <div class="rsm-exp-meta"><span class="rsm-date">2025 — Present</span><span class="rsm-sep">·</span><span class="rsm-company">Equiniti / Endava</span></div>
+                        <h4 class="rsm-exp-title">Design System — Equiniti / EQ Advisory</h4>
+                        <p class="rsm-exp-desc">Led the creation and rollout of an organisation-wide design system aimed at unifying the visual language across products, scaling design operations, and reducing knowledge gaps between design teams. Covered the full lifecycle — from foundational visual language and UI tokens, through component and pattern library development, to governance frameworks and developer implementation in Storybook.</p>
+                        <div class="bullet-points-violet">
+                          <h1 class="paragraph-violet dark">[ Key Impact ]</h1>
+                          <ul role="list" class="list dark">
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Adoption</strong>: rolled out across multiple product teams, replacing fragmented component usage with a single source of truth</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Efficiency</strong>: accelerated product design through reusable UI Blocks and ready-to-use screen patterns</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Process maturity:</strong> established a governance model for a predictable, accountable design-to-dev workflow</div>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="bullet-points-orange">
+                          <h1 class="paragraph-orange dark">[ Responsibilities ]</h1>
+                          <ul role="list" class="list dark">
+                            <li class="list-item">
+                              <div class="work-info-text">Defined visual language, design principles, and UI tokens (colour, typography, spacing, elevation)</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Adapted and consolidated existing components into a unified Figma library based on usage insights from product teams</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Created the “UI Blocks” layer — ready-to-use patterns and screen templates (advanced tables, navigation variants, card layouts)</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Co-developed governance &amp; contribution model with the core DS team — ownership, approval flow, and accountability for changes</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Coordinated with developers on component implementation in Storybook and ensured design-to-code consistency</div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="rsm-exp">
+                        <div class="rsm-exp-meta"><span class="rsm-date">2023 — Present</span><span class="rsm-sep">·</span><span class="rsm-company">Equiniti / Endava</span></div>
+                        <h4 class="rsm-exp-title">Equiniti / EQ Advisory — IR:InTouch — Web app</h4>
+                        <p class="rsm-exp-desc">Digital Investor Relations platform for publicly listed companies, focused on improving communication, reporting, and access to financial data through dashboards, reports, and investor-facing tools.</p>
+                        <div class="bullet-points-violet">
+                          <h1 class="paragraph-violet dark">[ Key Impact ]</h1>
+                          <ul role="list" class="list dark">
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Dashboard:</strong> turned a static landing page into a customizable widget dashboard as the main entry point — 82% of users navigate from it and 62% actively use customization</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Reporting: </strong>introduced end-to-end, parameterized report generation, reducing reliance on support — 38% fewer report-related support requests, 6× longer average time spent in the reports section, 41% of users adopted &#x27;Create My Report&#x27;</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Business outcome: </strong>4.3% of customers showed interest in upgrading to an extended plan post-launch; 54% of clients (A/B tested with 31 clients) willing to adopt the new UI</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Findability: </strong>advanced search, navigation redesign, and restructured reports together reduced time-to-insight when navigating financial data</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Information architecture: </strong>redesigned navigation and IA, improving discoverability and reducing user friction</div>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="bullet-points-orange">
+                          <h1 class="paragraph-orange dark">[ Responsibilities ]</h1>
+                          <ul role="list" class="list dark">
+                            <li class="list-item">
+                              <div class="work-info-text">Led UX of the platform&#x27;s reporting and dashboard features — created a feature matrix, redesigned existing reports, and introduced new reporting and dashboard functionality</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Ran the research track: user interviews, heuristic evaluation, usability testing (hypothesis-driven) and A/B testing to validate solutions before rollout</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Contributed to the navigation redesign and overall information architecture</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Designed advanced search and a report-generation flow</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Applied AI tooling in the design process — v0 and Lovable for prompt-driven ideation and concept generation</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Worked within and helped evolve the EQ design system (transition from MUI v2.0 to v3.0 / EQ Studio), including dark mode</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Prepared design documentation and collaborated closely with developers and business analysts in dedicated iteration sessions</div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="rsm-exp">
+                        <div class="rsm-exp-meta"><span class="rsm-date">2022 — 2023</span><span class="rsm-sep">·</span><span class="rsm-company">Miquido (Software House)</span></div>
+                        <h4 class="rsm-exp-title">ORLEN mflota — Mobile App</h4>
+                        <p class="rsm-exp-desc">Fleet management mobile application for ORLEN — a redesign of a legacy app simplifying core journeys for fleet drivers and managers (fuelling, payments, cards, and fleet services). End-to-end process from discovery and research through MVP definition, prototyping, and usability testing.</p>
+                        <div class="bullet-points-violet">
+                          <h1 class="paragraph-violet dark">[ Key Impact ]</h1>
+                          <ul role="list" class="list dark">
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Discovery-led scope: </strong>ran 6 in-depth interviews with fleet drivers and benchmarked 8 competitor apps; mapped 19 legacy pain points and prioritised 15 into the MVP scope</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Focused MVP:</strong> facilitated workshops with 8 stakeholders across fleet-operations departments, surfacing 6 business-critical user stories and narrowing 21 candidate features to 12 for MVP 1</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Validated usability:</strong> reached a 90% task-completion rate (67% unaided, 23% with a single hint) across 6 core flows over 2 moderated testing rounds</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Design-driven fix:</strong> uncovered a 50% misclick rate on non-actionable elements, which drove a CTA-hierarchy redesign in v2</div>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="bullet-points-orange">
+                          <h1 class="paragraph-orange dark">[ Responsibilities ]</h1>
+                          <ul role="list" class="list dark">
+                            <li class="list-item">
+                              <div class="work-info-text">Defined product vision and identified key UX problems through research and analysis</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Designed user flows, wireframes, and high-fidelity UI for core features (fuelling, scanning, cards, history, signup)</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Developed and tested multiple concepts; conducted usability testing and synthesised insights into actionable improvements</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Iterated on designs based on research findings; prepared design documentation</div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="rsm-exp">
+                        <div class="rsm-exp-meta"><span class="rsm-date">2021 — 2022</span><span class="rsm-sep">·</span><span class="rsm-company">Miquido (Software House)</span></div>
+                        <h4 class="rsm-exp-title">PayMaya — Mobile App</h4>
+                        <p class="rsm-exp-desc">Mobile application focused on improving the customer experience — simplifying core journeys such as fuelling, payments, and additional services. End-to-end design process from problem definition and research to prototyping and usability testing.</p>
+                        <div class="bullet-points-violet">
+                          <h1 class="paragraph-violet dark">[ Key Impact ]</h1>
+                          <ul role="list" class="list dark">
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>User journeys: </strong>simplified core flows (fuelling, scanning, payments) based on validated research</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Validated usability:</strong> reached a 90% task-completion rate (67% unaided, 23% with a single hint) across 6 core flows over 2 moderated testing rounds</div>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="bullet-points-orange">
+                          <h1 class="paragraph-orange dark">[ Responsibilities ]</h1>
+                          <ul role="list" class="list dark">
+                            <li class="list-item">
+                              <div class="work-info-text">Defined product concept and conducted competitive analysis to identify market gaps</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Designed end-to-end user flows, wireframes, and high-fidelity UI for core features (group goals, savings tracking, dashboard, transactions)</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Developed UI system ensuring consistency across onboarding, dashboards, and transactional flows</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Explored and proposed new features; iterated on designs to improve usability and clarity of financial data</div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="rsm-exp no-stroke">
+                        <div class="rsm-exp-meta"><span class="rsm-date">2019 — 2021</span><span class="rsm-sep">·</span><span class="rsm-company">Miquido (Software House)</span></div>
+                        <h4 class="rsm-exp-title">YouMap — Mobile App (iOS) &amp; Web (PoC)</h4>
+                        <p class="rsm-exp-desc">Real-time social mapping platform combining geolocation with social networking — enabling users to create custom interactive maps, post location-based moments, and discover content around shared interests. End-to-end design across iOS, web (PoC), and landing page with a unified design system.</p>
+                        <div class="bullet-points-violet">
+                          <h1 class="paragraph-violet dark">[ Key Impact ]</h1>
+                          <ul role="list" class="list dark">
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Discovery-led scope:</strong> analyzed 12 competitor and reference apps and mapped 4 personas to define 3 core use cases — travel &amp; food, local events, and nightlife discovery</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Design breadth:</strong> produced 24 wireframe screens across the map, feed, and profile flows and mapped 9 end-to-end user journeys through 3 rounds of iteration before high-fidelity</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text"><strong>Focused MVP:</strong> prioritized with stakeholders to narrow 18 candidate features down to 11 for MVP 1, delivering the first design handoff within 6 weeks of kickoff</div>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="bullet-points-orange">
+                          <h1 class="paragraph-orange dark">[ Responsibilities ]</h1>
+                          <ul role="list" class="list dark">
+                            <li class="list-item">
+                              <div class="work-info-text">Conducted discovery workshops, market research, and competitive analysis in the SoLoMo (Social-Local-Mobile) space</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Designed information architecture, user flows, and low-fidelity wireframes for map creation, posting, and discovery</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Planned and conducted usability testing; synthesised findings into actionable design improvements</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Built a design system spanning mobile, web, and landing page — branding, components, icons, illustrations, emojis</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Created motion design, micro-animations set giving the product a distinctive character</div>
+                            </li>
+                            <li class="list-item">
+                              <div class="work-info-text">Collaborated with iOS, Back-End, and Product Design teams; prepared design handover for further development</div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="rsm-sec">
+                  <div class="rsm-sec-head">
+                    <h3 class="rsm-sec-title">Certifications &amp; Languages</h3>
+                    <div class="rsm-toggle">Hide</div>
+                  </div>
+                  <div class="rsm-sec-body">
+                    <div class="rsm-certlist">
+                      <p class="rsm-cert"><strong>User Experience Design</strong> — WitFlow, May 2022</p>
+                      <p class="rsm-cert"><strong>Communication is Your Work </strong>— Leaders Island, June 2021</p>
+                      <p class="rsm-cert">Languages: Polish (Native), English (C1)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <footer class="footer section section-2 reveal-section">
+      <div data-w-id="eea73e14-e02b-b846-a20c-b62016ad9bd1" class="loop-text-wrapper">
+        <div class="loop-text-block">
+          <h2 class="looping-text">Mat J</h2>
+          <h2 class="asterisk-yellow">✺</h2>
+          <h2 class="looping-text">Mat J</h2>
+          <h2 class="asterisk-orange">✺</h2>
+          <h2 class="looping-text">Mat J</h2>
+          <h2 class="asterisk-yellow">✺</h2>
+        </div>
+        <div class="loop-text-block">
+          <h2 class="looping-text">Mat J</h2>
+          <h2 class="asterisk-orange">✺</h2>
+          <h2 class="looping-text">Mat J</h2>
+          <h2 class="asterisk-yellow">✺</h2>
+          <h2 class="looping-text">Mat J</h2>
+          <h2 class="asterisk-orange">✺</h2>
+        </div>
+        <div class="loop-text-block">
+          <h2 class="looping-text">Mat J</h2>
+          <h2 class="asterisk-yellow">✺</h2>
+          <h2 class="looping-text">Mat J</h2>
+          <h2 class="asterisk-orange">✺</h2>
+          <h2 class="looping-text">Mat J</h2>
+          <h2 class="asterisk-yellow">✺</h2>
+        </div>
+      </div>
+      <div class="footer-container">
+        <div class="padding-global blur">
+          <div class="w-layout-blockcontainer container-large w-container">
+            <div class="footer-padding">
+              <div class="footer-top-content">
+                <div id="w-node-eea73e14-e02b-b846-a20c-b62016ad9bfe-16ad9bd0" class="text-size-medium">✺ Interested in collaboration?</div>
+                <div id="w-node-eea73e14-e02b-b846-a20c-b62016ad9c00-16ad9bd0" class="social-block">
+                  <div class="social-wrapper">
+                    <a data-w-id="2319dfb2-8319-5f51-432e-46c99426b384" href="https://www.linkedin.com/in/mateusz-jurkiewicz-a8561676/" target="_blank" class="social-link w-inline-block">
+                      <div class="social-icon-block">
+                        <div class="social-icon w-embed"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewbox="0 0 24 24">
+                            <path fill="#FFFFFF" d="M21,21H17V14.25C17,13.19 15.81,12.31 14.75,12.31C13.69,12.31 13,13.19 13,14.25V21H9V9H13V11C13.66,9.93 15.36,9.24 16.5,9.24C19,9.24 21,11.28 21,13.75V21M7,21H3V9H7V21M5,3A2,2 0 0,1 7,5A2,2 0 0,1 5,7A2,2 0 0,1 3,5A2,2 0 0,1 5,3Z"></path>
+                          </svg></div>
+                        <div class="social-icon w-embed"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewbox="0 0 24 24">
+                            <path fill="#EEB625" d="M21,21H17V14.25C17,13.19 15.81,12.31 14.75,12.31C13.69,12.31 13,13.19 13,14.25V21H9V9H13V11C13.66,9.93 15.36,9.24 16.5,9.24C19,9.24 21,11.28 21,13.75V21M7,21H3V9H7V21M5,3A2,2 0 0,1 7,5A2,2 0 0,1 5,7A2,2 0 0,1 3,5A2,2 0 0,1 5,3Z"></path>
+                          </svg></div>
+                      </div>
+                    </a>
+                    <a data-w-id="bcc57d71-9f7c-0641-c00e-5d7815085e2e" href="https://dribbble.com/juraa" target="_blank" class="social-link-2 w-inline-block">
+                      <div class="social-icon-block">
+                        <div class="social-icon-2 w-embed"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor">
+                            <path d="M19.9887 11.5716C19.9029 9.94513 19.3313 8.44745 18.4163 7.22097C18.1749 7.48407 17.8785 7.7698 17.4957 8.09159C16.5881 8.85458 15.4887 9.54307 14.1834 10.101C14.3498 10.4506 14.5029 10.7899 14.6376 11.1098L14.6388 11.1125C14.6652 11.1742 14.6879 11.2306 14.7321 11.3418C14.7379 11.3562 14.7433 11.3697 14.7485 11.3825C16.2621 11.2122 17.8576 11.2749 19.4049 11.4845C19.6106 11.5123 19.805 11.5415 19.9887 11.5716ZM10.6044 4.1213C10.7783 4.36621 10.9602 4.62859 11.1803 4.95378C11.7929 5.8589 12.396 6.81391 12.9604 7.79507C13.0749 7.99416 13.187 8.19289 13.2964 8.39112C14.5193 7.90993 15.5296 7.30281 16.3438 6.62486C16.6731 6.35063 16.9383 6.093 17.1403 5.86972C15.7501 4.70277 13.9571 4 12 4C11.524 4 11.0576 4.04158 10.6044 4.1213ZM4.25266 9.99755C4.83145 9.98452 5.48467 9.94941 6.29303 9.87518C7.90024 9.72758 9.54141 9.46249 11.1549 9.05274C10.5719 8.03721 9.93888 7.02331 9.29452 6.05378C8.98479 5.58775 8.68357 5.14992 8.45484 4.82642C6.39541 5.84613 4.83794 7.72658 4.25266 9.99755ZM5.78366 17.036C6.17111 16.4693 6.68061 15.8314 7.35797 15.1374C8.81199 13.6478 10.5286 12.4878 12.5139 11.8473C12.5417 11.8391 12.5604 11.8336 12.576 11.829C12.411 11.4651 12.2562 11.1405 12.1003 10.8342C10.2643 11.3687 8.3303 11.703 6.40279 11.8762C5.46319 11.9606 4.62005 11.9981 4 12.0044C4.00102 13.9112 4.66915 15.662 5.78366 17.036ZM15.0045 19.4166C14.9001 18.8745 14.7669 18.2706 14.5899 17.574C14.2689 16.3112 13.8668 15.012 13.373 13.7078C11.3712 14.4343 9.77574 15.4974 8.54309 16.7649C7.94904 17.3757 7.51244 17.9537 7.22642 18.4203C8.55892 19.4127 10.2109 20 12 20C13.0626 20 14.0769 19.7928 15.0045 19.4166ZM16.8778 18.3414C18.4073 17.1632 19.4985 15.444 19.8652 13.4703C19.5253 13.3865 19.094 13.3005 18.6196 13.2346C17.5756 13.0897 16.5014 13.0655 15.4409 13.2018C15.8933 14.4764 16.2642 15.7332 16.5608 16.9361C16.6903 17.4614 16.7958 17.9358 16.8778 18.3414ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22Z"></path>
+                          </svg></div>
+                        <div class="social-icon-2 w-embed"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="#EEB625">
+                            <path d="M19.9887 11.5716C19.9029 9.94513 19.3313 8.44745 18.4163 7.22097C18.1749 7.48407 17.8785 7.7698 17.4957 8.09159C16.5881 8.85458 15.4887 9.54307 14.1834 10.101C14.3498 10.4506 14.5029 10.7899 14.6376 11.1098L14.6388 11.1125C14.6652 11.1742 14.6879 11.2306 14.7321 11.3418C14.7379 11.3562 14.7433 11.3697 14.7485 11.3825C16.2621 11.2122 17.8576 11.2749 19.4049 11.4845C19.6106 11.5123 19.805 11.5415 19.9887 11.5716ZM10.6044 4.1213C10.7783 4.36621 10.9602 4.62859 11.1803 4.95378C11.7929 5.8589 12.396 6.81391 12.9604 7.79507C13.0749 7.99416 13.187 8.19289 13.2964 8.39112C14.5193 7.90993 15.5296 7.30281 16.3438 6.62486C16.6731 6.35063 16.9383 6.093 17.1403 5.86972C15.7501 4.70277 13.9571 4 12 4C11.524 4 11.0576 4.04158 10.6044 4.1213ZM4.25266 9.99755C4.83145 9.98452 5.48467 9.94941 6.29303 9.87518C7.90024 9.72758 9.54141 9.46249 11.1549 9.05274C10.5719 8.03721 9.93888 7.02331 9.29452 6.05378C8.98479 5.58775 8.68357 5.14992 8.45484 4.82642C6.39541 5.84613 4.83794 7.72658 4.25266 9.99755ZM5.78366 17.036C6.17111 16.4693 6.68061 15.8314 7.35797 15.1374C8.81199 13.6478 10.5286 12.4878 12.5139 11.8473C12.5417 11.8391 12.5604 11.8336 12.576 11.829C12.411 11.4651 12.2562 11.1405 12.1003 10.8342C10.2643 11.3687 8.3303 11.703 6.40279 11.8762C5.46319 11.9606 4.62005 11.9981 4 12.0044C4.00102 13.9112 4.66915 15.662 5.78366 17.036ZM15.0045 19.4166C14.9001 18.8745 14.7669 18.2706 14.5899 17.574C14.2689 16.3112 13.8668 15.012 13.373 13.7078C11.3712 14.4343 9.77574 15.4974 8.54309 16.7649C7.94904 17.3757 7.51244 17.9537 7.22642 18.4203C8.55892 19.4127 10.2109 20 12 20C13.0626 20 14.0769 19.7928 15.0045 19.4166ZM16.8778 18.3414C18.4073 17.1632 19.4985 15.444 19.8652 13.4703C19.5253 13.3865 19.094 13.3005 18.6196 13.2346C17.5756 13.0897 16.5014 13.0655 15.4409 13.2018C15.8933 14.4764 16.2642 15.7332 16.5608 16.9361C16.6903 17.4614 16.7958 17.9358 16.8778 18.3414ZM12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22Z"></path>
+                          </svg></div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                <div id="w-node-eea73e14-e02b-b846-a20c-b62016ad9c02-16ad9bd0" class="back-to-top">
+                  <div class="text-size-medium">Back to top</div>
+                  <a href="#" data-w-id="e17ee879-a67e-c1b2-716d-9727f106f018" class="back-to-top-link scroll-top-btn w-inline-block">
+                    <div class="back-arrow-wrap">
+                      <div class="back-to-top-arrow-2 w-embed"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor">
+                          <path d="M13.0001 7.82843V20H11.0001V7.82843L5.63614 13.1924L4.22192 11.7782L12.0001 4L19.7783 11.7782L18.3641 13.1924L13.0001 7.82843Z"></path>
+                        </svg></div>
+                      <div class="back-to-top-arrow-2 w-embed"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="#EEB625">
+                          <path d="M13.0001 7.82843V20H11.0001V7.82843L5.63614 13.1924L4.22192 11.7782L12.0001 4L19.7783 11.7782L18.3641 13.1924L13.0001 7.82843Z"></path>
+                        </svg></div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <div class="max-width-large align-center">
+                <h2 class="footer-serif-title">Let&#x27;s <span class="text-span">talk</span></h2>
+                <div data-w-id="eea73e14-e02b-b846-a20c-b62016ad9c0c" class="shadow-text-wrapper center">
+                  <div class="shadow-text-item">
+                    <h2 class="shadow-text _1">I&#x27;m open</h2>
+                    <h2 class="shadow-item">I&#x27;m open</h2>
+                  </div>
+                  <div class="shadow-text-item">
+                    <h2 class="shadow-item">to conversation</h2>
+                    <h2 class="shadow-text _2">to conversation</h2>
+                  </div>
+                </div>
+              </div>
+              <div class="spacer-xlarge"></div>
+              <div class="cta-button-wrap">
+                <a data-w-id="eea73e14-e02b-b846-a20c-b62016ad9c19" href="contact.html" class="main-button w-inline-block">
+                  <div class="hi-wrapper"><img width="20" height="20" alt="" src="images/profile-thumbnail.jpg" loading="lazy" srcset="images/profile-thumbnail-p-500.jpg 500w, images/profile-thumbnail.jpg 680w" sizes="(max-width: 991px) 20px, (max-width: 1279px) 2vw, (max-width: 1439px) 20px, 1vw" class="button-image">
+                    <div class="hi-text">Say Hi</div>
+                  </div>
+                  <div class="button-wrapper">
+                    <div class="button-text-wrap">
+                      <div class="text-button">Get in touch</div>
+                      <div class="text-button _2">Let&#x27;s Talk</div>
+                    </div>
+                    <div class="button-icon-block">
+                      <div class="button-arrow w-embed"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor">
+                          <path d="M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z"></path>
+                        </svg></div>
+                    </div>
+                    <div class="button-background-circle">
+                      <div class="button-arrow _02 w-embed"><svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="currentColor">
+                          <path d="M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z"></path>
+                        </svg></div>
+                    </div>
+                  </div>
+                  <div class="button-animation"></div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div class="footer-bottom-container">
+            <div class="padding-global">
+              <div class="container-large">
+                <div class="footer-bottom-wrapper">
+                  <div id="w-node-eea73e14-e02b-b846-a20c-b62016ad9c2e-16ad9bd0" class="footer-link-block">
+                    <div class="footer_credit-text">Designed &amp; Developed by <span class="text-span-18">me</span>  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=69cf9e034333913e1b7d7dcf" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  <script src="js/webflow.js" type="text/javascript"></script>
+  <script src="https://cdn.prod.website-files.com/gsap/3.15.0/ScrollTrigger.min.js" type="text/javascript"></script>
+  <script src="https://cdn.prod.website-files.com/gsap/3.15.0/gsap.min.js" type="text/javascript"></script>
+  <script>
+window.addEventListener("load", function() {
+  document.body.classList.add("loaded");
+  const sections = document.querySelectorAll('.reveal-section');
+  sections.forEach((section, index) => {
+    setTimeout(() => {
+      section.classList.add('is-visible');
+      // Po zakończeniu animacji - usuń filter całkowicie (fix dla backdrop-filter)
+      setTimeout(() => {
+        section.classList.add('animation-done');
+      }, 900);
+    }, 150 * index);
+  });
+});
+</script>
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll('.scroll-top-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const start = window.scrollY;
+      const duration = 1400;
+      let startTime = null;
+      function easeInOutCubic(t) {
+        return t < 0.5
+          ? 4 * t * t * t
+          : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      }
+      function scrollStep(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = timestamp - startTime;
+        const percent = Math.min(progress / duration, 1);
+        const eased = easeInOutCubic(percent);
+        window.scrollTo(0, start * (1 - eased));
+        if (progress < duration) {
+          requestAnimationFrame(scrollStep);
+        }
+      }
+      requestAnimationFrame(scrollStep);
+    });
+  });
+});
+</script>
+  <script src="https://cdn.prod.website-files.com/69cf9e034333913e1b7d7dcf%2F689e5ba67671442434f3ca35%2F6a44dcfd94a4ac990035b599%2Fnavlogocollapse-1.0.0-1782898707629.js" type="text/javascript"></script>
+  <script src="https://cdn.prod.website-files.com/69cf9e034333913e1b7d7dcf%2F689e5ba67671442434f3ca35%2F6a3ef5ac8c9f56f832f98ab0%2Fresumeaccordion-1.0.0.js" type="text/javascript"></script>
+</body>
+</html>
