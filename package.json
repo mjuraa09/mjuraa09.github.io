@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "node tools/serve.mjs 8080",
     "test:visual": "playwright test",
+    "test:live": "BASE_URL=https://mjuraa09.github.io playwright test",
     "baseline:update": "playwright test --update-snapshots"
   },
   "devDependencies": {
