@@ -8,7 +8,6 @@ const PAGES = [
   'contact.html',
   'detail_work.html',
   '404.html',
-  '401.html',
   'projects/rdir-fintech-copy.html',
   'projects/mflota-ecommerce.html',
   'projects/youmap-socialmedia.html',
@@ -40,6 +39,10 @@ async function settle(page) {
   });
 
   await page.waitForLoadState('networkidle').catch(() => {});
+  // Remote (R2) images can arrive late; wait until every image has decoded.
+  await page
+    .waitForFunction(() => [...document.images].every((i) => i.complete), null, { timeout: 15_000 })
+    .catch(() => {});
   // Reveal-on-load sequence: 150ms per section + 900ms, plus nav logo transition.
   await page.waitForTimeout(3000);
 }
