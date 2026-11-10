@@ -1,0 +1,13 @@
+{
+  "name": "matj-my-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node tools/serve.mjs 8080",
+    "test:visual": "playwright test",
+    "baseline:update": "playwright test --update-snapshots"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0"
+  }
+}
