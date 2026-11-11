@@ -119,3 +119,9 @@ video, img {
   display: block;
   transform: scale(1.01);
 }
+
+/* <picture> wrappers (AVIF with WebP fallback) must not add a layout box:
+   the <img> inside keeps sizing against its original parent. */
+picture {
+  display: contents;
+}
