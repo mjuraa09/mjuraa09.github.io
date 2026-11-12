@@ -19,6 +19,11 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
 - `node tools/prune-css.mjs [--write] css/x.css` – removes selectors for classes used nowhere (HTML or JS).
 - `npm run stats` – rebuilds `data/activity.json` (per-day Claude Code usage from `~/.claude/projects` and the
   GitHub contribution calendar via `gh`). Numbers only: never add project names, paths or prompt text to it.
+- Daily refresh: a macOS LaunchAgent (`site.portfolio.activity-stats`, installed with `npm run stats:install`)
+  runs `tools/update-stats.sh` at 23:30. It commits and pushes **only** `data/activity.json`, and only when
+  local `main` equals `origin/main` (otherwise it logs "skip" and does nothing). Log:
+  `~/Library/Logs/site-activity-stats.log`. Run it by hand with `npm run stats:publish`.
+  These automatic stats pushes are the one exception to asking before a push.
 - `node tools/to-webp.mjs <quality> img...` / `node tools/to-woff2.mjs font...` – asset conversion.
 
 ## Where custom code lives

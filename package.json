@@ -7,7 +7,9 @@
     "test:visual": "playwright test",
     "test:live": "BASE_URL=https://mjuraa09.github.io playwright test",
     "baseline:update": "playwright test --update-snapshots",
-    "stats": "node tools/activity-stats.mjs"
+    "stats": "node tools/activity-stats.mjs",
+    "stats:publish": "bash tools/update-stats.sh",
+    "stats:install": "bash tools/install-stats-agent.sh"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.0",

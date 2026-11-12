@@ -94,7 +94,13 @@ function github() {
   }
 }
 
+const previous = JSON.parse(await readFile(OUT, 'utf8').catch(() => 'null'));
 const data = { generatedAt: new Date().toISOString(), claudeCode: await claudeCode(), github: github() };
+// If GitHub can't be reached (offline, gh logged out), keep the last known calendar
+// instead of dropping the GitHub tab from the site.
+if (!data.github && previous?.github) data.github = previous.github;
+// Nothing new: keep the old timestamp so the file (and git) stay untouched.
+if (previous && JSON.stringify({ ...previous, generatedAt: 0 }) === JSON.stringify({ ...data, generatedAt: 0 })) data.generatedAt = previous.generatedAt;
 await mkdir(dirname(OUT), { recursive: true });
 await writeFile(OUT, JSON.stringify(data) + '\n');
 
