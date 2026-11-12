@@ -81,8 +81,7 @@
     const css = getComputedStyle(section);
     const cell = parseFloat(css.getPropertyValue('--cell')) || 22;
     const gap = parseFloat(css.getPropertyValue('--cell-gap')) || 6;
-    const days = parseFloat(css.getPropertyValue('--days-col')) || 44;
-    const width = section.querySelector('.activity-heatmap').clientWidth - days;
+    const width = section.querySelector('.activity-heatmap').clientWidth;
     return Math.max(8, Math.min(MAX_WEEKS, Math.floor((width + gap) / (cell + gap))));
   }
 
