@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { freezeActivity } from './fixed-activity.js';
+
+test.beforeEach(async ({ page }) => freezeActivity(page));
 
 // Interactive states the full-page screenshots don't cover: hovers, the open mobile
 // menu, the resume accordion, and the case-study scrollspy.
@@ -64,6 +67,16 @@ test.describe('desktop states', () => {
     await shot(page, 'resume-accordion.png');
   });
 
+  test('activity section, Working with AI tab', async ({ page }) => {
+    await open(page, 'index.html');
+    const section = page.locator('#activity');
+    await section.scrollIntoViewIfNeeded();
+    await page.locator('#activity-tab-ai').click();
+    await page.mouse.move(5, 600); // off the tabs, so no hover transition is caught mid-way
+    await page.waitForTimeout(1200);
+    await expect(section.locator('.container-large')).toHaveScreenshot('activity-ai-tab.png'); // skip the section's top padding: the hero's rotating badge overlaps it
+  });
+
   test('case study scrollspy', async ({ page }) => {
     await open(page, 'projects/rdir-fintech-copy.html');
     const section = page.locator('[data-section]').nth(2);
@@ -83,6 +96,15 @@ test.describe('mobile states', () => {
     await page.locator('.menu-button').click();
     await page.waitForTimeout(1500);
     await shot(page, 'mobile-menu-open.png');
+  });
+
+  test('activity section on mobile', async ({ page }) => {
+    await open(page, 'index.html');
+    const section = page.locator('#activity');
+    await section.scrollIntoViewIfNeeded();
+    await page.locator('#activity-tab-ai').click();
+    await page.waitForTimeout(1200);
+    await expect(section.locator('.container-large')).toHaveScreenshot('activity-mobile.png');
   });
 
   test('mobile menu open on case study', async ({ page }) => {

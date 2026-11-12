@@ -83,11 +83,11 @@ async function claudeCode() {
 
 function github() {
   try {
-    const q = 'query{viewer{login contributionsCollection{contributionCalendar{totalContributions weeks{contributionDays{date contributionCount}}}}}}';
+    const q = 'query{viewer{login contributionsCollection{totalCommitContributions contributionCalendar{totalContributions weeks{contributionDays{date contributionCount}}}}}}';
     const res = JSON.parse(execFileSync('gh', ['api', 'graphql', '-f', `query=${q}`], { encoding: 'utf8' }));
     const v = res.data.viewer, cal = v.contributionsCollection.contributionCalendar;
     const days = cal.weeks.flatMap((w) => w.contributionDays).filter((x) => x.contributionCount > 0).map((x) => ({ d: x.date, c: x.contributionCount }));
-    return { login: v.login, total: cal.totalContributions, days };
+    return { login: v.login, total: cal.totalContributions, commits: v.contributionsCollection.totalCommitContributions, days };
   } catch (e) {
     console.warn('GitHub skipped:', e.message.split('\n')[0]);
     return null;

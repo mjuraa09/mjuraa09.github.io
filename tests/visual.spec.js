@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { freezeActivity } from './fixed-activity.js';
+
+test.beforeEach(async ({ page }) => freezeActivity(page));
 
 // Every published page we keep an eye on (template-info/ is template leftovers).
 const PAGES = [
