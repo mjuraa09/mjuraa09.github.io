@@ -13,7 +13,7 @@
   const panel = section.querySelector('.activity-card');
   const tabs = [...section.querySelectorAll('.activity-tab')];
   let sources = null;
-  let current = 'github';
+  let current = 'ai';
 
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const fmt = (n) => (n >= 1e6 ? `${Math.round(n / 1e6)}M` : n >= 1e4 ? `${Math.round(n / 1e3)}K` : n.toLocaleString('en-US'));
@@ -52,7 +52,7 @@
           [fmt(gh.total), 'contributions on GitHub'],
           [fmt(gh.days.length), 'active days'],
           [fmt(gh.commits ?? 0), 'commits'],
-          [String(longestStreak(byDay.keys())), 'longest streak (days)'],
+          [`${longestStreak(byDay.keys())} days`, 'longest streak'],
         ],
       };
     }
@@ -64,12 +64,12 @@
         byDay,
         unit: 'prompt',
         label: 'Claude Code prompts',
-        note: `Claude Code · since ${monthYear(cc.days[0].d)}`,
+        note: `AI Agent · since ${monthYear(cc.days[0].d)}`,
         stats: [
           [fmt(cc.days.length), 'days working with Claude Code'],
           [fmt(sum('prompts')), 'prompts'],
           [fmt(sum('input') + sum('output')), 'tokens (without cache)'],
-          [String(longestStreak(cc.days.map((e) => e.d))), 'longest streak (days)'],
+          [`${longestStreak(cc.days.map((e) => e.d))} days`, 'longest streak'],
         ],
       };
     }
@@ -114,7 +114,7 @@
     grid.setAttribute('aria-label', `${src.label}: ${total.toLocaleString('en-US')} in the last ${weeks} weeks`);
     note.textContent = src.note;
     stats.innerHTML = src.stats
-      .map(([value, label]) => `<div class="project-stat"><div class="heading-style-serif-h5 change-2">${value}</div><div class="project-stat-desc">${label}</div></div>`)
+      .map(([value, label]) => `<div class="activity-stat"><div class="activity-stat-value">${value}</div><div class="activity-stat-label">${label}</div></div>`)
       .join('');
   }
 

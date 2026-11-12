@@ -126,12 +126,40 @@ picture {
   display: contents;
 }
 
+/* ---------- Section headings on the home page (Figma, 2026-11-12) ----------
+   "Building with AI" and "My Work" share one style. */
+.heading-style-section,
+.heading-style-h2.heading-style-section {
+  margin: 0;
+  color: var(--black);
+  font-family: Calsanstext, Arial, sans-serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+}
+@media screen and (min-width: 768px) {
+  .spacer-xlarge.spacer-section-head { padding-top: 2.5rem; }
+}
+
+/* Copernicus Semibold for the activity numbers only. A separate family name, so the
+   existing "Copernicus" text elsewhere (Medium, sometimes faux-bold) stays as it was. */
+@font-face {
+  font-family: 'Copernicus Semibold';
+  src: url('../fonts/CopernicusTrial-Semibold-BF66160451692c7.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ---------- Activity section (home, before "My Work") ----------
-   Heatmap of GitHub contributions / Claude Code prompts per day, from data/activity.json
-   (built by `npm run stats`), drawn by js/activity.js. */
+   Heatmap of Claude Code prompts / GitHub contributions per day, from data/activity.json
+   (built by `npm run stats`), drawn by js/activity.js. Values follow the Figma screens
+   (1920 / 1280 / 390) on the page "Main site – current (2026-11)". */
 .activity-section {
   --cell: 22px;
   --cell-gap: 6px;
+  --cell-radius: 5px;
   padding-top: 6rem;
 }
 .activity-section[hidden] { display: none; }
@@ -143,15 +171,6 @@ picture {
   margin-bottom: 2.5rem;
 }
 .activity-heading { display: flex; flex-direction: column; gap: .75rem; text-align: left; }
-.activity-title {
-  margin: 0;
-  color: var(--black);
-  font-family: Calsanstext, Arial, sans-serif;
-  font-size: 3.5rem;
-  font-weight: 600;
-  letter-spacing: -2px;
-  line-height: 1.1;
-}
 .activity-tabs {
   display: inline-flex;
   flex-shrink: 0;
@@ -163,13 +182,13 @@ picture {
 .activity-tab {
   border: 0;
   border-radius: 999px;
-  padding: .7rem 1.25rem;
+  padding: 11px 20px;
   background: transparent;
   color: var(--black);
   font-family: Calsanstext, Arial, sans-serif;
   font-size: .9375rem;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.15;
   cursor: pointer;
   transition: background-color .25s ease, color .25s ease;
 }
@@ -177,34 +196,36 @@ picture {
 .activity-tab[aria-selected="true"] { background-color: var(--black); color: #fff; }
 .activity-tab:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 .activity-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 34%);
+  display: flex;
   align-items: center;
   gap: 3rem;
   padding: 2.5rem;
-  border-radius: 40px;
+  border-radius: 24px;
   background-color: var(--background-color--3th-backgorund);
 }
-.activity-heatmap { min-width: 0; display: flex; flex-direction: column; gap: .625rem; }
+/* The heatmap takes up to 26 weeks; the stats get the rest, but never less than 416px. */
+.activity-heatmap {
+  flex: 0 1 calc(26 * (var(--cell) + var(--cell-gap)) - var(--cell-gap));
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .activity-months,
 .activity-grid {
   display: grid;
   grid-auto-columns: var(--cell);
   column-gap: var(--cell-gap);
 }
-.activity-months {
-  grid-auto-flow: column;
-  height: 1rem;
-}
+.activity-months { grid-auto-flow: column; height: 1rem; }
 .activity-months span { white-space: nowrap; }
 .activity-months span,
 .activity-legend {
-  color: #14141380;
+  color: #1a1a1a80;
   font-family: Geist Mono, monospace;
   font-size: .75rem;
   line-height: 1rem;
 }
-.activity-body { display: flex; }
 .activity-grid {
   grid-auto-flow: column;
   grid-template-rows: repeat(7, var(--cell));
@@ -213,8 +234,8 @@ picture {
 .activity-grid i,
 .activity-legend i {
   display: block;
-  border-radius: 5px;
-  background-color: #14141310;
+  border-radius: var(--cell-radius);
+  background-color: #1a1a1a0f;
 }
 .activity-grid i[data-l="-1"] { visibility: hidden; }
 .activity-section [data-l="1"] { background-color: rgba(244, 152, 100, .25); }
@@ -224,39 +245,72 @@ picture {
 .activity-legend {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
-  gap: 6px;
+  gap: 6px 16px;
+  padding-top: 10px;
+  border-top: 1px solid #d3cec7;
   font-size: .6875rem;
+  line-height: .875rem;
 }
-.activity-legend i { width: 14px; height: 14px; border-radius: 4px; }
-.activity-note::before { content: "·"; margin: 0 .75rem; }
+.activity-scale { display: inline-flex; align-items: center; gap: 6px; }
+.activity-legend i { width: 14px; height: 14px; }
 .activity-stats {
+  flex: 1 0 416px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
-.activity-stats .project-stat { text-align: left; }
-.activity-stats .heading-style-serif-h5 {
-  margin: 0 0 .25rem;
+.activity-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px 24px;
+  border-radius: 16px;
+  background-color: var(--background-color--4th-background);
+  text-align: left;
+}
+.activity-stat-value {
   color: var(--black);
+  font-family: 'Copernicus Semibold', Copernicus, Georgia, serif;
   font-size: 2.5rem;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.5;
   white-space: nowrap;
 }
+.activity-stat-label {
+  color: #1a1a1ab3;
+  font-family: Calsanstext, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.15;
+}
 
+/* Tablet: stacked card, desktop sizes. */
 @media screen and (max-width: 991px) {
   .activity-section { padding-top: 5rem; }
-  .activity-head { flex-direction: column; align-items: flex-start; }
-  .activity-card { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .activity-head { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+  .activity-card { flex-direction: column; align-items: stretch; gap: 2rem; }
+  .activity-heatmap { flex: none; }
+  .activity-stats { flex: none; }
 }
+/* Mobile (Figma 390). */
 @media screen and (max-width: 767px) {
-  .activity-section { --cell: 14px; --cell-gap: 4px; padding-top: 4rem; }
+  .heading-style-section,
+  .heading-style-h2.heading-style-section { font-size: 2.25rem; }
+  .activity-section { --cell: 14px; --cell-gap: 4px; --cell-radius: 3px; padding-top: 4rem; }
   .activity-head { margin-bottom: 1.5rem; }
-  .activity-note { flex-basis: 100%; margin-top: .25rem; }
-  .activity-note::before { content: none; }
-  .activity-stats .heading-style-serif-h5 { font-size: 2rem; }
-  .activity-title { font-size: 2.5rem; letter-spacing: -1px; }
-  .activity-card { padding: 1.5rem; border-radius: 28px; }
-  .activity-grid i { border-radius: 3px; }
+  .activity-heading { gap: .625rem; }
+  .activity-tab { padding: 10px 16px; font-size: .875rem; }
+  .activity-card { padding: 24px 20px 20px; border-radius: 20px; gap: 1.5rem; }
+  .activity-heatmap { gap: 8px; }
+  .activity-months span { font-size: .6875rem; }
+  .activity-legend { flex-direction: column; align-items: flex-start; gap: 6px; padding-top: 8px; }
+  .activity-scale { gap: 5px; }
+  .activity-legend i { width: 12px; height: 12px; }
   .activity-stats { gap: .75rem; }
-  .activity-stats .project-stat { padding: 1rem; }
+  .activity-stat { gap: 4px; padding: 16px; border-radius: 14px; }
+  .activity-stat-value { font-size: 1.75rem; line-height: 1; }
+  .activity-stat-label { font-size: .8125rem; }
 }
