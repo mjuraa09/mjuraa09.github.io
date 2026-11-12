@@ -177,6 +177,11 @@
       current = first.dataset.source;
       lockHeight();
       select(first.dataset.source);
+      // The stat numbers use a web font that only starts loading once they are on the page;
+      // measure the card height again with it, or the height is locked with the fallback font.
+      if (document.fonts && document.fonts.load) {
+        document.fonts.load("600 40px 'Copernicus Semibold'").then(() => document.fonts.ready).then(() => { lockHeight(); render(); });
+      }
     })
     .catch(() => {});
 })();
