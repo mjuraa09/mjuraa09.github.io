@@ -29,7 +29,7 @@ jobs:
         run: |
           mkdir _site
           cp *.html _site/
-          cp -R css js images fonts documents projects _site/
+          cp -R css js images fonts documents projects data _site/
           # CNAME (custom domain) is added later; copy it if present.
           [ -f CNAME ] && cp CNAME _site/ || true
 

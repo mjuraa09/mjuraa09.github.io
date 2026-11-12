@@ -17,6 +17,8 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
 - `npm run baseline:update` – re-capture the baseline. Only after an intended visual change, and commit it.
 - `node tools/diff-regions.mjs <diff.png>` – lists the vertical bands where a failed comparison differs.
 - `node tools/prune-css.mjs [--write] css/x.css` – removes selectors for classes used nowhere (HTML or JS).
+- `npm run stats` – rebuilds `data/activity.json` (per-day Claude Code usage from `~/.claude/projects` and the
+  GitHub contribution calendar via `gh`). Numbers only: never add project names, paths or prompt text to it.
 - `node tools/to-webp.mjs <quality> img...` / `node tools/to-woff2.mjs font...` – asset conversion.
 
 ## Where custom code lives
@@ -45,5 +47,5 @@ Videos, GIFs, Lottie, the footer marquee and the image gradient effect are maske
 
 ## Hosting
 - GitHub Pages: repo `mjuraa09/mjuraa09.github.io`, deployed by `.github/workflows/pages.yml` on every push to
-  `main`. Only `*.html`, `css/`, `js/`, `images/`, `fonts/`, `documents/`, `projects/` (and `CNAME`) are published.
+  `main`. Only `*.html`, `css/`, `js/`, `images/`, `fonts/`, `documents/`, `projects/`, `data/` (and `CNAME`) are published.
 - The custom domain is not connected yet; the old Webflow site still serves it.
