@@ -25,6 +25,21 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
 - `js/custom/*.js` – former Webflow-hosted scripts; `js/vendor/` – jQuery.
 - Webflow-generated: `css/webflow.css`, `css/mateuszs-my-site.webflow.css`, `js/webflow.js` (IX2 interactions).
 
+## Moving off webflow.js: gradually, when an element is changed anyway
+There is no big rewrite planned (audit 2026-11-11: ~16–24 h, not worth it on its own). Instead:
+- When redesigning an element that has an IX2 interaction, move that element off Webflow in the same change:
+  remove its `data-w-id` and the inline `style` IX2 wrote as the initial state, then rebuild the effect in
+  `css/custom.css` (or `js/site.js` if it needs JS). Without `data-w-id` IX2 ignores the element.
+- Rebuild the timing faithfully: IX2 easings like `swingTo`/`outBack`/`outExpo` can be reproduced with CSS
+  `linear()` or `cubic-bezier()`. Read durations, delays and easings from the `Webflow.require("ix2").init(...)`
+  data at the end of `js/webflow.js`.
+- New animations are always written in CSS/JS (they can't be added to IX2 without the Webflow editor).
+- Elements nobody is changing stay on IX2. Live IX2 effects today: main-button hover, nav-link text slide,
+  project card (image scale, "+" cursor, cursor follow), scroll-down loop, rotating circle text, large link-button
+  (detail_work only). Most of the 209 IX2 events and all IX3 registrations target elements that no longer exist.
+- `js/webflow.js` and jQuery can be removed only after the last IX2 effect, the mobile navbar (`w-nav`),
+  Lottie (`documents/*.json`) and anchor smooth scroll in the case-study steps have their own code.
+
 Videos, GIFs, Lottie, the footer marquee and the image gradient effect are masked in screenshots
 (they loop), so check those by eye in the browser.
 
