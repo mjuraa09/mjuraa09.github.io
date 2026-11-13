@@ -83,11 +83,13 @@ async function claudeCode() {
 
 function github() {
   try {
-    const q = 'query{viewer{login contributionsCollection{totalCommitContributions contributionCalendar{totalContributions weeks{contributionDays{date contributionCount}}}}}}';
+    const q = 'query{viewer{login contributionsCollection{totalCommitContributions restrictedContributionsCount contributionCalendar{totalContributions weeks{contributionDays{date contributionCount}}}}}}';
     const res = JSON.parse(execFileSync('gh', ['api', 'graphql', '-f', `query=${q}`], { encoding: 'utf8' }));
-    const v = res.data.viewer, cal = v.contributionsCollection.contributionCalendar;
+    const v = res.data.viewer, cc = v.contributionsCollection, cal = cc.contributionCalendar;
     const days = cal.weeks.flatMap((w) => w.contributionDays).filter((x) => x.contributionCount > 0).map((x) => ({ d: x.date, c: x.contributionCount }));
-    return { login: v.login, total: cal.totalContributions, commits: v.contributionsCollection.totalCommitContributions, days };
+    // Private-repo work (shared on the profile as "private contributions") only comes as one
+    // anonymous count; it is almost all commits, so it is added to the commit count.
+    return { login: v.login, total: cal.totalContributions, commits: cc.totalCommitContributions + cc.restrictedContributionsCount, days };
   } catch (e) {
     console.warn('GitHub skipped:', e.message.split('\n')[0]);
     return null;
