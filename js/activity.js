@@ -101,8 +101,9 @@
   // ---------- Number ticker: digits roll, keyed by place from the right ----------
   // At rest a value is plain text; while it changes it becomes a row of columns
   // ("1,625" -> 1 , 6 2 5), each digit a vertical 0-9 strip moved by translateY.
-  // A column that exists in both values rolls. One that only exists in the new value
-  // (a new digit, "M", " days") first gets its space and then rises in from below;
+  // A column that exists in both values rolls. The unit after the number ("M", "B",
+  // " days") is one column that rolls the same way, so it never slides in from the side.
+  // A digit column with no counterpart gets its space first and then rises in from below;
   // one that only exists in the old value fades out upward and then gives up its space.
   const widths = new Map(); // character(s) -> advance width in em of the value font
   function charWidth(el, s) {
@@ -117,27 +118,42 @@
     return w;
   }
   const isDigit = (c) => c >= '0' && c <= '9';
+  // "7.4B" -> digits "7.4" + unit "B"; "9 days" -> "9" + " days"; "1,642" -> "1,642" + "".
   function tokens(text) {
-    const [, num, suffix] = text.match(/^([\d,]*)([\s\S]*)$/);
+    const [, num, suffix] = text.match(/^([\d.,]*)([\s\S]*)$/);
     return { cols: [...num].map((ch, i) => ({ pos: num.length - 1 - i, ch })), suffix };
   }
+  const cell = (text) => { const c = document.createElement('span'); c.textContent = text; return c; };
   function makeCol(ch, pos) {
     const col = document.createElement('span');
     col.className = 'tk-col';
+    const strip = document.createElement('span');
+    strip.className = 'tk-strip';
     if (pos >= 0 && isDigit(ch)) {
-      const strip = document.createElement('span');
-      strip.className = 'tk-strip';
-      strip.innerHTML = '0123456789'.split('').map((d) => `<span>${d}</span>`).join('');
-      col.appendChild(strip);
+      for (const d of '0123456789') strip.appendChild(cell(d));
     } else {
-      const glyph = document.createElement('span');
-      glyph.className = 'tk-glyph';
-      glyph.textContent = ch;
-      col.appendChild(glyph);
+      strip.appendChild(cell(ch)); // separator (',' '.') or the unit; rolled by rollUnit
     }
+    col.appendChild(strip);
     col._ch = ch;
-    col._pos = pos; // -1 = the suffix (" days", "M"), always last
+    col._pos = pos; // -1 = the unit (" days", "M", "B"), always last
     return col;
+  }
+  // The unit keeps one column and rolls old -> new inside it. Its width jumps straight to
+  // whichever label is wider: it is the last column, so nothing to its left moves.
+  function rollUnit(el, col, text) {
+    if (col._ch === text) return;
+    const strip = col.firstElementChild;
+    col.style.transition = 'none';
+    strip.style.transition = 'none';
+    strip.replaceChildren(cell(col._ch), cell(text));
+    strip.style.transform = 'translateY(0)';
+    col.style.width = Math.max(charWidth(el, col._ch), charWidth(el, text)) + 'em';
+    void strip.offsetWidth;
+    col.style.transition = '';
+    strip.style.transition = '';
+    strip.style.transform = 'translateY(calc(-1 * (var(--lh) + var(--tk-gap))))';
+    col._ch = text;
   }
   // state: 'rest' (visible), 'in' (start of an entrance: no width, below, transparent)
   // or 'out' (end of an exit: no width, above, transparent).
@@ -145,9 +161,9 @@
   function place(el, col, state = 'rest') {
     col.style.width = (state === 'rest' ? charWidth(el, col._ch) : 0) + 'em';
     col.style.opacity = state === 'rest' ? '' : '0';
-    const inner = col.firstElementChild;
-    const step = inner.classList.contains('tk-strip') ? -col._ch : 0;
-    inner.style.transform = `translateY(calc(${step} * (var(--lh) + var(--tk-gap)) + ${SHIFT[state]}))`;
+    const strip = col.firstElementChild;
+    const step = col._pos >= 0 && isDigit(col._ch) ? -col._ch : 0;
+    strip.style.transform = `translateY(calc(${step} * (var(--lh) + var(--tk-gap)) + ${SHIFT[state]}))`;
   }
   function insertCol(box, col) {
     const after = [...box.children].find((c) => c._pos < col._pos);
@@ -182,7 +198,9 @@
       tk = el._tk = { box, sr, cols: new Map(), suffix: null };
       const t0 = tokens(from);
       for (const c of t0.cols) { const col = makeCol(c.ch, c.pos); place(el, col); box.appendChild(col); tk.cols.set(c.pos, col); }
-      if (t0.suffix) { tk.suffix = makeCol(t0.suffix, -1); place(el, tk.suffix); box.appendChild(tk.suffix); }
+      tk.suffix = makeCol(t0.suffix, -1); // always present, even when empty
+      place(el, tk.suffix);
+      box.appendChild(tk.suffix);
       el.textContent = '';
       el.append(sr, box);
       void box.offsetWidth; // commit the start state before anything moves
@@ -206,16 +224,7 @@
       tk.cols.set(c.pos, col);
       entering.push(col);
     }
-    if ((tk.suffix ? tk.suffix._ch : '') !== t1.suffix) {
-      if (tk.suffix) exitCol(el, tk.suffix);
-      tk.suffix = null;
-      if (t1.suffix) {
-        tk.suffix = makeCol(t1.suffix, -1);
-        enterCol(el, tk.suffix);
-        tk.box.appendChild(tk.suffix);
-        entering.push(tk.suffix);
-      }
-    }
+    rollUnit(el, tk.suffix, t1.suffix);
     if (entering.length) {
       void tk.box.offsetWidth;
       for (const col of entering) place(el, col);

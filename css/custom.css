@@ -400,14 +400,12 @@ picture {
   transition: width var(--motion-duration-slowest) var(--motion-ease-smooth-out),
     opacity var(--motion-duration-slowest) var(--motion-ease-smooth-out);
 }
-.tk-strip,
-.tk-glyph {
+.tk-strip {
   display: flex;
   flex-direction: column;
   transition: transform var(--motion-duration-slowest) var(--motion-ease-smooth-out);
 }
 .tk-strip span { flex: none; height: var(--lh); margin-bottom: var(--tk-gap); }
-.tk-glyph { height: var(--lh); }
 /* A character that only exists in the new value: its space opens first,
    then it rises in from below while fading in. */
 .tk-col.is-in {
