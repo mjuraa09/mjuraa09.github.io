@@ -157,6 +157,13 @@ picture {
    (built by `npm run stats`), drawn by js/activity.js. Values follow the Figma screens
    (1920 / 1280 / 390) on the page "Main site – current (2026-11)". */
 .activity-section {
+  /* Motion tokens from the design system (Obsidian: Design System / tokens.md §8c). */
+  --motion-ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-spring: linear(0, 0.037, 0.127, 0.241, 0.363, 0.481, 0.589, 0.682, 0.761, 0.825, 0.876, 0.916, 0.946, 0.968, 0.983, 0.994, 1);
+  --motion-duration-quick: 150ms;
+  --motion-duration-fast: 250ms;
+  --motion-duration-slow: 400ms;
+  --motion-duration-slowest: 900ms;
   --cell: 22px;
   --cell-gap: 6px;
   --cell-radius: 5px;
@@ -172,6 +179,7 @@ picture {
 }
 .activity-heading { display: flex; flex-direction: column; gap: .75rem; text-align: left; }
 .activity-tabs {
+  position: relative;
   display: inline-flex;
   flex-shrink: 0;
   gap: 4px;
@@ -190,10 +198,32 @@ picture {
   font-weight: 500;
   line-height: 1.15;
   cursor: pointer;
+  position: relative;
+  z-index: 1;
   transition: background-color .25s ease, color .25s ease;
 }
-.activity-tab:hover { background-color: var(--background-color--4th-background); }
+.activity-tab:not([aria-selected="true"]):hover { background-color: var(--background-color--4th-background); }
 .activity-tab[aria-selected="true"] { background-color: var(--black); color: #fff; }
+/* With JS the selected background is one pill (the thumb) that slides between the tabs
+   (segmented-control thumb: spring, 400ms). Without JS the tab itself stays black. */
+.activity-tabs::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: var(--thumb-y, 4px);
+  width: var(--thumb-w, 0px);
+  height: var(--thumb-h, 0px);
+  transform: translateX(var(--thumb-x, 0px));
+  border-radius: 999px;
+  background-color: var(--black);
+  opacity: 0;
+}
+.activity-tabs.has-thumb::before { opacity: 1; }
+.activity-tabs.thumb-ready::before {
+  transition: transform var(--motion-duration-slow) var(--motion-ease-spring),
+    width var(--motion-duration-slow) var(--motion-ease-spring);
+}
+.activity-tabs.has-thumb .activity-tab[aria-selected="true"] { background-color: transparent; }
 .activity-tab:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 .activity-card {
   display: flex;
@@ -237,6 +267,10 @@ picture {
   border-radius: var(--cell-radius);
   background-color: #1a1a1a0f;
 }
+/* On a tab switch the cells stay put and recolour in a short left-to-right wave. */
+.activity-grid i {
+  transition: background-color var(--motion-duration-fast) var(--motion-ease-smooth-out) calc(var(--w, 0) * 10ms);
+}
 .activity-grid i[data-l="-1"] { visibility: hidden; }
 .activity-section [data-l="1"] { background-color: rgba(244, 152, 100, .25); }
 .activity-section [data-l="2"] { background-color: rgba(244, 152, 100, .5); }
@@ -271,12 +305,13 @@ picture {
   text-align: left;
 }
 .activity-stat-value {
+  --lh: 1.5em;
   color: var(--black);
   font-family: 'Copernicus Semibold', Copernicus, Georgia, serif;
   font-size: 2.5rem;
   font-weight: 600;
   letter-spacing: -.02em;
-  line-height: 1.5;
+  line-height: var(--lh);
   white-space: nowrap;
 }
 .activity-stat-label {
@@ -285,6 +320,44 @@ picture {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.15;
+}
+/* Text swap on a tab switch: cross-fade in place. Only opacity is animated (no blur:
+   an animated filter makes the browser repaint text that stays on screen). */
+.activity-stat-label,
+.activity-note { transition: opacity var(--motion-duration-quick) ease-out; }
+.activity-stat-label.is-swapping,
+.activity-note.is-swapping { opacity: 0; }
+/* Number ticker (only while a value changes; at rest the value is plain text). */
+.tk { display: flex; white-space: pre; --tk-gap: .5em; }
+.tk-col {
+  flex: none;
+  height: var(--lh);
+  overflow: hidden;
+  /* Digits passing through fade out in the line's leading, so neighbours don't peek in. */
+  -webkit-mask-image: linear-gradient(transparent, #000 calc((var(--lh) - 1em) / 2), #000 calc((var(--lh) + 1em) / 2), transparent);
+  mask-image: linear-gradient(transparent, #000 calc((var(--lh) - 1em) / 2), #000 calc((var(--lh) + 1em) / 2), transparent);
+  transition: width var(--motion-duration-slowest) var(--motion-ease-smooth-out),
+    opacity var(--motion-duration-slowest) var(--motion-ease-smooth-out);
+}
+.tk-strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--motion-duration-slowest) var(--motion-ease-smooth-out);
+}
+.tk-strip span { flex: none; height: var(--lh); margin-bottom: var(--tk-gap); }
+.activity-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .activity-tabs.thumb-ready::before,
+  .activity-grid i,
+  .activity-stat-label,
+  .activity-note { transition: none; }
 }
 
 /* Tablet: stacked card, desktop sizes. */
@@ -311,6 +384,6 @@ picture {
   .activity-legend i { width: 12px; height: 12px; }
   .activity-stats { gap: .75rem; }
   .activity-stat { gap: 4px; padding: 16px; border-radius: 14px; }
-  .activity-stat-value { font-size: 1.75rem; line-height: 1; }
+  .activity-stat-value { --lh: 1em; font-size: 1.75rem; }
   .activity-stat-label { font-size: .8125rem; }
 }
