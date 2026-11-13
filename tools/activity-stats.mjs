@@ -41,10 +41,17 @@ function isPrompt(o) {
 }
 
 const modelFamily = (m = '') => (m.match(/claude-(opus|sonnet|haiku|fable)/) || [])[1] || null;
+// "claude-opus-5-5" -> "Opus 5.5", "claude-opus-5" -> "Opus 5" (a dated suffix is not a version).
+function modelName(m = '') {
+  const x = m.match(/claude-(opus|sonnet|haiku|fable)-(\d{1,2})(?:-(\d{1,2}))?(?!\d)/);
+  if (!x) return null;
+  return `${x[1][0].toUpperCase()}${x[1].slice(1)} ${x[2]}${x[3] ? '.' + x[3] : ''}`;
+}
 
 async function claudeCode() {
   const days = new Map(); // date -> { prompts, sessions:Set, input, output, cacheWrite, cacheRead }
   const models = {};
+  const versions = {}; // "Opus 5.5" -> replies
   const seen = new Set(); // one reply is logged once per content block; count its usage once
   const get = (d) => {
     if (!days.has(d)) days.set(d, { prompts: 0, sessions: new Set(), input: 0, output: 0, cacheWrite: 0, cacheRead: 0 });
@@ -71,6 +78,8 @@ async function claudeCode() {
         if (!o.isSidechain) e.sessions.add(o.sessionId);
         const fam = modelFamily(o.message.model);
         if (fam) models[fam] = (models[fam] || 0) + 1;
+        const name = modelName(o.message.model);
+        if (name) versions[name] = (versions[name] || 0) + 1;
       }
     }
   }
@@ -78,7 +87,8 @@ async function claudeCode() {
     .map(([d, e]) => ({ d, prompts: e.prompts, sessions: e.sessions.size, input: e.input, output: e.output, cacheWrite: e.cacheWrite, cacheRead: e.cacheRead }))
     .filter((e) => e.prompts || e.output)
     .sort((a, b) => a.d.localeCompare(b.d));
-  return { days: out, models };
+  const favoriteModel = Object.entries(versions).sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+  return { days: out, models, favoriteModel };
 }
 
 function github() {

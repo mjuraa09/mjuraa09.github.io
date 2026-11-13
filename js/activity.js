@@ -24,7 +24,7 @@
   let current = 'ai';
 
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  const fmt = (n) => (n >= 1e6 ? `${Math.round(n / 1e6)}M` : n >= 1e4 ? `${Math.round(n / 1e3)}K` : n.toLocaleString('en-US'));
+  const fmt = (n) => (n >= 1e9 ? `${(n / 1e9).toFixed(1)}B` : n >= 1e6 ? `${Math.round(n / 1e6)}M` : n >= 1e4 ? `${Math.round(n / 1e3)}K` : n.toLocaleString('en-US'));
   const monthYear = (d) => new Date(d + 'T12:00:00').toLocaleString('en-US', { month: 'short', year: 'numeric' });
 
   function longestStreak(dates) {
@@ -72,12 +72,12 @@
         byDay,
         unit: 'prompt',
         label: 'Claude Code prompts',
-        note: `AI Agent · since ${monthYear(cc.days[0].d)}`,
+        note: `AI Agent${cc.favoriteModel ? ` · ${cc.favoriteModel}` : ''} · since ${monthYear(cc.days[0].d)}`,
         stats: [
-          [fmt(cc.days.length), 'days working with Claude Code'],
-          [fmt(sum('prompts')), 'prompts'],
-          [fmt(sum('input') + sum('output')), 'tokens (without cache)'],
-          [`${longestStreak(cc.days.map((e) => e.d))} days`, 'longest streak'],
+          [fmt(sum('input') + sum('output')), 'tokens'],
+          [fmt(sum('sessions')), 'sessions'],
+          [fmt(sum('prompts')), 'messages'],
+          [fmt(sum('cacheRead')), 'cache read'],
         ],
       };
     }
