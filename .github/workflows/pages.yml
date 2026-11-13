@@ -33,6 +33,17 @@ jobs:
           # CNAME (custom domain) is added later; copy it if present.
           [ -f CNAME ] && cp CNAME _site/ || true
 
+      # GitHub Pages serves every file with `cache-control: max-age=600`, so a browser keeps
+      # the old css/js for up to 10 minutes after a deploy (and far longer once it has been
+      # revisited). Stamping the commit into the URLs makes every change a new file, so a
+      # visitor never runs new HTML against an old stylesheet or script.
+      - name: Stamp css/js URLs with the commit
+        run: |
+          v="${GITHUB_SHA::8}"
+          find _site -name '*.html' -print0 |
+            xargs -0 sed -i -E "s@(src|href)=\"((\.\./)?(css|js)/[^\"?]+\.(css|js))\"@\1=\"\2?v=$v\"@g"
+          echo "stamped $(grep -o '?v=' _site/index.html | wc -l) references on index.html"
+
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

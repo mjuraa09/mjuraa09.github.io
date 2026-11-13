@@ -56,4 +56,8 @@ Videos, GIFs, Lottie, the footer marquee and the image gradient effect are maske
 ## Hosting
 - GitHub Pages: repo `mjuraa09/mjuraa09.github.io`, deployed by `.github/workflows/pages.yml` on every push to
   `main`. Only `*.html`, `css/`, `js/`, `images/`, `fonts/`, `documents/`, `projects/`, `data/` (and `CNAME`) are published.
+- Pages serves everything with `cache-control: max-age=600`, so the workflow stamps `?v=<commit>` onto every
+  local `css/`-`js/` URL in the published HTML. The files in the repo keep clean paths (tests load those), and a
+  visitor never runs new HTML against an old script. The HTML itself is still cached for 10 minutes: right after
+  a deploy, reload with Cmd+Shift+R to see a change immediately.
 - The custom domain is not connected yet; the old Webflow site still serves it.
