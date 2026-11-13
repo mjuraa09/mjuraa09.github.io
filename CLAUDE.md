@@ -26,6 +26,15 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   These automatic stats pushes are the one exception to asking before a push.
 - `node tools/to-webp.mjs <quality> img...` / `node tools/to-woff2.mjs font...` – asset conversion.
 
+## Images
+- Case-study screenshots live in `images/cases/<name>-{600,1000,1800}.{avif,webp}`, built from the 4096×3072
+  R2 originals (AVIF q80 + WebP q86 fallback, alpha flattened — it was unused). Each `<img>` sits in a
+  `<picture>` with both formats, `sizes="(max-width: 991px) 90vw, (max-width: 1439px) 55vw, 917px"`,
+  `width/height` for the aspect ratio and `loading="lazy"`. Largest display size is 917px at a 1920 viewport.
+- Why: the originals were up to 7 MB each and ~26 MB per page, which stalled scrolling (frames of 117 and
+  200 ms). Now a case study loads 0.4–1.4 MB of images and no frame goes over 20 ms.
+- Still on R2 and still heavy: the videos (one is 40 MB) and `ym-16-2.gif` (2 MB).
+
 ## Where custom code lives
 - `css/custom.css` – former Webflow custom code (reveal animation, Safari SVG fix, embed styles).
 - `js/site.js` – reveal on load, `smoothScrollTo` (back-to-top and the case-study steps), case-study
