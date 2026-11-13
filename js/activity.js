@@ -57,7 +57,7 @@
         label: 'GitHub contributions',
         note: `github.com/${gh.login} · since ${monthYear(gh.days[0]?.d || data.generatedAt.slice(0, 10))}`,
         stats: [
-          [fmt(gh.total), 'contributions on GitHub'],
+          [fmt(gh.total), 'contributions'],
           [fmt(gh.days.length), 'active days'],
           [fmt(gh.commits ?? 0), 'commits'],
           [`${longestStreak(byDay.keys())} days`, 'longest streak'],
