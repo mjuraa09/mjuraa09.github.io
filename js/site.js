@@ -35,20 +35,34 @@ function reducedMotion() {
 }
 
 // One scroll for the whole site: the back-to-top button and the case-study steps.
-// The duration barely grows with the distance and tops out at 700ms, so jumping the length
-// of a case study feels like a move rather than a tour. (Webflow's own anchor scroll runs
-// 472*ln(d+125)-2000 ms — about 2.4s across a case study; the browser's native smooth scroll
-// is ~1.8s there.) The curve is the design system's `smooth-out`, which for a scroll means
-// it leaves quickly and sets down gently. A wheel or a finger cancels it, so the page never
-// fights someone who decided to scroll themselves.
+//
+// Only the last screenful is animated. A case study is ~22000px of full-bleed screenshots,
+// and animating the whole way means painting all of them in a few hundred milliseconds —
+// measured at 117ms and 200ms between frames, which is the stutter you see rather than a
+// scroll. Jumping the bulk of the distance and gliding the final stretch costs about two
+// screens of painting however far the target is, so every jump runs at the same speed and
+// lands the same way. (For reference: Webflow's own anchor scroll takes 472*ln(d+125)-2000
+// ms, ~2.4s across a case study, and the browser's native smooth scroll ~1.8s.)
+// The curve is the design system's `smooth-out`: leaves quickly, sets down gently. A wheel
+// or a finger cancels it, so the page never fights someone who decided to scroll themselves.
 function smoothScrollTo(top, done) {
   const max = document.documentElement.scrollHeight - window.innerHeight;
   top = Math.max(0, Math.min(Math.round(top), max));
-  const start = window.scrollY;
-  const dist = top - start;
+  let start = window.scrollY;
+  let dist = top - start;
   const finish = () => { if (done) done(); };
   if (reducedMotion() || Math.abs(dist) < 2) { window.scrollTo(0, top); finish(); return; }
-  const duration = Math.min(700, Math.max(300, Math.abs(dist) * 0.06));
+  // Up to a couple of screens the whole way is animated; past that only the last screenful
+  // is, and the rest is covered at once.
+  const glide = Math.round(window.innerHeight * 1.1);
+  let jumped = false;
+  if (Math.abs(dist) > window.innerHeight * 2.5) {
+    window.scrollTo(0, top - Math.sign(dist) * glide);
+    start = window.scrollY;
+    dist = top - start;
+    jumped = true;
+  }
+  const duration = Math.min(520, Math.max(280, Math.abs(dist) * 0.35));
   const ease = (t) => 1 - Math.pow(1 - t, 5); // cubic-bezier(.22,1,.36,1), the DS's smooth-out
   const events = ['wheel', 'touchstart'];
   let startTime = null;
@@ -56,8 +70,13 @@ function smoothScrollTo(top, done) {
   function cleanup() { events.forEach((ev) => window.removeEventListener(ev, cancel)); }
   function cancel() { stopped = true; cleanup(); finish(); }
   events.forEach((ev) => window.addEventListener(ev, cancel, { passive: true }));
+  // After a jump the browser still has a screen of case-study artwork to paint, which on a
+  // long page costs over 100ms. Let that frame pass before the clock starts, so the stall
+  // lands on a page standing still instead of halfway through the glide.
+  let skip = jumped ? 2 : 0;
   function step(now) {
     if (stopped) return;
+    if (skip > 0) { skip--; requestAnimationFrame(step); return; }
     if (startTime === null) startTime = now;
     const p = Math.min(1, (now - startTime) / duration);
     window.scrollTo(0, Math.round(start + dist * ease(p)));
