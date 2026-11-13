@@ -24,7 +24,17 @@ if ! node tools/activity-stats.mjs; then log "error: stats script failed"; exit 
 
 if git diff --quiet -- data/activity.json; then log "no change"; exit 0; fi
 
-git commit --quiet -m "Update activity stats ($(date '+%Y-%m-%d'))" -- data/activity.json || { log "error: commit failed"; exit 1; }
+# Another git process (an editor, the desktop app polling `git status`) can hold .git/index.lock
+# for a moment; wait and retry instead of giving up for the day.
+committed=0
+for attempt in 1 2 3 4 5 6; do
+  if out=$(git commit --quiet -m "Update activity stats ($(date '+%Y-%m-%d'))" -- data/activity.json 2>&1); then committed=1; break; fi
+  echo "$out"
+  echo "$out" | grep -q 'index.lock' || break
+  log "git is busy (index.lock), retrying in 5 s"
+  sleep 5
+done
+[ "$committed" = 1 ] || { log "error: commit failed"; exit 1; }
 if git push --quiet origin main; then
   log "pushed $(git rev-parse --short HEAD)"
 else
