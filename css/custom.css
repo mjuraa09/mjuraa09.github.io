@@ -467,3 +467,12 @@ picture {
   .activity-stat-value { --lh: 1em; font-size: 1.75rem; }
   .activity-stat-label { font-size: .8125rem; }
 }
+
+/* ---------- Case study: where a step link lands ----------
+   Both bars are sticky, so a section scrolled to the very top would sit under them:
+   the site navbar (66px), plus on narrower screens the steps bar itself (49px), which
+   stops being a sidebar and sits across the top. Room to breathe on top of that. */
+.descripted-section { scroll-margin-top: 98px; } /* 66 navbar + 32 */
+@media screen and (max-width: 991px) {
+  .descripted-section { scroll-margin-top: 145px; } /* 64 navbar + 49 steps bar + 32 */
+}

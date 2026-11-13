@@ -28,7 +28,12 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
 
 ## Where custom code lives
 - `css/custom.css` – former Webflow custom code (reveal animation, Safari SVG fix, embed styles).
-- `js/site.js` – reveal on load, smooth back-to-top, case-study scrollspy.
+- `js/site.js` – reveal on load, `smoothScrollTo` (back-to-top and the case-study steps), case-study
+  scrollspy. The steps nav replaces Webflow's anchor scroll: it listens on the steps `.w-nav-menu` and
+  stops the event before it reaches the document handler in `js/webflow.js`. Durations cap at 700 ms
+  instead of growing with the distance, and the scrollspy is frozen until the scroll lands, so the
+  highlight goes straight to the step you picked. Where a step lands is `scroll-margin-top` on
+  `.descripted-section` in `css/custom.css`, sized to clear the sticky navbar (and the steps bar ≤991).
 - `js/activity.js` + the "Activity section" block in `css/custom.css` – home page heatmap (GitHub / Working with AI
   tabs) drawn from `data/activity.json`. Tests serve `tests/fixtures/activity.json` and pin the date
   (`tests/fixed-activity.js`), so refreshing the real data never breaks screenshots.
@@ -47,8 +52,10 @@ There is no big rewrite planned (audit 2026-11-11: ~16–24 h, not worth it on i
 - Elements nobody is changing stay on IX2. Live IX2 effects today: main-button hover, nav-link text slide,
   project card (image scale, "+" cursor, cursor follow), scroll-down loop, rotating circle text, large link-button
   (detail_work only). Most of the 209 IX2 events and all IX3 registrations target elements that no longer exist.
-- `js/webflow.js` and jQuery can be removed only after the last IX2 effect, the mobile navbar (`w-nav`),
-  Lottie (`documents/*.json`) and anchor smooth scroll in the case-study steps have their own code.
+- `js/webflow.js` and jQuery can be removed only after the last IX2 effect, the mobile navbar (`w-nav`)
+  and Lottie (`documents/*.json`) have their own code. Anchor smooth scroll is already ours (2026-11-13):
+  the only same-page anchors are the case-study steps and `href="#"` back-to-top, both handled in
+  `js/site.js`.
 
 Videos, GIFs, Lottie, the footer marquee and the image gradient effect are masked in screenshots
 (they loop), so check those by eye in the browser.
