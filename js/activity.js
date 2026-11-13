@@ -101,7 +101,9 @@
   // ---------- Number ticker: digits roll, keyed by place from the right ----------
   // At rest a value is plain text; while it changes it becomes a row of columns
   // ("1,625" -> 1 , 6 2 5), each digit a vertical 0-9 strip moved by translateY.
-  // A column that exists in both values rolls; a new one grows in, an old one shrinks out.
+  // A column that exists in both values rolls. One that only exists in the new value
+  // (a new digit, "M", " days") first gets its space and then rises in from below;
+  // one that only exists in the old value fades out upward and then gives up its space.
   const widths = new Map(); // character(s) -> advance width in em of the value font
   function charWidth(el, s) {
     if (widths.has(s)) return widths.get(s);
@@ -128,26 +130,38 @@
       strip.innerHTML = '0123456789'.split('').map((d) => `<span>${d}</span>`).join('');
       col.appendChild(strip);
     } else {
-      col.textContent = ch;
+      const glyph = document.createElement('span');
+      glyph.className = 'tk-glyph';
+      glyph.textContent = ch;
+      col.appendChild(glyph);
     }
     col._ch = ch;
     col._pos = pos; // -1 = the suffix (" days", "M"), always last
     return col;
   }
-  function place(el, col, hidden) {
-    col.style.width = (hidden ? 0 : charWidth(el, col._ch)) + 'em';
-    col.style.opacity = hidden ? '0' : '';
-    const strip = col.firstElementChild;
-    if (strip) strip.style.transform = `translateY(calc(${hidden ? 0 : -col._ch} * (var(--lh) + var(--tk-gap))))`;
+  // state: 'rest' (visible), 'in' (start of an entrance: no width, below, transparent)
+  // or 'out' (end of an exit: no width, above, transparent).
+  const SHIFT = { rest: '0em', in: '.3em', out: '-.3em' };
+  function place(el, col, state = 'rest') {
+    col.style.width = (state === 'rest' ? charWidth(el, col._ch) : 0) + 'em';
+    col.style.opacity = state === 'rest' ? '' : '0';
+    const inner = col.firstElementChild;
+    const step = inner.classList.contains('tk-strip') ? -col._ch : 0;
+    inner.style.transform = `translateY(calc(${step} * (var(--lh) + var(--tk-gap)) + ${SHIFT[state]}))`;
   }
   function insertCol(box, col) {
     const after = [...box.children].find((c) => c._pos < col._pos);
     box.insertBefore(col, after || null);
   }
-  function exitCol(col) {
-    col.style.width = '0em';
-    col.style.opacity = '0';
+  function exitCol(el, col) {
+    col.classList.remove('is-in');
+    col.classList.add('is-out');
+    place(el, col, 'out');
     setTimeout(() => col.remove(), ROLL_MS);
+  }
+  function enterCol(el, col) {
+    col.classList.add('is-in');
+    place(el, col, 'in');
   }
   function settle(el, text) {
     if (el._tk) clearTimeout(el._tk.timer);
@@ -167,8 +181,8 @@
       sr.className = 'activity-sr';
       tk = el._tk = { box, sr, cols: new Map(), suffix: null };
       const t0 = tokens(from);
-      for (const c of t0.cols) { const col = makeCol(c.ch, c.pos); place(el, col, false); box.appendChild(col); tk.cols.set(c.pos, col); }
-      if (t0.suffix) { tk.suffix = makeCol(t0.suffix, -1); place(el, tk.suffix, false); box.appendChild(tk.suffix); }
+      for (const c of t0.cols) { const col = makeCol(c.ch, c.pos); place(el, col); box.appendChild(col); tk.cols.set(c.pos, col); }
+      if (t0.suffix) { tk.suffix = makeCol(t0.suffix, -1); place(el, tk.suffix); box.appendChild(tk.suffix); }
       el.textContent = '';
       el.append(sr, box);
       void box.offsetWidth; // commit the start state before anything moves
@@ -179,32 +193,32 @@
     for (const [pos, col] of tk.cols) {
       const ch = want.get(pos);
       if (ch !== undefined && (isDigit(ch) ? isDigit(col._ch) : ch === col._ch)) continue;
-      exitCol(col);
+      exitCol(el, col);
       tk.cols.delete(pos);
     }
     const entering = [];
     for (const c of t1.cols) {
       let col = tk.cols.get(c.pos);
-      if (col) { col._ch = c.ch; place(el, col, false); continue; }
+      if (col) { col._ch = c.ch; col.classList.remove('is-in'); place(el, col); continue; }
       col = makeCol(c.ch, c.pos);
-      place(el, col, true);
+      enterCol(el, col);
       insertCol(tk.box, col);
       tk.cols.set(c.pos, col);
       entering.push(col);
     }
     if ((tk.suffix ? tk.suffix._ch : '') !== t1.suffix) {
-      if (tk.suffix) exitCol(tk.suffix);
+      if (tk.suffix) exitCol(el, tk.suffix);
       tk.suffix = null;
       if (t1.suffix) {
         tk.suffix = makeCol(t1.suffix, -1);
-        place(el, tk.suffix, true);
+        enterCol(el, tk.suffix);
         tk.box.appendChild(tk.suffix);
         entering.push(tk.suffix);
       }
     }
     if (entering.length) {
       void tk.box.offsetWidth;
-      for (const col of entering) place(el, col, false);
+      for (const col of entering) place(el, col);
     }
     clearTimeout(tk.timer);
     tk.timer = setTimeout(() => settle(el, text), ROLL_MS + 50);
