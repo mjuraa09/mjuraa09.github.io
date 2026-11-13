@@ -225,16 +225,59 @@
   }
 
   // ---------- Tab thumb: one pill that slides under the selected tab ----------
+  // Three layers on the tab list, under the labels: the hover highlight, then the black
+  // thumb, then a copy of the labels in white clipped to the thumb. The copy travels with
+  // the thumb, so letters turn white exactly as the pill passes over them instead of the
+  // whole label changing colour on its own clock.
+  let mask = null;
+  function buildMask() {
+    mask = document.createElement('span');
+    mask.className = 'activity-tabs-mask';
+    mask.setAttribute('aria-hidden', 'true');
+    const inner = document.createElement('span');
+    inner.className = 'activity-tabs-mask-inner';
+    for (const t of tabs) {
+      const ghost = document.createElement('span');
+      ghost.className = 'activity-tab activity-tab-ghost';
+      ghost.textContent = t.textContent;
+      inner.appendChild(ghost);
+      t._ghost = ghost;
+    }
+    mask.appendChild(inner);
+    tabList.appendChild(mask);
+  }
+  function placeMask() {
+    if (!mask) buildMask();
+    for (const t of tabs) {
+      t._ghost.hidden = t.hidden;
+      if (t.hidden) continue;
+      const [x, y, w, h] = box(t);
+      t._ghost.style.cssText = `left:${x}px;top:${y}px;width:${w}px;height:${h}px`;
+    }
+  }
+  function box(el) {
+    const r = el.getBoundingClientRect();
+    const b = tabList.getBoundingClientRect();
+    return [r.left - b.left, r.top - b.top, r.width, r.height];
+  }
+  function setVars(prefix, el) {
+    const [x, y, w, h] = box(el);
+    tabList.style.setProperty(`--${prefix}-x`, x + 'px');
+    tabList.style.setProperty(`--${prefix}-y`, y + 'px');
+    tabList.style.setProperty(`--${prefix}-w`, w + 'px');
+    tabList.style.setProperty(`--${prefix}-h`, h + 'px');
+  }
+  function placeHover(tab) {
+    if (!tab || tab.getAttribute('aria-selected') === 'true') { tabList.classList.remove('is-hovering'); return; }
+    setVars('hover', tab);
+    tabList.classList.add('is-hovering');
+  }
   function placeThumb() {
     const on = tabs.find((t) => t.getAttribute('aria-selected') === 'true' && !t.hidden);
     if (!on) return;
+    placeMask();
     // Fractional values (offsetLeft/Width round), so the pill sits exactly where the tab is.
-    const r = on.getBoundingClientRect();
-    const box = tabList.getBoundingClientRect();
-    tabList.style.setProperty('--thumb-x', r.left - box.left + 'px');
-    tabList.style.setProperty('--thumb-y', r.top - box.top + 'px');
-    tabList.style.setProperty('--thumb-w', r.width + 'px');
-    tabList.style.setProperty('--thumb-h', r.height + 'px');
+    setVars('thumb', on);
     if (!tabList.classList.contains('has-thumb')) {
       tabList.classList.add('has-thumb');
       requestAnimationFrame(() => requestAnimationFrame(() => tabList.classList.add('thumb-ready')));
@@ -343,10 +386,12 @@
       }
     }
     placeThumb();
+    placeHover(tabs.find((t) => t.matches(':hover')));
     render(animate && changed);
   }
 
   tabs.forEach((t, i) => {
+    t.addEventListener('pointerenter', () => placeHover(t));
     t.addEventListener('click', () => select(t.dataset.source));
     t.addEventListener('keydown', (e) => {
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
@@ -355,6 +400,7 @@
       select(next.dataset.source, true);
     });
   });
+  tabList.addEventListener('pointerleave', () => tabList.classList.remove('is-hovering'));
 
   // Re-fit on width changes only (mobile browsers fire resize while scrolling).
   let resizeTimer;

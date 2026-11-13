@@ -181,6 +181,7 @@ picture {
 .activity-heading { display: flex; flex-direction: column; gap: .75rem; text-align: left; }
 .activity-tabs {
   position: relative;
+  isolation: isolate; /* keeps the hover pill, the thumb and the labels in one known order */
   display: inline-flex;
   flex-shrink: 0;
   gap: 4px;
@@ -201,30 +202,89 @@ picture {
   cursor: pointer;
   position: relative;
   z-index: 1;
-  transition: background-color .25s ease, color .25s ease;
+  transition: background-color var(--motion-duration-fast) ease, color var(--motion-duration-quick) ease;
 }
 .activity-tab:not([aria-selected="true"]):hover { background-color: var(--background-color--4th-background); }
 .activity-tab[aria-selected="true"] { background-color: var(--black); color: #fff; }
-/* With JS the selected background is one pill (the thumb) that slides between the tabs
-   (segmented-control thumb: spring, 400ms). Without JS the tab itself stays black. */
-.activity-tabs::before {
+/* With JS both backgrounds become pills on the container: the thumb slides between the tabs
+   (segmented-control thumb: spring, 400ms) and the hover highlight sits below it, so a tab
+   under the cursor can never cut into the thumb passing by. Without JS the tab stays black. */
+.activity-tabs::before,
+.activity-tabs::after {
   content: "";
   position: absolute;
   left: 0;
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+}
+.activity-tabs::after { /* hover, below everything */
+  z-index: 0;
+  top: var(--hover-y, 4px);
+  width: var(--hover-w, 0px);
+  height: var(--hover-h, 0px);
+  transform: translateX(var(--hover-x, 0px));
+  background-color: var(--background-color--4th-background);
+  transition: opacity var(--motion-duration-fast) ease;
+}
+.activity-tabs::before { /* thumb, over the dark labels */
+  z-index: 2;
   top: var(--thumb-y, 4px);
   width: var(--thumb-w, 0px);
   height: var(--thumb-h, 0px);
   transform: translateX(var(--thumb-x, 0px));
-  border-radius: 999px;
   background-color: var(--black);
-  opacity: 0;
 }
 .activity-tabs.has-thumb::before { opacity: 1; }
+.activity-tabs.has-thumb.is-hovering::after { opacity: 1; }
 .activity-tabs.thumb-ready::before {
   transition: transform var(--motion-duration-slow) var(--motion-ease-spring),
     width var(--motion-duration-slow) var(--motion-ease-spring);
 }
-.activity-tabs.has-thumb .activity-tab[aria-selected="true"] { background-color: transparent; }
+/* With the pills in charge, every tab keeps the same dark label; the white one lives in the
+   mask below and shows only through the thumb. */
+.activity-tabs.has-thumb .activity-tab,
+.activity-tabs.has-thumb .activity-tab:hover,
+.activity-tabs.has-thumb .activity-tab[aria-selected="true"] {
+  background-color: transparent;
+  color: var(--black);
+  transition: none;
+}
+.activity-tabs-mask {
+  position: absolute;
+  left: 0;
+  top: var(--thumb-y, 4px);
+  z-index: 3;
+  width: var(--thumb-w, 0px);
+  height: var(--thumb-h, 0px);
+  transform: translateX(var(--thumb-x, 0px));
+  overflow: hidden;
+  border-radius: 999px;
+  pointer-events: none;
+}
+/* The inner layer cancels the mask's own travel, so the white labels stay locked to the
+   tabs while the window moves over them. Both carry the thumb's timing. */
+.activity-tabs-mask-inner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(calc(-1 * var(--thumb-x, 0px)), calc(-1 * var(--thumb-y, 4px)));
+}
+.activity-tabs.thumb-ready .activity-tabs-mask,
+.activity-tabs.thumb-ready .activity-tabs-mask-inner {
+  transition: transform var(--motion-duration-slow) var(--motion-ease-spring),
+    width var(--motion-duration-slow) var(--motion-ease-spring);
+}
+.activity-tabs.has-thumb .activity-tab-ghost {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: #fff;
+  transition: none;
+}
+.activity-tabs.has-thumb .activity-tab-ghost[hidden] { display: none; }
 .activity-tab:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 .activity-card {
   display: flex;
@@ -373,6 +433,9 @@ picture {
   white-space: nowrap;
 }
 @media (prefers-reduced-motion: reduce) {
+  .activity-tabs::after,
+  .activity-tabs.thumb-ready .activity-tabs-mask,
+  .activity-tabs.thumb-ready .activity-tabs-mask-inner,
   .activity-tabs.thumb-ready::before,
   .activity-grid i,
   .activity-stat-label,
