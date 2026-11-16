@@ -33,7 +33,21 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   `width/height` for the aspect ratio and `loading="lazy"`. Largest display size is 917px at a 1920 viewport.
 - Why: the originals were up to 7 MB each and ~26 MB per page, which stalled scrolling (frames of 117 and
   200 ms). Now a case study loads 0.4–1.4 MB of images and no frame goes over 20 ms.
-- Still on R2 and still heavy: the videos (one is 40 MB) and `ym-16-2.gif` (2 MB).
+- The case-study SVGs and GIFs sit next to them in `images/cases/`, as exact copies of the R2 files.
+
+## Videos
+- All case-study videos live in `media/cases/` (slug names, e.g. `rdir-header.webm`), each with a
+  `<name>-poster.webp` first frame in the `<video poster>` so the box isn't empty while it loads.
+- The three 4K header videos were re-encoded to 2880px wide (2× the 1440px they are shown at), VP9, no audio:
+  `mflota-header` 40.7 → 14 MB (CRF 36), `rdir-header` 9.7 → 3.8 MB (CRF 36), `ym-header` 2.9 → 1.75 MB
+  (CRF 30: at 36 the concrete grain went soft). Checked with VMAF (96–99) and 1:1 crops of the same frame.
+  The other ten videos are byte-identical copies of the R2 files.
+- No system ffmpeg here (no Homebrew). For a new encode: `npm i ffmpeg-static` in a temp folder and use
+  `node -p "require('ffmpeg-static')"` as the binary. Recipe: `-vf scale=2880:-2:flags=lanczos -c:v libvpx-vp9
+  -crf 32..36 -b:v 0 -deadline good -cpu-used 3 -row-mt 1 -tile-columns 2 -an`; lower the CRF when the frame
+  has fine texture.
+- Never commit an unoptimized original: git keeps every version of a file forever.
+- Nothing on the site loads from Cloudflare R2 any more (2026-11-16); the buckets can be retired.
 
 ## Where custom code lives
 - `css/custom.css` – former Webflow custom code (reveal animation, Safari SVG fix, embed styles).
@@ -71,7 +85,8 @@ Videos, GIFs, Lottie, the footer marquee and the image gradient effect are maske
 
 ## Hosting
 - GitHub Pages: repo `mjuraa09/mjuraa09.github.io`, deployed by `.github/workflows/pages.yml` on every push to
-  `main`. Only `*.html`, `css/`, `js/`, `images/`, `fonts/`, `documents/`, `projects/`, `data/` (and `CNAME`) are published.
+  `main`. Only `*.html`, `css/`, `js/`, `images/`, `media/`, `fonts/`, `documents/`, `projects/`, `data/` (and `CNAME`)
+  are published. Pages serves byte ranges (206), so videos seek normally.
 - Pages serves everything with `cache-control: max-age=600`, so the workflow stamps `?v=<commit>` onto every
   local `css/`-`js/` URL in the published HTML. The files in the repo keep clean paths (tests load those), and a
   visitor never runs new HTML against an old script. The HTML itself is still cached for 10 minutes: right after

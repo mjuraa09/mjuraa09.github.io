@@ -11,7 +11,8 @@ const MASK = ['video', 'img[src$=".gif"]', '[data-animation-type="lottie"]', '.l
 
 async function open(page, path) {
   await page.goto(path, { waitUntil: 'load' });
-  await page.waitForLoadState('networkidle').catch(() => {});
+  // A streaming video can keep the network busy for good (videos are masked), so cap the wait.
+  await page.waitForLoadState('networkidle', { timeout: 5_000 }).catch(() => {});
   await page.evaluate(() => document.fonts.ready);
   await page
     .waitForFunction(() => [...document.images].every((i) => i.complete), null, { timeout: 15_000 })

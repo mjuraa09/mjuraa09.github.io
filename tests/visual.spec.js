@@ -27,8 +27,12 @@ const MASK = [
   '.efx-wrap',
 ];
 
+// A long video streams over one connection Chromium keeps open, so "networkidle" may never come;
+// videos are masked anyway, so wait for it a few seconds at most.
+const IDLE = { timeout: 5_000 };
+
 async function settle(page) {
-  await page.waitForLoadState('networkidle').catch(() => {});
+  await page.waitForLoadState('networkidle', IDLE).catch(() => {});
   await page.evaluate(() => document.fonts.ready);
 
   // Scroll through the page so scroll-triggered interactions and lazy images run.
@@ -41,8 +45,8 @@ async function settle(page) {
     window.scrollTo(0, 0);
   });
 
-  await page.waitForLoadState('networkidle').catch(() => {});
-  // Remote (R2) images can arrive late; wait until every image has decoded.
+  await page.waitForLoadState('networkidle', IDLE).catch(() => {});
+  // Lazy images can arrive late; wait until every image has decoded.
   await page
     .waitForFunction(() => [...document.images].every((i) => i.complete), null, { timeout: 15_000 })
     .catch(() => {});
