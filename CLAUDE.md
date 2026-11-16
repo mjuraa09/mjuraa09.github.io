@@ -57,7 +57,10 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
 - Nothing on the site loads from Cloudflare R2 any more (2026-11-16); the buckets can be retired.
 
 ## Where custom code lives
-- `css/custom.css` – former Webflow custom code (reveal animation, Safari SVG fix, embed styles).
+- `css/custom.css` – former Webflow custom code (reveal animation, Safari SVG fix, embed styles), and the
+  `@font-face` rules for Geist Mono and Funnel Display. Every font is self-hosted in `fonts/`; nothing loads
+  from Google Fonts (removed 2026-11-16: Geist Mono drawn from Google made `resume.html` screenshots flaky).
+  Only the latin + latin-ext subsets are kept; add another subset from Google's CSS if new text needs it.
 - `js/site.js` – reveal on load, `smoothScrollTo` (back-to-top and the case-study steps), case-study
   scrollspy. The steps nav replaces Webflow's anchor scroll: it listens on the steps `.w-nav-menu` and
   stops the event before it reaches the document handler in `js/webflow.js`. Durations cap at 700 ms
