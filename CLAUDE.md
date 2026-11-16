@@ -9,6 +9,7 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
 
 ## Commands
 - `npm run dev` – local server at http://localhost:8080 (also the `site` entry in `.claude/launch.json`).
+  `tools/serve.mjs` serves byte ranges and video MIME types like GitHub Pages; Safari won't play a video without them.
 - `npm run test:visual` – runs both suites against `tests/baseline/`. Run it after every change.
   - `tests/visual.spec.js`: full-page screenshots of every page at desktop 1440 / tablet 768 / mobile 390.
   - `tests/states.spec.js`: interactive states (nav/CTA/card/footer hovers, resume accordion,
@@ -46,6 +47,12 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   `node -p "require('ffmpeg-static')"` as the binary. Recipe: `-vf scale=2880:-2:flags=lanczos -c:v libvpx-vp9
   -crf 32..36 -b:v 0 -deadline good -cpu-used 3 -row-mt 1 -tile-columns 2 -an`; lower the CRF when the frame
   has fine texture.
+- Every `<video>` has two sources: the VP9 WebM first, typed `video/webm; codecs="vp9"`, then an H.264 MP4
+  fallback (`<name>.mp4`) for browsers without VP9 WebM, i.e. older iPhones. A browser downloads only the first
+  source it can play, so Chrome and current Safari never fetch the MP4 (verified: 0 requests). MP4s are sized for
+  an iPhone screen: 1280 wide (the widest iPhone is 1290px), `libx264 -profile:v high -crf 22 -preset slow
+  -pix_fmt yuv420p -movflags +faststart -an`, 19.3 MB for all 13. Median VMAF 93–97; the per-frame minimum
+  hits 0 on the blank transition frames of the screen recordings, which VMAF can't score — not a quality problem.
 - Never commit an unoptimized original: git keeps every version of a file forever.
 - Nothing on the site loads from Cloudflare R2 any more (2026-11-16); the buckets can be retired.
 
