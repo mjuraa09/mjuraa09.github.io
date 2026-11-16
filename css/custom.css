@@ -517,3 +517,77 @@ picture {
 @media screen and (max-width: 991px) {
   .descripted-section { scroll-margin-top: 145px; } /* 64 navbar + 49 steps bar + 32 */
 }
+
+/* ---------- Case study: steps sidebar (desktop, ≥992) ----------
+   Figma "Case study nav – redesign (2026-11)", Option C (1426:155): the card, icon and
+   serif "Process" title stay; the dotted path is replaced by a numbered list on a 1px rail
+   with a 2px marker on the current step. The card is 284px instead of a third of the grid,
+   so the content column gets ~110px wider. Below 992px the steps bar across the top is
+   unchanged. js/site.js (scrollspy, smooth scroll) only relies on the classes, which stay. */
+@media screen and (min-width: 992px) {
+  .work-grid:has(.steps-process) { grid-template-columns: 284px minmax(0, 1fr); } /* not detail_work.html */
+  .work-left-content .heading-style-serif-h6 {
+    font-family: 'Copernicus Semibold', Copernicus, Georgia, serif;
+    font-weight: 600;
+  }
+  .work-left-content .path-process { display: none; }
+  .work-left-content .process-line { margin-top: 4px; }
+  .steps-process {
+    gap: 1px;
+    border-left: 1px solid var(--neutral--border);
+    counter-reset: step;
+  }
+  .steps-process .work-bottom-item {
+    position: relative;
+    height: auto;
+    min-height: 30px; /* Figma rows: 30px, 19.6px text centred */
+    padding: 5px 0 5px 44px;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    color: rgb(26 26 26 / .55);
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 1.4;
+    white-space: normal;
+    justify-content: flex-start;
+    counter-increment: step;
+    transition: color 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .steps-process .work-bottom-item::after { /* step number */
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 14px;
+    top: 7px;
+    color: rgb(26 26 26 / .4);
+    font: 500 11px/16px 'Geist Mono', monospace;
+    letter-spacing: .5px;
+    transition: color 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .steps-process .work-bottom-item::before { /* marker on the rail */
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background: #1a1a1a;
+    opacity: 0;
+    transition: opacity 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .steps-process .work-bottom-item:hover { color: #1a1a1a; }
+  .steps-process .work-bottom-item.w--current { color: #1a1a1a; font-weight: 500; }
+  .steps-process .work-bottom-item.w--current::before { opacity: 1; }
+  .steps-process .work-bottom-item.w--current::after { color: var(--violet); }
+}
+
+/* ---------- Case study: keep room for screenshots that haven't loaded yet ----------
+   The embeds set `.hero-image { width: 100% }`, but their wrapper is a shrink-to-fit flex
+   item, so until a lazy image arrives it has no width and the image is 0px tall: the page
+   grew by ~4,500px as you scrolled, and a step link far down landed a few screens short.
+   Giving the wrapper the column's width lets width/height reserve the 4:3 box up front.
+   917px is the widest these are shown (the `sizes` attribute); loaded layout is unchanged
+   at 390–1440, and at 1920 every screenshot is now 917px instead of 917–1067. */
+.project-image:has(> .w-embed .hero-image) { width: 100%; max-width: 917px; }
+.project-image > .w-embed:has(.hero-image) { flex: 1 1 auto; min-width: 0; }

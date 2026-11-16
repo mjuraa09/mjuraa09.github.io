@@ -67,6 +67,12 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   instead of growing with the distance, and the scrollspy is frozen until the scroll lands, so the
   highlight goes straight to the step you picked. Where a step lands is `scroll-margin-top` on
   `.descripted-section` in `css/custom.css`, sized to clear the sticky navbar (and the steps bar ≤991).
+- Case-study steps sidebar (≥992, 2026-11-16): Figma page "Case study nav – redesign (2026-11)", Option C.
+  Pure CSS in `css/custom.css` over the unchanged Webflow markup (the dotted `.path-process` is hidden,
+  numbers are a CSS counter). Below 992 the steps bar across the top is the Webflow one.
+- Lazy case screenshots must keep their box before they load (`.project-image:has(.hero-image)` in
+  `css/custom.css`): without it they are 0px tall, the page grows ~4,500px while scrolling and a step link
+  lands screens short. After touching that markup, click a far step on a fresh load and check it lands.
 - `js/activity.js` + the "Activity section" block in `css/custom.css` – home page heatmap (GitHub / Working with AI
   tabs) drawn from `data/activity.json`. Tests serve `tests/fixtures/activity.json` and pin the date
   (`tests/fixed-activity.js`), so refreshing the real data never breaks screenshots.
