@@ -69,6 +69,8 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   instead of growing with the distance, and the scrollspy is frozen until the scroll lands, so the
   highlight goes straight to the step you picked. Where a step lands is `scroll-margin-top` on
   `.descripted-section` in `css/custom.css`, sized to clear the sticky navbar (and the steps bar ≤991).
+  Sections have no top padding (Webflow's 80/128px is gone, 2026-11-17): 48px above and below each
+  divider. If spacing changes, re-fit scroll-margin-top so headings still land level with the card.
 - Case-study steps sidebar (≥992, 2026-11-16): Figma page "Case study nav – redesign (2026-11)", Option C.
   Pure CSS in `css/custom.css` over the unchanged Webflow markup (the dotted `.path-process` is hidden,
   numbers are a CSS counter). Below 992 the steps bar across the top is the Webflow one.

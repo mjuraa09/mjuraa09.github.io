@@ -509,16 +509,20 @@ picture {
   .activity-stat-label { font-size: .8125rem; }
 }
 
-/* ---------- Case study: where a step link lands ----------
-   Both bars are sticky, so a section scrolled to the very top would sit under them:
-   the site navbar (66px), plus on narrower screens the steps bar itself (49px), which
-   stops being a sidebar and sits across the top. Room to breathe on top of that. */
-.descripted-section { scroll-margin-top: 98px; } /* 66 navbar + 32 */
+/* ---------- Case study: section spacing, and where a step link lands ----------
+   Webflow opened every section with 80px of padding (128px below 992px), plus 112px under
+   the steps bar there: room its scroll-to-anchor needed, but it left 128–240px of empty
+   space above each heading. Sections now have no top padding, so the rhythm is the one
+   already used around the divider: 48px of content, divider, 48px, next heading.
+   - ≥992: the first heading lines up with the top of the sidebar card.
+   - <992: the first heading sits 48px under the steps bar.
+   A step link lands its heading level with the sticky sidebar card (5.6rem from the top)
+   on desktop, and 32px under the steps bar on narrow screens (64 navbar + 49 bar + 32). */
+.descripted-section { padding-top: 0; scroll-margin-top: 5.6rem; }
 @media screen and (max-width: 991px) {
-  /* Here a section opens with 128px of padding (8rem, Webflow), which kept the heading
-     160px below the steps bar after a tap. Land the heading itself 32px below the bar:
-     64 navbar + 49 steps bar + 32 - 128 padding. Scrolling by hand is unchanged. */
-  .descripted-section { scroll-margin-top: 17px; }
+  .descripted-section { scroll-margin-top: 145px; }
+  .work-grid:has(.steps-process) { row-gap: 3rem; }
+  .work-left-content:has(.steps-process) { margin-bottom: 0; }
 }
 
 /* ---------- Case study: steps sidebar (desktop, ≥992) ----------
