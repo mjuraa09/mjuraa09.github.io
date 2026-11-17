@@ -574,7 +574,8 @@ picture {
     letter-spacing: .5px;
     transition: color 150ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  /* Marker on the rail: square on the rail side, 2px radius on the right (Figma).
+  /* Marker on the rail: orange like the steps bar's underline below 992px; square on
+     the rail side, 2px radius on the right (Figma).
      One marker for the whole list that slides to the current step; js/site.js sets
      --marker-y / --marker-h and adds .has-marker once it has measured. Until then (or
      without JS) the current step draws its own, so there is always a marker. */
@@ -585,7 +586,7 @@ picture {
     left: -1px;
     width: 2px;
     border-radius: 0 2px 2px 0;
-    background: #1a1a1a;
+    background: var(--orange);
     opacity: 0;
     pointer-events: none;
   }
@@ -607,6 +608,47 @@ picture {
 }
 @media screen and (min-width: 992px) and (prefers-reduced-motion: reduce) {
   .steps-process::before { transition: none; }
+}
+
+/* ---------- Case study: steps bar across the top (below 992px) ----------
+   The Webflow bar, with two changes:
+   - The underline sits on the grey line instead of just above it, with rounded top
+     corners. The line moves from the card's border to an inset shadow, and the list gets
+     1px of padding, so the underline can overlap the line instead of being clipped.
+   - The list scrolls sideways (swipe, trackpad); its ends fade out while there is more
+     to scroll that way. js/site.js sets .fade-start / .fade-end from the scroll position. */
+@property --steps-fade-l { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --steps-fade-r { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@media screen and (max-width: 991px) {
+  .work-left-content:has(.steps-process) {
+    border-bottom: 0;
+    box-shadow: inset 0 -1px 0 var(--neutral--border);
+  }
+  .steps-process {
+    padding-bottom: 1px;
+    --steps-fade-l: 0px;
+    --steps-fade-r: 0px;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--steps-fade-l), #000 calc(100% - var(--steps-fade-r)), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 var(--steps-fade-l), #000 calc(100% - var(--steps-fade-r)), transparent);
+    transition: --steps-fade-l 250ms cubic-bezier(0.22, 1, 0.36, 1), --steps-fade-r 250ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .steps-process.fade-start { --steps-fade-l: 40px; }
+  .steps-process.fade-end { --steps-fade-r: 40px; }
+  .steps-process .work-bottom-item { position: relative; }
+  .steps-process .work-bottom-item.w--current {
+    border-bottom: 0;
+    padding-bottom: .375rem; /* same as the other steps; the underline no longer takes room */
+  }
+  .steps-process .work-bottom-item.w--current::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px; /* over the line, flush with its bottom */
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+    background: var(--orange);
+  }
 }
 
 /* ---------- Case study: keep room for screenshots that haven't loaded yet ----------

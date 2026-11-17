@@ -131,10 +131,21 @@ document.addEventListener('DOMContentLoaded', function () {
       tabsContainer.classList.remove('marker-instant');
     }
   }
+  // Narrow screens: the strip's ends fade out while there is more to scroll that way.
+  function updateFades() {
+    const max = tabsContainer.scrollWidth - tabsContainer.clientWidth;
+    tabsContainer.classList.toggle('fade-start', max > 1 && tabsContainer.scrollLeft > 1);
+    tabsContainer.classList.toggle('fade-end', max > 1 && tabsContainer.scrollLeft < max - 1);
+  }
+  tabsContainer.addEventListener('scroll', updateFades, { passive: true });
+  updateFades();
+  if (document.fonts) document.fonts.ready.then(updateFades); // labels change width once fonts load
+
   if ('ResizeObserver' in window) {
     new ResizeObserver(() => {
       const current = tabsContainer.querySelector('.w--current');
       if (current) placeMarker(current, true);
+      updateFades();
     }).observe(tabsContainer);
   }
 
@@ -146,8 +157,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!activeTab) return;
     activeTab.classList.add('w--current');
     placeMarker(activeTab, false);
-    // Keep the active step in view in the strip (it scrolls sideways on narrow screens).
-    const offset = activeTab.getBoundingClientRect().left - tabsContainer.getBoundingClientRect().left + tabsContainer.scrollLeft - 20;
+    // Keep the active step in view in the strip (it scrolls sideways on narrow screens),
+    // its label just clear of the 40px fade at the start (the step has 16px of padding).
+    const offset = activeTab.getBoundingClientRect().left - tabsContainer.getBoundingClientRect().left + tabsContainer.scrollLeft - 24;
     tabsContainer.scrollTo({ left: offset, behavior: 'smooth' });
   }
 
