@@ -663,3 +663,21 @@ picture {
    900px is the widest these are shown (the content column's cap, and the `sizes` attribute). */
 .project-image:has(> .w-embed .hero-image) { width: 100%; max-width: 900px; }
 .project-image > .w-embed:has(.hero-image) { flex: 1 1 auto; min-width: 0; }
+
+/* ---------- Navbar: opaque, so text scrolling under it doesn't show through ----------
+   It was 85% opaque everywhere (plus a 10px blur), and the logo sat on top of whatever
+   was passing underneath. Other pages: the same colour as the page, now fully opaque, so
+   it looks identical at the top. Case studies: IX2 fades the bar from 0 to 85% as you
+   scroll (inline style on .padding-global.blur); once the page is scrolled
+   (.nav-logo-collapsed, js/custom/navlogocollapse.js) it is fully opaque instead. */
+.navbar-3 { background-color: var(--background-color--1st-background); }
+.navbar-3.nav-logo-collapsed .padding-global.blur {
+  background-color: var(--background-color--2nd-background) !important;
+  transition: background-color 250ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+/* ---------- Section headings (h5): less tight ----------
+   Webflow had a fixed -1.5px, which is -3.75% at 40px but -7.5% at the 20px used on
+   phones, where the letters ran together. -2% at every size, the tracking the home page
+   headings use (Figma: Cal Sans UI Bold, -2%). */
+.heading-style-h5 { letter-spacing: -0.02em; }
