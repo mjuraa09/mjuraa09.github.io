@@ -533,6 +533,7 @@ picture {
   .work-left-content .path-process { display: none; }
   .work-left-content .process-line { margin-top: 4px; }
   .steps-process {
+    position: relative;
     gap: 1px;
     border-left: 1px solid var(--neutral--border);
     counter-reset: step;
@@ -565,21 +566,39 @@ picture {
     letter-spacing: .5px;
     transition: color 150ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .steps-process .work-bottom-item::before { /* marker on the rail */
+  /* Marker on the rail: square on the rail side, 2px radius on the right (Figma).
+     One marker for the whole list that slides to the current step; js/site.js sets
+     --marker-y / --marker-h and adds .has-marker once it has measured. Until then (or
+     without JS) the current step draws its own, so there is always a marker. */
+  .steps-process::before,
+  .steps-process .work-bottom-item::before {
     content: '';
     position: absolute;
     left: -1px;
-    top: 4px;
-    bottom: 4px;
     width: 2px;
+    border-radius: 0 2px 2px 0;
     background: #1a1a1a;
     opacity: 0;
-    transition: opacity 150ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
   }
+  .steps-process::before {
+    top: 0;
+    height: var(--marker-h, 0px);
+    transform: translateY(var(--marker-y, 0px));
+    /* DS motion tokens: spring, slow (400ms), like the activity tabs' thumb. */
+    transition: transform 400ms linear(0, 0.037, 0.127, 0.241, 0.363, 0.481, 0.589, 0.682, 0.761, 0.825, 0.876, 0.916, 0.946, 0.968, 0.983, 0.994, 1),
+      height 400ms linear(0, 0.037, 0.127, 0.241, 0.363, 0.481, 0.589, 0.682, 0.761, 0.825, 0.876, 0.916, 0.946, 0.968, 0.983, 0.994, 1);
+  }
+  .steps-process.has-marker::before { opacity: 1; }
+  .steps-process.marker-instant::before { transition: none; } /* first placement, resizes */
+  .steps-process .work-bottom-item::before { top: 4px; bottom: 4px; }
+  .steps-process:not(.has-marker) .work-bottom-item.w--current::before { opacity: 1; }
   .steps-process .work-bottom-item:hover { color: #1a1a1a; }
   .steps-process .work-bottom-item.w--current { color: #1a1a1a; font-weight: 500; }
-  .steps-process .work-bottom-item.w--current::before { opacity: 1; }
   .steps-process .work-bottom-item.w--current::after { color: var(--violet); }
+}
+@media screen and (min-width: 992px) and (prefers-reduced-motion: reduce) {
+  .steps-process::before { transition: none; }
 }
 
 /* ---------- Case study: keep room for screenshots that haven't loaded yet ----------

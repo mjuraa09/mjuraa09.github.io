@@ -112,6 +112,32 @@ document.addEventListener('DOMContentLoaded', function () {
   let locked = false;
   let unlockTimer = null;
 
+  // Desktop sidebar: one marker on the rail slides to the current step (the CSS draws it
+  // from --marker-y / --marker-h, ≥992 only). It appears in place the first time, and jumps
+  // without sliding when the list reflows (resize, fonts), so only a step change animates.
+  function placeMarker(tab, instant) {
+    const list = tabsContainer.getBoundingClientRect();
+    const r = tab.getBoundingClientRect();
+    if (!r.height) return;
+    const first = !tabsContainer.classList.contains('has-marker');
+    if (first || instant) tabsContainer.classList.add('marker-instant');
+    tabsContainer.style.setProperty('--marker-y', (r.top - list.top + 4) + 'px');
+    tabsContainer.style.setProperty('--marker-h', (r.height - 8) + 'px');
+    if (first || instant) {
+      // Commit the position before transitions return (reading the pseudo-element's own
+      // style: WebKit skips it on a plain layout flush and would still slide in from 0).
+      void getComputedStyle(tabsContainer, '::before').transform;
+      tabsContainer.classList.add('has-marker');
+      tabsContainer.classList.remove('marker-instant');
+    }
+  }
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(() => {
+      const current = tabsContainer.querySelector('.w--current');
+      if (current) placeMarker(current, true);
+    }).observe(tabsContainer);
+  }
+
   function highlight(sectionId) {
     if (sectionId === currentActive) return;
     currentActive = sectionId;
@@ -119,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const activeTab = document.querySelector(`[data-tab="${sectionId}"]`);
     if (!activeTab) return;
     activeTab.classList.add('w--current');
+    placeMarker(activeTab, false);
     // Keep the active step in view in the strip (it scrolls sideways on narrow screens).
     const offset = activeTab.getBoundingClientRect().left - tabsContainer.getBoundingClientRect().left + tabsContainer.scrollLeft - 20;
     tabsContainer.scrollTo({ left: offset, behavior: 'smooth' });
