@@ -515,7 +515,10 @@ picture {
    stops being a sidebar and sits across the top. Room to breathe on top of that. */
 .descripted-section { scroll-margin-top: 98px; } /* 66 navbar + 32 */
 @media screen and (max-width: 991px) {
-  .descripted-section { scroll-margin-top: 145px; } /* 64 navbar + 49 steps bar + 32 */
+  /* Here a section opens with 128px of padding (8rem, Webflow), which kept the heading
+     160px below the steps bar after a tap. Land the heading itself 32px below the bar:
+     64 navbar + 49 steps bar + 32 - 128 padding. Scrolling by hand is unchanged. */
+  .descripted-section { scroll-margin-top: 17px; }
 }
 
 /* ---------- Case study: steps sidebar (desktop, ≥992) ----------
