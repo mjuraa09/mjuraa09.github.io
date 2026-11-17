@@ -526,6 +526,11 @@ picture {
    unchanged. js/site.js (scrollspy, smooth scroll) only relies on the classes, which stay. */
 @media screen and (min-width: 992px) {
   .work-grid:has(.steps-process) { grid-template-columns: 284px minmax(0, 1fr); } /* not detail_work.html */
+  /* The content stops at 900px, next to the sidebar: the screenshots are 1800px files, so
+     900 is as wide as they stay sharp on a 2x screen, and text and media share one edge.
+     That is the width at 1440 already; on wider screens the extra room stays on the right
+     instead of stretching text past the images (and GIFs past their own size). */
+  .work-grid:has(.steps-process) .work-content-wrap { max-width: 900px; }
   .work-left-content .heading-style-serif-h6 {
     font-family: 'Copernicus Semibold', Copernicus, Georgia, serif;
     font-weight: 600;
@@ -606,7 +611,6 @@ picture {
    item, so until a lazy image arrives it has no width and the image is 0px tall: the page
    grew by ~4,500px as you scrolled, and a step link far down landed a few screens short.
    Giving the wrapper the column's width lets width/height reserve the 4:3 box up front.
-   917px is the widest these are shown (the `sizes` attribute); loaded layout is unchanged
-   at 390–1440, and at 1920 every screenshot is now 917px instead of 917–1067. */
-.project-image:has(> .w-embed .hero-image) { width: 100%; max-width: 917px; }
+   900px is the widest these are shown (the content column's cap, and the `sizes` attribute). */
+.project-image:has(> .w-embed .hero-image) { width: 100%; max-width: 900px; }
 .project-image > .w-embed:has(.hero-image) { flex: 1 1 auto; min-width: 0; }
