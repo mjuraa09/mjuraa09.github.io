@@ -257,6 +257,14 @@ body.case-alt {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.5rem;
 }
+/* "19→15": the arrow at the digits' size was as wide as two of them; smaller, on the
+   digits' middle, it reads as a connector and the figure fits a third of the row. */
+.case-alt .stat-arrow {
+  display: inline-block;
+  margin: 0 .06em;
+  font-size: .6em;
+  vertical-align: .2em;
+}
 /* Two metrics share the row, so a wide figure like "18→11" fits. */
 .case-alt .two-column-text-copy:has(> :nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .case-alt .column-highlighted {
@@ -268,9 +276,28 @@ body.case-alt {
 }
 .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) {
   margin: 0;
-  font-size: 3.5rem;
+  /* Up to 56px, smaller when a third of the row (3 cards, 24px gaps, 16px padding) is too
+     narrow for the widest figure, "19→15" at 3.45em. Every row on a page is as wide, so
+     all figures on a page share one size. */
+  font-size: min(3.5rem, calc(((100cqi - var(--case-gutter) - 48px) / 3 - 32px) / 3.45));
   line-height: 1.1;
   letter-spacing: -.02em;
+  white-space: nowrap;
+}
+/* The row is measured from its sub-chapter (the content column is that minus the gutter). */
+.case-alt .sub-description { container: case-sub / inline-size; }
+/* Under 560px of row a third is too narrow to read: the cards stack, figures at full size. */
+@container case-sub (max-width: 559px) {
+  .case-alt .two-column-text-copy,
+  .case-alt .two-column-text-copy:has(> :nth-child(2):last-child) { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) { font-size: 3.5rem; }
+}
+@media screen and (min-width: 1280px) {
+  @container case-sub (max-width: 767px) { /* 559px + the 208px gutter */
+    .case-alt .two-column-text-copy,
+    .case-alt .two-column-text-copy:has(> :nth-child(2):last-child) { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+    .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) { font-size: 3.5rem; }
+  }
 }
 @media screen and (max-width: 767px) {
   .case-alt .two-column-text-copy,
