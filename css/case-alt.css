@@ -287,15 +287,15 @@ body.case-alt {
 }
 .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) {
   margin: 0;
-  /* Same face, weight and size as the home page's activity stats (.activity-stat-value in
-     css/custom.css): Copernicus Semibold 40px, 28px on phones. Smaller only when a third
-     of the row (3 cards, 24px gaps, 16px padding) is too narrow for the widest figure,
-     "19→15" at 3.4em; every row on a page is as wide, so they share one size. */
-  font-family: 'Copernicus Semibold', Copernicus, Georgia, serif;
-  font-weight: 600;
-  font-size: min(2.5rem, calc(((100cqi - var(--case-gutter) - 48px) / 3 - 32px) / 3.4));
+  /* Same face, weight and size as the metrics on the home page's project cards
+     (.heading-style-serif-h5.change-2): Copernicus Medium 40px, 28px on phones. Smaller only
+     when a third of the row (3 cards, 24px gaps, 16px padding) is too narrow for the widest
+     figure, "19→15" at 3.5em; every row on a page is as wide, so they share one size. */
+  font-family: Copernicus, Georgia, serif;
+  font-weight: 500;
+  font-size: min(2.5rem, calc(((100cqi - var(--case-gutter) - 48px) / 3 - 32px) / 3.5));
   line-height: 1.1;
-  letter-spacing: -.02em;
+  letter-spacing: normal;
   white-space: nowrap;
 }
 /* The row is measured from its sub-chapter (the content column is that minus the gutter). */
