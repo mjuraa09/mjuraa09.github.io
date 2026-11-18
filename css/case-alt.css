@@ -215,6 +215,8 @@ body.case-alt {
   padding-top: 1.5rem;
   border-top: 1px solid var(--case-line);
 }
+/* Right after a gallery its own rule (above the counter) already separates the two. */
+.case-alt .case-gallery + .sub-description { padding-top: 0; border-top: 0; }
 .case-alt .sub-description > .heading-style-h6 { margin: 0; text-align: left; }
 @media screen and (min-width: 1280px) {
   .case-alt .sub-description {
