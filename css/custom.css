@@ -666,8 +666,8 @@ picture {
 
 /* ---------- Navbar: gradient + progressive blur instead of a solid bar (2026-11-18) ----------
    The solid bar read as a separate white strip. Now nothing is painted on the bar itself:
-   two layers behind its content reach 40px below it. ::before blurs what scrolls
-   underneath, masked so the blur fades out downwards; ::after is the page colour, solid at
+   two layers behind its content fill the bar's own height (66px, the size of the old bar;
+   --nav-fade-reach can push them further down). ::before blurs what scrolls underneath, masked so the blur fades out downwards; ::after is the page colour, solid at
    the top and fading to transparent, so the links stay legible and there is no hard edge.
    The page colour is per variant: 1st background, case studies 2nd. The IX2 inline
    background on .padding-global.blur (case studies) is overridden. Masked backdrop-filter
@@ -675,7 +675,7 @@ picture {
 .navbar-3,
 .navbar-3.reveal-section {
   --nav-fade-color: var(--background-color--1st-background);
-  --nav-fade-reach: 40px;
+  --nav-fade-reach: 0px;
   background-color: transparent;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
@@ -703,15 +703,15 @@ picture {
 .navbar-3::before {
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 65%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 65%, transparent 100%);
 }
 .navbar-3::after {
   background-image: linear-gradient(
     to bottom,
     var(--nav-fade-color) 0%,
-    color-mix(in srgb, var(--nav-fade-color) 80%, transparent) 45%,
-    color-mix(in srgb, var(--nav-fade-color) 35%, transparent) 75%,
+    color-mix(in srgb, var(--nav-fade-color) 85%, transparent) 50%,
+    color-mix(in srgb, var(--nav-fade-color) 40%, transparent) 80%,
     transparent 100%
   );
 }
