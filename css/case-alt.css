@@ -276,33 +276,36 @@ body.case-alt {
 }
 .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) {
   margin: 0;
-  /* Up to 56px, smaller when a third of the row (3 cards, 24px gaps, 16px padding) is too
-     narrow for the widest figure, "19→15" at 3.45em. Every row on a page is as wide, so
-     all figures on a page share one size. */
-  font-size: min(3.5rem, calc(((100cqi - var(--case-gutter) - 48px) / 3 - 32px) / 3.45));
+  /* Same face, weight and size as the home page's activity stats (.activity-stat-value in
+     css/custom.css): Copernicus Semibold 40px, 28px on phones. Smaller only when a third
+     of the row (3 cards, 24px gaps, 16px padding) is too narrow for the widest figure,
+     "19→15" at 3.4em; every row on a page is as wide, so they share one size. */
+  font-family: 'Copernicus Semibold', Copernicus, Georgia, serif;
+  font-weight: 600;
+  font-size: min(2.5rem, calc(((100cqi - var(--case-gutter) - 48px) / 3 - 32px) / 3.4));
   line-height: 1.1;
   letter-spacing: -.02em;
   white-space: nowrap;
 }
 /* The row is measured from its sub-chapter (the content column is that minus the gutter). */
 .case-alt .sub-description { container: case-sub / inline-size; }
-/* Under 560px of row a third is too narrow to read: the cards stack, figures at full size. */
+/* Under 560px of row a third is too narrow to read: the cards stack, figures at full size (40px). */
 @container case-sub (max-width: 559px) {
   .case-alt .two-column-text-copy,
   .case-alt .two-column-text-copy:has(> :nth-child(2):last-child) { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
-  .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) { font-size: 3.5rem; }
+  .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) { font-size: 2.5rem; }
 }
 @media screen and (min-width: 1280px) {
   @container case-sub (max-width: 767px) { /* 559px + the 208px gutter */
     .case-alt .two-column-text-copy,
     .case-alt .two-column-text-copy:has(> :nth-child(2):last-child) { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
-    .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) { font-size: 3.5rem; }
+    .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) { font-size: 2.5rem; }
   }
 }
 @media screen and (max-width: 767px) {
   .case-alt .two-column-text-copy,
   .case-alt .two-column-text-copy:has(> :nth-child(2):last-child) { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
-  .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) { font-size: 2.5rem; }
+  .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) { font-size: 1.75rem; }
 }
 
 /* ---------- Assets and galleries ---------- */
