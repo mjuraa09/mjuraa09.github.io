@@ -48,6 +48,7 @@ body.case-alt {
   font: 500 14px/16px 'Geist Mono', monospace;
   letter-spacing: 1px;
   text-transform: uppercase;
+  text-align: left; /* the page inherits Webflow's justify, which spreads a two-line label */
 }
 .case-alt .case-kicker::before,
 .case-alt .case-row > .heading-style-serif-h6::before,
@@ -176,6 +177,10 @@ body.case-alt {
   padding: 0 2.5rem 1.5rem 56px; /* level with the title: 40px icon + 16px gap */
 }
 .case-alt .case-accordion-summary:not(:has(.icon-block)) ~ .text-size-regular { padding-left: 0; }
+/* A lone card has nothing to fold against: it stays open, without the plus (a <div>,
+   not <details>). */
+.case-alt .case-accordion > div.column-text > .case-accordion-summary { cursor: default; }
+.case-alt .case-accordion > div.column-text > .case-accordion-summary::after { display: none; }
 
 /* ---------- Static cards: two-column blocks that can't fold (no title, or a fact with
    its source). Same fill as the accordions, side by side. ---------- */
@@ -252,6 +257,8 @@ body.case-alt {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.5rem;
 }
+/* Two metrics share the row, so a wide figure like "18→11" fits. */
+.case-alt .two-column-text-copy:has(> :nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .case-alt .column-highlighted {
   gap: .5rem;
   margin: 0;
@@ -266,7 +273,8 @@ body.case-alt {
   letter-spacing: -.02em;
 }
 @media screen and (max-width: 767px) {
-  .case-alt .two-column-text-copy { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .case-alt .two-column-text-copy,
+  .case-alt .two-column-text-copy:has(> :nth-child(2):last-child) { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
   .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) { font-size: 2.5rem; }
 }
 
