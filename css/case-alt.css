@@ -1,0 +1,363 @@
+/* Case study, alternative layout (trial, 2026-11). Loaded only by pages whose <body> has
+   .case-alt (all three case studies in projects/).
+   Design: Figma "RD:IR – alternative layout, 1441" (1459:3982, page "Case study nav –
+   redesign (2026-11)"), the user's edit of the first trial. Values below are read from it.
+   - Text blocks sit to the right of a 208px gutter (>=1280); small mono "— LABEL" kickers
+     hang in the gutter (.case-kicker for the intro, .paragraph for lists).
+   - .two-column-text blocks are accordions (<details>, one open per group) on filled cards;
+     blocks that cannot fold (a card without a title, a fact with its source) stay open
+     as .case-cards.
+   - Runs of adjacent assets are horizontal galleries (.case-gallery, js/case-alt.js adds
+     the counter and arrows; without JS it is still a swipeable strip).
+   - No divider between sections: 100px of space, and filled boxes carry the structure.
+   - The sidebar keeps its card; the rail fills with the reading progress (js/case-alt.js). */
+
+body.case-alt {
+  --case-gutter: 0px;
+  --case-line: var(--neutral--border);
+  --case-line-soft: rgb(26 26 26 / .08);
+  --case-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media screen and (min-width: 1280px) {
+  body.case-alt { --case-gutter: 208px; }
+}
+
+/* ---------- Sections: numbered label, title, 100px apart, no divider ---------- */
+.case-alt .conteiner { gap: 100px; counter-reset: case-sec; }
+.case-alt .descripted-section { gap: 2rem; counter-increment: case-sec; }
+.case-alt .descripted-section::before {
+  content: '[ ' counter(case-sec, decimal-leading-zero) ' ]';
+  color: var(--green);
+  font: 500 14px/16px 'Geist Mono', monospace;
+  letter-spacing: 1px;
+}
+.case-alt .descripted-section > .heading-style-h5 {
+  margin: -1rem 0 0;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.case-alt .descripted-section > .divder { display: none; }
+
+/* ---------- Kickers: "— LABEL" in the gutter ---------- */
+.case-alt .case-kicker,
+.case-alt .case-row > .heading-style-serif-h6,
+.case-alt .bullet-points > .paragraph,
+.case-alt :is(.sub-description, .descripted-section) > .column-text > .heading-style-serif-h6 {
+  margin: 0;
+  color: var(--neutral--dark-neutrail);
+  font: 500 14px/16px 'Geist Mono', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.case-alt .case-kicker::before,
+.case-alt .case-row > .heading-style-serif-h6::before,
+.case-alt .bullet-points > .paragraph::before,
+.case-alt :is(.sub-description, .descripted-section) > .column-text > .heading-style-serif-h6::before { content: '— '; }
+
+/* Label + content rows: stacked below 1280, label in the gutter from 1280. */
+.case-alt .case-intro,
+.case-alt .bullet-points,
+.case-alt :is(.sub-description, .descripted-section) > .column-text,
+.case-alt .case-row {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+@media screen and (min-width: 1280px) {
+  .case-alt .case-intro,
+  .case-alt .bullet-points,
+  .case-alt :is(.sub-description, .descripted-section) > .column-text,
+  .case-alt .case-row {
+    display: grid;
+    grid-template-columns: var(--case-gutter) minmax(0, 1fr);
+    gap: 0;
+    align-items: start;
+  }
+  .case-alt .case-kicker,
+  .case-alt .case-row > .heading-style-serif-h6,
+  .case-alt :is(.sub-description, .descripted-section) > .column-text > .heading-style-serif-h6 { padding: 7px 1.5rem 0 0; }
+  .case-alt .bullet-points > .paragraph { padding: 16px 1.5rem 0 0; }
+  .case-alt .bullet-points > .paragraph:has(+ .text-size-regular) { padding-top: 7px; }
+}
+
+/* Lead text: a size up, in a 640px column. */
+.case-alt .case-intro > .text-size-regular,
+.case-alt .bullet-points > .text-size-regular,
+.case-alt .two-column-text-2 > .text-size-regular,
+.case-alt :is(.sub-description, .descripted-section) > .column-text > .text-size-regular {
+  max-width: 40rem;
+  font-size: 1.125rem;
+  line-height: 1.65;
+}
+
+/* ---------- Lists: numbered rows on soft hairlines, filled column by column ---------- */
+.case-alt .bullet-points .list {
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: case-item;
+}
+@media screen and (min-width: 768px) {
+  .case-alt .bullet-points .list { column-count: 2; column-gap: 2rem; }
+}
+.case-alt .bullet-points .list-item {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: .75rem;
+  padding: 12px 0;
+  border-top: 1px solid var(--case-line-soft);
+  break-inside: avoid;
+  counter-increment: case-item;
+}
+.case-alt .bullet-points .list-item::before {
+  content: counter(case-item, decimal-leading-zero);
+  flex: none;
+  width: 1.5rem;
+  color: rgb(26 26 26 / .4);
+  font: 500 11px/16px 'Geist Mono', monospace;
+  letter-spacing: .5px;
+}
+.case-alt .bullet-points .list-item .work-info-text { color: var(--black); }
+
+/* ---------- Accordions (former two-column cards): filled cards, 16px apart ---------- */
+.case-alt .case-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-left: var(--case-gutter);
+  padding: 0;
+}
+.case-alt .sub-description .case-accordion { margin-left: 0; }
+.case-alt .case-accordion > .column-text {
+  display: block;
+  padding: 0 1rem;
+  border-radius: 16px;
+  background: rgb(229 227 220 / .5);
+}
+.case-alt .case-accordion-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  cursor: pointer;
+  list-style: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.case-alt .case-accordion-summary::-webkit-details-marker { display: none; }
+.case-alt .case-accordion-summary:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.case-alt .case-accordion-summary .icon-block { flex: none; }
+.case-alt .case-accordion-summary .heading-style-serif-h6 { flex: 1 1 auto; margin: 0; }
+.case-alt .case-accordion-summary::after { /* plus; turns into a minus when open */
+  content: '';
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background:
+    linear-gradient(var(--black), var(--black)) center / 100% 1.5px no-repeat,
+    linear-gradient(var(--black), var(--black)) center / 1.5px 100% no-repeat;
+  transition: transform 320ms var(--case-ease), background-size 320ms var(--case-ease);
+}
+.case-alt .column-text[open] > .case-accordion-summary::after {
+  transform: rotate(180deg);
+  background-size: 100% 1.5px, 1.5px 0;
+}
+.case-alt .case-accordion > .column-text > .text-size-regular {
+  max-width: 36rem;
+  padding: 0 2.5rem 1.5rem 56px; /* level with the title: 40px icon + 16px gap */
+}
+.case-alt .case-accordion-summary:not(:has(.icon-block)) ~ .text-size-regular { padding-left: 0; }
+
+/* ---------- Static cards: two-column blocks that can't fold (no title, or a fact with
+   its source). Same fill as the accordions, side by side. ---------- */
+.case-alt .case-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-left: var(--case-gutter);
+  padding: 0;
+}
+.case-alt :is(.sub-description, .case-row) .case-cards { margin-left: 0; }
+.case-alt .case-cards > .column-text {
+  gap: .75rem;
+  padding: 1rem;
+  border-radius: 16px;
+  background: rgb(229 227 220 / .5);
+}
+.case-alt .case-cards .heading-style-serif-h6 { margin: 0; }
+.case-alt .case-cards .text-size-regular.chnage-2 {
+  color: var(--neutral--dark-neutrail);
+  font-size: .8125rem;
+  line-height: 1.5;
+}
+@supports (interpolate-size: allow-keywords) {
+  .case-alt .case-accordion { interpolate-size: allow-keywords; }
+  .case-alt .case-accordion > .column-text::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition: block-size 320ms var(--case-ease), content-visibility 320ms allow-discrete;
+  }
+  .case-alt .case-accordion > .column-text[open]::details-content { block-size: auto; }
+}
+
+/* ---------- Sub-chapters: a rule above, the h6 in the gutter ---------- */
+.case-alt .sub-description {
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--case-line);
+}
+/* Right after a gallery its own rule (above the counter) already separates the two. */
+.case-alt .case-gallery + .sub-description { padding-top: 0; border-top: 0; }
+.case-alt .sub-description > .heading-style-h6 { margin: 0; text-align: left; }
+@media screen and (min-width: 1280px) {
+  .case-alt .sub-description {
+    display: grid;
+    grid-template-columns: var(--case-gutter) minmax(0, 1fr);
+    column-gap: 0;
+    row-gap: 1.25rem;
+  }
+  .case-alt .sub-description > * { grid-column: 2; }
+  .case-alt .sub-description > .heading-style-h6 { grid-column: 1; padding-right: 1.5rem; }
+  .case-alt .sub-description > .column-text { grid-column: 1 / -1; }
+}
+.case-alt .sub-description > .text-size-regular { max-width: 40rem; }
+.case-alt .sub-description > .text-size-regular.chnage-2 { /* source of the numbers */
+  color: var(--neutral--dark-neutrail);
+  font-size: .8125rem;
+  line-height: 1.5;
+}
+/* "Next iterations": a kicker and lead text like a section intro (no icon, one column). */
+.case-alt .sub-description > .column-text { margin-top: 1.5rem; }
+.case-alt :is(.sub-description, .descripted-section) > .column-text > .icon-block { display: none; }
+.case-alt :is(.sub-description, .descripted-section) > .column-text > .img-description { grid-column: 1 / -1; margin-top: 2rem; }
+.case-alt .sub-description > .column-text > .two-column-text-2 {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+.case-alt .sub-description > .spacer-small { display: none; }
+
+/* ---------- Metrics: filled cards ---------- */
+.case-alt .two-column-text-copy {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.case-alt .column-highlighted {
+  gap: .5rem;
+  margin: 0;
+  padding: 1rem;
+  border-radius: 16px;
+  background: var(--background-color--5th-backgorund);
+}
+.case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) {
+  margin: 0;
+  font-size: 3.5rem;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+@media screen and (max-width: 767px) {
+  .case-alt .two-column-text-copy { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) { font-size: 2.5rem; }
+}
+
+/* ---------- Assets and galleries ---------- */
+.case-alt .img-description { margin-bottom: 0; gap: .75rem; }
+.case-alt .img-description > .work-info-text {
+  font-size: .875rem;
+  line-height: 1.45;
+}
+.case-alt .case-gallery { min-width: 0; max-width: 100%; }
+.case-alt .case-gallery-track {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.case-alt .case-gallery-track::-webkit-scrollbar { display: none; }
+.case-alt .case-gallery-track:focus-visible { outline: 2px solid var(--violet); outline-offset: 4px; border-radius: 20px; }
+.case-alt .case-gallery-track > .img-description {
+  flex: 0 0 calc(100% - 4.5rem); /* the next asset peeks in */
+  min-width: 0;
+  scroll-snap-align: start;
+}
+.case-alt .case-gallery-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--case-line);
+}
+.case-alt .case-gallery-count {
+  color: rgb(26 26 26 / .55);
+  font: 500 12px/16px 'Geist Mono', monospace;
+  letter-spacing: 1px;
+}
+.case-alt .case-gallery-count b { color: var(--black); font-weight: 500; }
+.case-alt .case-gallery-buttons { display: flex; gap: .5rem; }
+.case-alt .case-gallery-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--case-line);
+  border-radius: 50%;
+  background: none;
+  color: var(--black);
+  cursor: pointer;
+  transition: background-color 150ms var(--case-ease), border-color 150ms var(--case-ease), opacity 150ms var(--case-ease), transform 150ms var(--case-ease);
+}
+.case-alt .case-gallery-btn:hover:not(:disabled) { border-color: var(--black); background: var(--black); color: var(--white); }
+.case-alt .case-gallery-btn:active:not(:disabled) { transform: scale(.96); }
+.case-alt .case-gallery-btn:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+.case-alt .case-gallery-btn:disabled { opacity: .35; cursor: default; }
+@media screen and (max-width: 767px) {
+  .case-alt .case-gallery-track > .img-description { flex-basis: calc(100% - 2.5rem); }
+  /* Phones: text stays at its 16px; the accordion body uses the full width. */
+  .case-alt .case-intro > .text-size-regular,
+  .case-alt .bullet-points > .text-size-regular,
+  .case-alt .two-column-text-2 > .text-size-regular,
+  .case-alt :is(.sub-description, .descripted-section) > .column-text > .text-size-regular { font-size: 1rem; }
+  .case-alt .case-accordion > .column-text > .text-size-regular { padding: 0 0 1.25rem; }
+  .case-alt .conteiner { gap: 72px; }
+}
+
+/* ---------- Steps sidebar (>=992): the card, 248px, the rail shows reading progress ---------- */
+@media screen and (min-width: 992px) {
+  .case-alt .work-grid:has(.steps-process) { grid-template-columns: 248px minmax(0, 1fr); }
+  .case-alt .work-left-content:has(.steps-process) { border-radius: 16px; }
+  /* One line that grows down the rail with the page instead of a marker per step. */
+  .case-alt .steps-process::before,
+  .case-alt .steps-process .work-bottom-item::before { display: none; }
+  .case-alt .steps-process::after {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 0;
+    width: 2px;
+    height: var(--case-progress, 0px);
+    border-radius: 0 0 2px 2px;
+    background: var(--orange);
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-alt .case-accordion-summary::after,
+  .case-alt .case-gallery-btn { transition: none; }
+  .case-alt .case-accordion > .column-text::details-content { transition: none; }
+}
