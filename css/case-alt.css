@@ -1,10 +1,12 @@
 /* Case study, alternative layout (trial, 2026-11). Loaded only by pages whose <body> has
-   .case-alt (today: projects/rdir-fintech-copy.html); the other case studies are untouched.
+   .case-alt (all three case studies in projects/).
    Design: Figma "RD:IR – alternative layout, 1441" (1459:3982, page "Case study nav –
    redesign (2026-11)"), the user's edit of the first trial. Values below are read from it.
    - Text blocks sit to the right of a 208px gutter (>=1280); small mono "— LABEL" kickers
      hang in the gutter (.case-kicker for the intro, .paragraph for lists).
-   - .two-column-text blocks are accordions (<details>, one open per group) on filled cards.
+   - .two-column-text blocks are accordions (<details>, one open per group) on filled cards;
+     blocks that cannot fold (a card without a title, a fact with its source) stay open
+     as .case-cards.
    - Runs of adjacent assets are horizontal galleries (.case-gallery, js/case-alt.js adds
      the counter and arrows; without JS it is still a swipeable strip).
    - No divider between sections: 100px of space, and filled boxes carry the structure.
@@ -38,8 +40,9 @@ body.case-alt {
 
 /* ---------- Kickers: "— LABEL" in the gutter ---------- */
 .case-alt .case-kicker,
+.case-alt .case-row > .heading-style-serif-h6,
 .case-alt .bullet-points > .paragraph,
-.case-alt .sub-description > .column-text > .heading-style-serif-h6 {
+.case-alt :is(.sub-description, .descripted-section) > .column-text > .heading-style-serif-h6 {
   margin: 0;
   color: var(--neutral--dark-neutrail);
   font: 500 14px/16px 'Geist Mono', monospace;
@@ -47,13 +50,15 @@ body.case-alt {
   text-transform: uppercase;
 }
 .case-alt .case-kicker::before,
+.case-alt .case-row > .heading-style-serif-h6::before,
 .case-alt .bullet-points > .paragraph::before,
-.case-alt .sub-description > .column-text > .heading-style-serif-h6::before { content: '— '; }
+.case-alt :is(.sub-description, .descripted-section) > .column-text > .heading-style-serif-h6::before { content: '— '; }
 
 /* Label + content rows: stacked below 1280, label in the gutter from 1280. */
 .case-alt .case-intro,
 .case-alt .bullet-points,
-.case-alt .sub-description > .column-text {
+.case-alt :is(.sub-description, .descripted-section) > .column-text,
+.case-alt .case-row {
   display: flex;
   flex-direction: column;
   gap: .75rem;
@@ -65,14 +70,16 @@ body.case-alt {
 @media screen and (min-width: 1280px) {
   .case-alt .case-intro,
   .case-alt .bullet-points,
-  .case-alt .sub-description > .column-text {
+  .case-alt :is(.sub-description, .descripted-section) > .column-text,
+  .case-alt .case-row {
     display: grid;
     grid-template-columns: var(--case-gutter) minmax(0, 1fr);
     gap: 0;
     align-items: start;
   }
   .case-alt .case-kicker,
-  .case-alt .sub-description > .column-text > .heading-style-serif-h6 { padding: 7px 1.5rem 0 0; }
+  .case-alt .case-row > .heading-style-serif-h6,
+  .case-alt :is(.sub-description, .descripted-section) > .column-text > .heading-style-serif-h6 { padding: 7px 1.5rem 0 0; }
   .case-alt .bullet-points > .paragraph { padding: 16px 1.5rem 0 0; }
   .case-alt .bullet-points > .paragraph:has(+ .text-size-regular) { padding-top: 7px; }
 }
@@ -80,7 +87,8 @@ body.case-alt {
 /* Lead text: a size up, in a 640px column. */
 .case-alt .case-intro > .text-size-regular,
 .case-alt .bullet-points > .text-size-regular,
-.case-alt .two-column-text-2 > .text-size-regular {
+.case-alt .two-column-text-2 > .text-size-regular,
+.case-alt :is(.sub-description, .descripted-section) > .column-text > .text-size-regular {
   max-width: 40rem;
   font-size: 1.125rem;
   line-height: 1.65;
@@ -167,6 +175,30 @@ body.case-alt {
   max-width: 36rem;
   padding: 0 2.5rem 1.5rem 56px; /* level with the title: 40px icon + 16px gap */
 }
+.case-alt .case-accordion-summary:not(:has(.icon-block)) ~ .text-size-regular { padding-left: 0; }
+
+/* ---------- Static cards: two-column blocks that can't fold (no title, or a fact with
+   its source). Same fill as the accordions, side by side. ---------- */
+.case-alt .case-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-left: var(--case-gutter);
+  padding: 0;
+}
+.case-alt :is(.sub-description, .case-row) .case-cards { margin-left: 0; }
+.case-alt .case-cards > .column-text {
+  gap: .75rem;
+  padding: 1rem;
+  border-radius: 16px;
+  background: rgb(229 227 220 / .5);
+}
+.case-alt .case-cards .heading-style-serif-h6 { margin: 0; }
+.case-alt .case-cards .text-size-regular.chnage-2 {
+  color: var(--neutral--dark-neutrail);
+  font-size: .8125rem;
+  line-height: 1.5;
+}
 @supports (interpolate-size: allow-keywords) {
   .case-alt .case-accordion { interpolate-size: allow-keywords; }
   .case-alt .case-accordion > .column-text::details-content {
@@ -203,7 +235,8 @@ body.case-alt {
 }
 /* "Next iterations": a kicker and lead text like a section intro (no icon, one column). */
 .case-alt .sub-description > .column-text { margin-top: 1.5rem; }
-.case-alt .sub-description > .column-text > .icon-block { display: none; }
+.case-alt :is(.sub-description, .descripted-section) > .column-text > .icon-block { display: none; }
+.case-alt :is(.sub-description, .descripted-section) > .column-text > .img-description { grid-column: 1 / -1; margin-top: 2rem; }
 .case-alt .sub-description > .column-text > .two-column-text-2 {
   display: flex;
   flex-direction: column;
@@ -224,7 +257,7 @@ body.case-alt {
   border-radius: 16px;
   background: var(--background-color--5th-backgorund);
 }
-.case-alt .column-highlighted .heading-style-serif-h5 {
+.case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) {
   margin: 0;
   font-size: 3.5rem;
   line-height: 1.1;
@@ -232,7 +265,7 @@ body.case-alt {
 }
 @media screen and (max-width: 767px) {
   .case-alt .two-column-text-copy { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
-  .case-alt .column-highlighted .heading-style-serif-h5 { font-size: 2.5rem; }
+  .case-alt .column-highlighted :is(.heading-style-serif-h5, .stat-number) { font-size: 2.5rem; }
 }
 
 /* ---------- Assets and galleries ---------- */
@@ -295,7 +328,8 @@ body.case-alt {
   /* Phones: text stays at its 16px; the accordion body uses the full width. */
   .case-alt .case-intro > .text-size-regular,
   .case-alt .bullet-points > .text-size-regular,
-  .case-alt .two-column-text-2 > .text-size-regular { font-size: 1rem; }
+  .case-alt .two-column-text-2 > .text-size-regular,
+  .case-alt :is(.sub-description, .descripted-section) > .column-text > .text-size-regular { font-size: 1rem; }
   .case-alt .case-accordion > .column-text > .text-size-regular { padding: 0 0 1.25rem; }
   .case-alt .conteiner { gap: 72px; }
 }
