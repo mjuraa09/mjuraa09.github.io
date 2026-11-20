@@ -664,24 +664,26 @@ picture {
 .project-image:has(> .w-embed .hero-image) { width: 100%; max-width: 900px; }
 .project-image > .w-embed:has(.hero-image) { flex: 1 1 auto; min-width: 0; }
 
-/* ---------- Navbar: progressive blur + gradient instead of a solid bar (Figma, 2026-11-20) ----------
-   Built like the Figma "Banner" (file [Site] Portfoilo, node 1479:47): nothing is painted on
-   the bar itself, five layers behind its content fill its 66px (--nav-fade-reach can push
-   them further down).
-   - Colour (.container-large::before): Figma's linear gradient at 85% fill opacity, which
-     only starts halfway down: solid to 50%, then 60% / 40% / 0% alpha at 74.8% / 87.4% /
-     100%. Effective alphas below = stop alpha x 0.85. The colour is the page's, per variant
-     (1st background; case studies 2nd), so it follows the page and not a fixed hex.
+/* ---------- Navbar: progressive blur + gradient instead of a solid bar (2026-11-20) ----------
+   Nothing is painted on the bar itself; layers behind its content fill its 66px
+   (--nav-fade-reach can push them further down).
+   Both follow the Figma "Banner" (file [Site] Portfoilo, node 1479:47, simplified 2026-11-20):
+   - Colour (.container-large::before, on top): the page colour from 100% at the top to 0% at
+     the bottom. The colour is the page's, per variant (1st background; case studies 2nd).
    - Blur: Figma's progressive background blur, 30 at the top falling linearly to 0 at the
-     bottom. Figma's blur value is twice the CSS radius, so 15px -> 0. CSS has no
-     progressive backdrop blur, so four layers (12 / 9 / 5 / 2px) with masks ending at 25% /
-     50% / 75% / 100% stack into that ramp (their combined radius is ~15px at the top).
-   The layers are pseudo-elements, the markup is unchanged: ::before/::after on the nav and
-   on .padding-global.blur, and ::before on .container-large, all positioned against the nav
-   (none of the wrappers is positioned). Blur layers sit at z-index -2, the colour at -1 on
-   top of them. The IX2 inline background on .padding-global.blur (case studies) is
-   overridden. Masked backdrop-filter works in Chrome, Safari and Firefox; where it doesn't,
-   the colour gradient alone remains. */
+     bottom, built the backgrounds.supply way from stacked masked backdrop-filter layers.
+     Seven layers, each opaque from the top down to its row (k/7) and fading out over the
+     next seventh. Every layer blurs what the layers under it already blurred, and Gaussian
+     blurs add up (variances sum), so a layer's radius is only the increment: radius at row k
+     = sqrt(R_k^2 - R_{k+1}^2) with R_k = 30 * (7-k)/7. The total blur therefore falls
+     smoothly 30 -> 0 and nothing unblurred ever shows through a partly transparent layer
+     (which reads as sharp text with a blurred halo). Strongest blur on top of the stack.
+   The layers are pseudo-elements, the markup is unchanged: ::before/::after on the nav,
+   .padding-global.blur, .container-large and .nav-grid, all positioned against the nav
+   (none of those wrappers is positioned). z-index orders them inside the nav's stacking
+   context: weakest blur lowest, strongest above it, the colour on top. The IX2 inline background on
+   .padding-global.blur (case studies) is overridden. Masked backdrop-filter works in
+   Chrome, Safari and Firefox; where it doesn't, the colour gradient alone remains. */
 .navbar-3,
 .navbar-3.reveal-section {
   --nav-fade-color: var(--background-color--1st-background);
@@ -694,16 +696,18 @@ picture {
   --nav-fade-color: var(--background-color--2nd-background);
 }
 .navbar-3 .padding-global.blur { background-color: transparent !important; }
-.navbar-3::before,
-.navbar-3::after,
+.navbar-3 .nav-grid::after,
+.navbar-3 .nav-grid::before,
+.navbar-3 .container-large::after,
 .navbar-3 .padding-global.blur::before,
 .navbar-3 .padding-global.blur::after,
+.navbar-3::before,
+.navbar-3::after,
 .navbar-3 .container-large::before {
   content: "";
   display: block; /* .w-nav's clearfix makes them display: table, which ignores inset */
   position: absolute;
   inset: 0 0 calc(-1 * var(--nav-fade-reach)) 0;
-  z-index: -2;
   pointer-events: none;
   opacity: 0;
   transition: opacity 250ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -711,45 +715,66 @@ picture {
 /* At the very top the bar sits on the page colour anyway, and the fade would only soften
    the top edge of the hero photo / heading under it, so it appears once the page scrolls
    (.nav-logo-collapsed, js/custom/navlogocollapse.js, past 16px). */
-.navbar-3.nav-logo-collapsed::before,
-.navbar-3.nav-logo-collapsed::after,
+.navbar-3.nav-logo-collapsed .nav-grid::after,
+.navbar-3.nav-logo-collapsed .nav-grid::before,
+.navbar-3.nav-logo-collapsed .container-large::after,
 .navbar-3.nav-logo-collapsed .padding-global.blur::before,
 .navbar-3.nav-logo-collapsed .padding-global.blur::after,
+.navbar-3.nav-logo-collapsed::before,
+.navbar-3.nav-logo-collapsed::after,
 .navbar-3.nav-logo-collapsed .container-large::before { opacity: 1; }
-.navbar-3::before {
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
-  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000, transparent 100%);
+.navbar-3::after {
+  z-index: -2;
+  -webkit-backdrop-filter: blur(15.45px);
+  backdrop-filter: blur(15.45px);
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 14.29%);
+  mask-image: linear-gradient(to bottom, #000, transparent 14.29%);
 }
-.navbar-3 .padding-global.blur::before {
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
-  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 75%);
-  mask-image: linear-gradient(to bottom, #000, transparent 75%);
+.navbar-3::before {
+  z-index: -3;
+  -webkit-backdrop-filter: blur(14.21px);
+  backdrop-filter: blur(14.21px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 14.29%, transparent 28.57%);
+  mask-image: linear-gradient(to bottom, #000 14.29%, transparent 28.57%);
 }
 .navbar-3 .padding-global.blur::after {
-  -webkit-backdrop-filter: blur(9px);
-  backdrop-filter: blur(9px);
-  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 50%);
-  mask-image: linear-gradient(to bottom, #000, transparent 50%);
+  z-index: -4;
+  -webkit-backdrop-filter: blur(12.86px);
+  backdrop-filter: blur(12.86px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 28.57%, transparent 42.86%);
+  mask-image: linear-gradient(to bottom, #000 28.57%, transparent 42.86%);
 }
-.navbar-3::after {
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 25%);
-  mask-image: linear-gradient(to bottom, #000, transparent 25%);
+.navbar-3 .padding-global.blur::before {
+  z-index: -5;
+  -webkit-backdrop-filter: blur(11.34px);
+  backdrop-filter: blur(11.34px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 42.86%, transparent 57.14%);
+  mask-image: linear-gradient(to bottom, #000 42.86%, transparent 57.14%);
+}
+.navbar-3 .container-large::after {
+  z-index: -6;
+  -webkit-backdrop-filter: blur(9.58px);
+  backdrop-filter: blur(9.58px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 57.14%, transparent 71.43%);
+  mask-image: linear-gradient(to bottom, #000 57.14%, transparent 71.43%);
+}
+.navbar-3 .nav-grid::before {
+  z-index: -7;
+  -webkit-backdrop-filter: blur(7.42px);
+  backdrop-filter: blur(7.42px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 71.43%, transparent 85.71%);
+  mask-image: linear-gradient(to bottom, #000 71.43%, transparent 85.71%);
+}
+.navbar-3 .nav-grid::after {
+  z-index: -8;
+  -webkit-backdrop-filter: blur(4.29px);
+  backdrop-filter: blur(4.29px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 85.71%, transparent 100.0%);
+  mask-image: linear-gradient(to bottom, #000 85.71%, transparent 100.0%);
 }
 .navbar-3 .container-large::before {
   z-index: -1;
-  background-image: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--nav-fade-color) 85%, transparent) 0%,
-    color-mix(in srgb, var(--nav-fade-color) 85%, transparent) 50%,
-    color-mix(in srgb, var(--nav-fade-color) 51%, transparent) 74.8%,
-    color-mix(in srgb, var(--nav-fade-color) 34%, transparent) 87.4%,
-    transparent 100%
-  );
+  background-image: linear-gradient(to bottom, var(--nav-fade-color), transparent);
 }
 
 /* ---------- Section headings (h5): less tight ----------
