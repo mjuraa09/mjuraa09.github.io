@@ -665,19 +665,25 @@ picture {
 .project-image > .w-embed:has(.hero-image) { flex: 1 1 auto; min-width: 0; }
 
 /* ---------- Navbar: progressive blur + gradient instead of a solid bar (2026-11-20) ----------
-   Nothing is painted on the bar itself; layers behind its content fill its 66px
-   (--nav-fade-reach can push them further down).
+   Nothing is painted on the bar itself; layers behind its content fill its 66px and reach
+   24px below it (--nav-fade-reach), so the fade into the content is longer and softer than
+   the 66px Figma frame (all stops are percentages, so the whole profile stretches; at 48px
+   it eats into the first lines of content).
    Both follow the Figma "Banner" (file [Site] Portfoilo, node 1479:47, simplified 2026-11-20):
    - Colour (.container-large::before, on top): the page colour from 100% at the top to 0% at
      the bottom. The colour is the page's, per variant (1st background; case studies 2nd).
-   - Blur: Figma's progressive background blur, 30 at the top falling linearly to 0 at the
-     bottom, built the backgrounds.supply way from stacked masked backdrop-filter layers.
-     Seven layers, each opaque from the top down to its row (k/7) and fading out over the
-     next seventh. Every layer blurs what the layers under it already blurred, and Gaussian
-     blurs add up (variances sum), so a layer's radius is only the increment: radius at row k
-     = sqrt(R_k^2 - R_{k+1}^2) with R_k = 30 * (7-k)/7. The total blur therefore falls
-     smoothly 30 -> 0 and nothing unblurred ever shows through a partly transparent layer
-     (which reads as sharp text with a blurred halo). Strongest blur on top of the stack.
+   - Blur: Figma's progressive background blur, 30 at the top falling to 0 at the bottom, but
+     eased instead of linear: R(y) = 30 * (1 - y)^1.6 (y = 0 top, 1 bottom). Content entering
+     from below is only softened at first (1.3px a seventh up, 4px at two sevenths, 7.7px
+     at three) and the blur turns strong only near the top; a linear ramp blurred the text
+     heavily almost as soon as it went under the bar.
+     Built the backgrounds.supply way from stacked masked backdrop-filter layers: seven
+     layers, each opaque from the top down to its row (k/7) and fading out over the next
+     seventh. Every layer blurs what the layers under it already blurred, and Gaussian blurs
+     add up (variances sum), so a layer's radius is only the increment: radius at row k =
+     sqrt(R_k^2 - R_{k+1}^2). The total blur therefore follows R smoothly and nothing
+     unblurred ever shows through a partly transparent layer (which reads as sharp text
+     with a blurred halo). Strongest blur on top of the stack.
    The layers are pseudo-elements, the markup is unchanged: ::before/::after on the nav,
    .padding-global.blur, .container-large and .nav-grid, all positioned against the nav
    (none of those wrappers is positioned). z-index orders them inside the nav's stacking
@@ -687,7 +693,7 @@ picture {
 .navbar-3,
 .navbar-3.reveal-section {
   --nav-fade-color: var(--background-color--1st-background);
-  --nav-fade-reach: 0px;
+  --nav-fade-reach: 24px;
   background-color: transparent;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
@@ -725,52 +731,52 @@ picture {
 .navbar-3.nav-logo-collapsed .container-large::before { opacity: 1; }
 .navbar-3::after {
   z-index: -2;
-  -webkit-backdrop-filter: blur(15.45px);
-  backdrop-filter: blur(15.45px);
+  -webkit-backdrop-filter: blur(18.72px);
+  backdrop-filter: blur(18.72px);
   -webkit-mask-image: linear-gradient(to bottom, #000, transparent 14.29%);
   mask-image: linear-gradient(to bottom, #000, transparent 14.29%);
 }
 .navbar-3::before {
   z-index: -3;
-  -webkit-backdrop-filter: blur(14.21px);
-  backdrop-filter: blur(14.21px);
+  -webkit-backdrop-filter: blur(15.59px);
+  backdrop-filter: blur(15.59px);
   -webkit-mask-image: linear-gradient(to bottom, #000 14.29%, transparent 28.57%);
   mask-image: linear-gradient(to bottom, #000 14.29%, transparent 28.57%);
 }
 .navbar-3 .padding-global.blur::after {
   z-index: -4;
-  -webkit-backdrop-filter: blur(12.86px);
-  backdrop-filter: blur(12.86px);
+  -webkit-backdrop-filter: blur(12.51px);
+  backdrop-filter: blur(12.51px);
   -webkit-mask-image: linear-gradient(to bottom, #000 28.57%, transparent 42.86%);
   mask-image: linear-gradient(to bottom, #000 28.57%, transparent 42.86%);
 }
 .navbar-3 .padding-global.blur::before {
   z-index: -5;
-  -webkit-backdrop-filter: blur(11.34px);
-  backdrop-filter: blur(11.34px);
+  -webkit-backdrop-filter: blur(9.51px);
+  backdrop-filter: blur(9.51px);
   -webkit-mask-image: linear-gradient(to bottom, #000 42.86%, transparent 57.14%);
   mask-image: linear-gradient(to bottom, #000 42.86%, transparent 57.14%);
 }
 .navbar-3 .container-large::after {
   z-index: -6;
-  -webkit-backdrop-filter: blur(9.58px);
-  backdrop-filter: blur(9.58px);
+  -webkit-backdrop-filter: blur(6.59px);
+  backdrop-filter: blur(6.59px);
   -webkit-mask-image: linear-gradient(to bottom, #000 57.14%, transparent 71.43%);
   mask-image: linear-gradient(to bottom, #000 57.14%, transparent 71.43%);
 }
 .navbar-3 .nav-grid::before {
   z-index: -7;
-  -webkit-backdrop-filter: blur(7.42px);
-  backdrop-filter: blur(7.42px);
+  -webkit-backdrop-filter: blur(3.82px);
+  backdrop-filter: blur(3.82px);
   -webkit-mask-image: linear-gradient(to bottom, #000 71.43%, transparent 85.71%);
   mask-image: linear-gradient(to bottom, #000 71.43%, transparent 85.71%);
 }
 .navbar-3 .nav-grid::after {
   z-index: -8;
-  -webkit-backdrop-filter: blur(4.29px);
-  backdrop-filter: blur(4.29px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 85.71%, transparent 100.0%);
-  mask-image: linear-gradient(to bottom, #000 85.71%, transparent 100.0%);
+  -webkit-backdrop-filter: blur(1.33px);
+  backdrop-filter: blur(1.33px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 85.71%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 85.71%, transparent 100%);
 }
 .navbar-3 .container-large::before {
   z-index: -1;
