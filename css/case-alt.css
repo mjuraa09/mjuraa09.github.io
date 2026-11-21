@@ -320,6 +320,18 @@ body.case-alt {
 }
 
 /* ---------- Assets and galleries ---------- */
+/* Never taller than about two thirds of the window: on a short laptop screen a 900px 4:3
+   asset was 675px tall and filled it. The cap is the asset's height (67.5% of the viewport),
+   so its width follows from its own ratio (4:3 unless set); on a tall screen it stays at 900px. */
+.case-alt .work-content-wrap { --asset-max-h: 67.5vh; }
+@supports (height: 1svh) { .case-alt .work-content-wrap { --asset-max-h: 67.5svh; } }
+.case-alt .work-content-wrap .project-image {
+  --asset-ar: 4 / 3;
+  max-width: min(900px, calc(var(--asset-max-h) * var(--asset-ar)));
+}
+.case-alt .work-content-wrap .project-image:has(.code-embed-9) { --asset-ar: 2.13; } /* the wide YouMap GIF */
+/* A narrower asset starts at the column's left edge, like its caption and the galleries. */
+.case-alt .img-description > .project-image { margin-left: 0; margin-right: 0; }
 .case-alt .img-description { margin-bottom: 0; gap: .75rem; }
 .case-alt .img-description > .work-info-text {
   font-size: .875rem;
@@ -338,7 +350,7 @@ body.case-alt {
 .case-alt .case-gallery-track::-webkit-scrollbar { display: none; }
 .case-alt .case-gallery-track:focus-visible { outline: 2px solid var(--violet); outline-offset: 4px; border-radius: 20px; }
 .case-alt .case-gallery-track > .img-description {
-  flex: 0 0 calc(100% - 4.5rem); /* the next asset peeks in */
+  flex: 0 0 min(calc(100% - 4.5rem), calc(var(--asset-max-h) * 4 / 3)); /* the next asset peeks in */
   min-width: 0;
   scroll-snap-align: start;
 }
