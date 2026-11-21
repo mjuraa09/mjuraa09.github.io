@@ -823,3 +823,38 @@ picture {
    stretched: "✺ Interested in collaboration?" in the footer at ~992px, the RD:IR hypothesis
    titles and the heatmap legend on phones, case-study labels. Left-aligned at the source. */
 .padding-global { text-align: left; }
+
+/* ---------- Navbar logo fold (2026-11-21) ----------
+   "Mateusz J." -> "Mat J." past 16px of scroll (js/custom/navlogocollapse.js). Modelled on a
+   reference recording (a wordmark folding to its initials): the letters fade, blur a little and
+   give up their width at the same time, so "J." glides in as they go. Each letter animates from
+   its own measured width (--w); the old fixed 28px meant the first ~40% of the animation
+   shrank empty space, so the letters vanished and the gap only closed afterwards.
+   Fold: from "z" back to "e" (the letters nearest "J." go first), 25ms apart.
+   Unfold: the space opens first, the letters fade in left to right just behind it. */
+.logo-letters .letter.opacity-30 {
+  --fold-ease: cubic-bezier(.65, 0, .35, 1);
+  max-width: var(--w, 28px);
+  white-space: nowrap;
+}
+.logo-fold-ready .logo-letters .letter.opacity-30 {
+  transition:
+    max-width 520ms var(--fold-ease) calc(var(--i, 0) * 25ms),
+    opacity 380ms cubic-bezier(.4, 0, .2, 1) calc(120ms + var(--i, 0) * 25ms),
+    filter 380ms cubic-bezier(.4, 0, .2, 1) calc(120ms + var(--i, 0) * 25ms);
+}
+.nav-logo-collapsed .logo-letters .letter.opacity-30 {
+  max-width: 0;
+  opacity: 0;
+  filter: blur(4px);
+}
+.logo-fold-ready.nav-logo-collapsed .logo-letters .letter.opacity-30 {
+  transition:
+    max-width 460ms var(--fold-ease) calc(var(--ri, 0) * 25ms),
+    opacity 320ms cubic-bezier(.4, 0, .2, 1) calc(var(--ri, 0) * 25ms),
+    filter 320ms cubic-bezier(.4, 0, .2, 1) calc(var(--ri, 0) * 25ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-fold-ready .logo-letters .letter.opacity-30,
+  .logo-fold-ready.nav-logo-collapsed .logo-letters .letter.opacity-30 { transition: opacity 200ms linear; filter: none; }
+}
