@@ -89,6 +89,43 @@ test.describe('desktop states', () => {
 
 });
 
+test.describe('dark mode', () => {
+  test.beforeEach(({}, info) => test.skip(info.project.name !== 'desktop', 'desktop only'));
+
+  test('home, system dark', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await open(page, 'index.html');
+    await shot(page, 'dark-home.png');
+  });
+
+  test('case study metrics, system dark', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await open(page, 'projects/rdir-fintech-copy.html');
+    await page.locator('.two-column-text-copy').first().scrollIntoViewIfNeeded();
+    await page.waitForTimeout(1500);
+    await shot(page, 'dark-case-metrics.png');
+  });
+
+  test('footer, system dark', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await open(page, 'index.html');
+    await page.locator('.footer-top-content').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(1200);
+    await shot(page, 'dark-footer.png');
+  });
+
+  test('switch to dark from a light system, kept on the next page', async ({ page }) => {
+    await open(page, 'index.html');
+    await page.locator('.theme-switch [data-theme-value="dark"]').click();
+    await page.waitForTimeout(600);
+    await expect(page.locator('html')).toHaveClass(/is-dark/);
+    await expect(page).toHaveScreenshot('theme-switch-dark.png', { clip: { x: 0, y: 0, width: 1440, height: 140 } });
+    await open(page, 'resume.html');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await expect(page.locator('.theme-switch [data-theme-value="dark"]')).toHaveAttribute('aria-checked', 'true');
+  });
+});
+
 test.describe('mobile states', () => {
   test.beforeEach(({}, info) => test.skip(info.project.name !== 'mobile', 'mobile only'));
 

@@ -246,7 +246,7 @@ picture {
   transition: background-color var(--motion-duration-fast) ease, color var(--motion-duration-quick) ease;
 }
 .activity-tab:not([aria-selected="true"]):hover { background-color: var(--background-color--4th-background); }
-.activity-tab[aria-selected="true"] { background-color: var(--black); color: #fff; }
+.activity-tab[aria-selected="true"] { background-color: var(--black); color: var(--white); }
 /* With JS both backgrounds become pills on the container: the thumb slides between the tabs
    (segmented-control thumb: spring, 400ms) and the hover highlight sits below it, so a tab
    under the cursor can never cut into the thumb passing by. Without JS the tab stays black. */
@@ -322,7 +322,7 @@ picture {
   align-items: center;
   justify-content: center;
   padding: 0;
-  color: #fff;
+  color: var(--white);
   transition: none;
 }
 .activity-tabs.has-thumb .activity-tab-ghost[hidden] { display: none; }
@@ -353,7 +353,7 @@ picture {
 .activity-months span { white-space: nowrap; }
 .activity-months span,
 .activity-legend {
-  color: #1a1a1a80;
+  color: rgb(var(--ink-rgb) / .5);
   font-family: Geist Mono, monospace;
   font-size: .75rem;
   line-height: 1rem;
@@ -367,7 +367,7 @@ picture {
 .activity-legend i {
   display: block;
   border-radius: var(--cell-radius);
-  background-color: #1a1a1a0f;
+  background-color: rgb(var(--ink-rgb) / .06);
 }
 /* On a tab switch the cells stay put and recolour in a short left-to-right wave. */
 .activity-grid i {
@@ -385,7 +385,7 @@ picture {
   align-items: center;
   gap: 6px 16px;
   padding-top: 10px;
-  border-top: 1px solid #d3cec7;
+  border-top: 1px solid var(--neutral--border);
   font-size: .6875rem;
   line-height: .875rem;
 }
@@ -417,7 +417,7 @@ picture {
   white-space: nowrap;
 }
 .activity-stat-label {
-  color: #1a1a1ab3;
+  color: rgb(var(--ink-rgb) / .7);
   font-family: Calsanstext, Arial, sans-serif;
   font-size: 1rem;
   font-weight: 400;
@@ -559,7 +559,7 @@ picture {
     border-radius: 0;
     background: none;
     box-shadow: none;
-    color: rgb(26 26 26 / .55);
+    color: rgb(var(--ink-rgb) / .55);
     font-size: .875rem;
     font-weight: 400;
     line-height: 1.4;
@@ -573,7 +573,7 @@ picture {
     position: absolute;
     left: 14px;
     top: 7px;
-    color: rgb(26 26 26 / .4);
+    color: rgb(var(--ink-rgb) / .4);
     font: 500 11px/16px 'Geist Mono', monospace;
     letter-spacing: .5px;
     transition: color 150ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -606,8 +606,8 @@ picture {
   .steps-process.marker-instant::before { transition: none; } /* first placement, resizes */
   .steps-process .work-bottom-item::before { top: 4px; bottom: 4px; }
   .steps-process:not(.has-marker) .work-bottom-item.w--current::before { opacity: 1; }
-  .steps-process .work-bottom-item:hover { color: #1a1a1a; }
-  .steps-process .work-bottom-item.w--current { color: #1a1a1a; font-weight: 500; }
+  .steps-process .work-bottom-item:hover { color: rgb(var(--ink-rgb)); }
+  .steps-process .work-bottom-item.w--current { color: rgb(var(--ink-rgb)); font-weight: 500; }
   .steps-process .work-bottom-item.w--current::after { color: var(--violet); }
 }
 @media screen and (min-width: 992px) and (prefers-reduced-motion: reduce) {
@@ -878,3 +878,112 @@ picture {
   .footer-padding { padding-top: 3rem; }
   .footer-top-content { margin-bottom: 3rem; }
 }
+
+/* ---------- Dark mode (2026-11-21) ----------
+   The snippet in each page's <head> reads localStorage "theme" (light | dark | none = system),
+   sets <html data-theme> for an explicit choice and the class .is-dark whenever the page is
+   dark (explicit, or the system's prefers-color-scheme), before the first paint. js/theme.js
+   keeps both in step with the switch and with system changes. Style dark with :root.is-dark.
+   The switch (.theme-switch, in the navbar menu) is js/theme.js.
+   Almost every colour on the site is a variable, so dark mode is mostly this palette: warm
+   near-black surfaces under the cream ones, cream text, accents lifted for contrast on dark
+   (violet #6360e9 is 3.4:1 on #151513, #8d8bff is 6.6:1). --black/--white swap, so every
+   "black button, white label" becomes "cream button, dark label". Text tones that were
+   rgb(26 26 26 / x) are rgb(var(--ink-rgb) / x). */
+:root {
+  --ink-rgb: 26 26 26;
+  --case-card-bg: rgb(229 227 220 / .5);
+  color-scheme: light;
+}
+:root.is-dark {
+  --background-color--1st-background: #151513;
+  --background-color--2nd-background: #1c1c1a;
+  --background-color--3th-backgorund: #232320;
+  --background-color--4th-background: #2b2a26;
+  --background-color--5th-backgorund: #262521;
+  --background-color--primary-85: #151513d9;
+  --background-color--secondary-85: #1c1c1ad9;
+  --neutral--footer-bg: #2a2a2680;
+  --black: #ecebe4;
+  --black-pure: #fff;
+  --white: #151513;
+  --white-90: #151513e6;
+  --neutral--border: #37352f;
+  --neutral--grey: #8f8d85;
+  --neutral--light-grey: #5d5b55;
+  --neutral--dark-neutrail: #b3ab95;
+  --violet: #8d8bff;
+  --green: #35c27a;
+  --ink-rgb: 236 235 228;
+  --case-card-bg: rgb(43 42 38 / .7);
+  color-scheme: dark;
+}
+
+/* Theme switch: three icons on a pill, a thumb slides under the chosen one. */
+.theme-switch {
+  --ts-size: 30px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid rgb(var(--ink-rgb) / .14);
+  border-radius: 999px;
+  margin-right: 8px;
+}
+.theme-switch::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: var(--ts-size);
+  height: var(--ts-size);
+  border-radius: 999px;
+  background: var(--black);
+  transform: translateX(calc(var(--ts-index, 0) * (var(--ts-size) + 2px)));
+  transition: transform var(--motion-duration-slow, 400ms) var(--motion-ease-spring, ease);
+}
+.theme-switch:not(.is-ready)::before { transition: none; }
+.theme-switch button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--ts-size);
+  height: var(--ts-size);
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: rgb(var(--ink-rgb) / .55);
+  cursor: pointer;
+  transition: color 150ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.theme-switch button:hover { color: var(--black); }
+.theme-switch button[aria-checked="true"] { color: var(--white); }
+.theme-switch button:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+.theme-switch svg { width: 16px; height: 16px; }
+@media (prefers-reduced-motion: reduce) { .theme-switch::before { transition: none; } }
+
+/* Dark mode: colours Webflow wrote as literals instead of variables. */
+.is-dark .project-stat-desc { color: rgb(var(--ink-rgb) / .85); }
+.is-dark .social-icon svg path[fill="#FFFFFF"] { fill: var(--white); }   /* LinkedIn "in" on its cream disc */
+.is-dark .back-to-top-arrow-2 { color: var(--white); }
+.is-dark .social-icon-2 { color: var(--white); }                       /* Dribbble on its cream disc */
+.is-dark .text-button._2 { color: #141413; }   /* hover label rides the orange circle: stays dark like in light */
+.is-dark .project-date { color: var(--neutral--dark-neutrail); }
+.is-dark .rsm-name { color: var(--black); }
+.is-dark .paragraph-violet { color: var(--violet); }                    /* resume "[ Key Impact ]" */
+.is-dark .button.w-button { color: var(--white); }                     /* 404 "Go Home" */
+.is-dark .work-info-text { color: rgb(var(--ink-rgb) / .7); }
+/* Steps bar below 992px: Webflow's .w-nav-link default is #222. */
+.is-dark .steps-process .work-bottom-item.w-nav-link { color: rgb(var(--ink-rgb) / .6); }
+.is-dark .steps-process .work-bottom-item.w-nav-link.w--current,
+.is-dark .steps-process .work-bottom-item.w-nav-link:hover { color: var(--black); }
+/* Lottie (badge "See my projects", logo): the near-black ink becomes cream, the hairline ring
+   the border tone; the yellow, orange and violet accents stay. */
+.is-dark [data-animation-type="lottie"] svg [fill="rgb(0,0,0)"],
+.is-dark [data-animation-type="lottie"] svg [fill="rgb(15,15,15)"],
+.is-dark [data-animation-type="lottie"] svg [fill="rgb(20,20,19)"] { fill: var(--black); }
+.is-dark [data-animation-type="lottie"] svg [stroke="rgb(211,206,199)"] { stroke: var(--neutral--border); }
+.is-dark [data-animation-type="lottie"] svg [fill="rgb(99,96,233)"] { fill: var(--violet); }
