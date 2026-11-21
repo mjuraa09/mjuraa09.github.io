@@ -806,3 +806,13 @@ picture {
 .looping-text,
 .asterisk-yellow,
 .asterisk-orange { font-size: clamp(5rem, 2.744rem + 9.256vw, 12rem); } /* footer marquee and asterisks: 80px -> 192px */
+
+/* ---------- Home hero: grow with its text (2026-11-21) ----------
+   Webflow fixed the hero at 800px. The text column is taller (820px at 1440, 945px at 992), so
+   it ran out of the hero and over the Activity section on narrower desktops. The hero now takes
+   its content's height; the photo keeps its 800px. */
+@media screen and (min-width: 992px) {
+  .header-container,
+  .header-title-wrap { height: auto; }
+  .header-title-wrap > .div-block { height: 800px; }
+}
