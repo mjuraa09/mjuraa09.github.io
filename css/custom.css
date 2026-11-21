@@ -858,3 +858,23 @@ picture {
   .logo-fold-ready .logo-letters .letter.opacity-30,
   .logo-fold-ready.nav-logo-collapsed .logo-letters .letter.opacity-30 { transition: opacity 200ms linear; filter: none; }
 }
+
+/* ---------- Footer top row spacing (2026-11-21) ----------
+   "✺ Interested in collaboration? · socials · Back to top" sat 128px below the card's top edge
+   but only 32px above "Let's talk", so it read as stuck to the headline. Less above, more below:
+   the row now belongs to the card's top, and the headline gets room of its own.
+   >=992: the side columns share what the icons leave (1fr auto 1fr), so the line does not wrap
+   at ~1000px (equal thirds left it 259px for a 270px line). */
+.footer-padding { padding-top: 4rem; }
+.footer-top-content { margin-bottom: 5rem; }
+@media screen and (min-width: 992px) {
+  .footer-top-content { grid-template-columns: 1fr auto 1fr; }
+}
+@media screen and (max-width: 991px) {
+  .footer-padding { padding-top: 3.5rem; }
+  .footer-top-content { margin-bottom: 4rem; }
+}
+@media screen and (max-width: 479px) {
+  .footer-padding { padding-top: 3rem; }
+  .footer-top-content { margin-bottom: 3rem; }
+}
