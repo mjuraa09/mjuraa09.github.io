@@ -816,3 +816,10 @@ picture {
   .header-title-wrap { height: auto; }
   .header-title-wrap > .div-block { height: 800px; }
 }
+
+/* ---------- No inherited justify (2026-11-21) ----------
+   Webflow set text-align: justify on .padding-global, the wrapper of almost every section, and
+   everything inherited it. One-line text looks the same either way, but every wrapped line got
+   stretched: "✺ Interested in collaboration?" in the footer at ~992px, the RD:IR hypothesis
+   titles and the heatmap legend on phones, case-study labels. Left-aligned at the source. */
+.padding-global { text-align: left; }
