@@ -788,3 +788,21 @@ picture {
    phones, where the letters ran together. -2% at every size, the tracking the home page
    headings use (Figma: Cal Sans UI Bold, -2%). */
 .heading-style-h5 { letter-spacing: -0.02em; }
+
+/* ---------- Fluid headings (2026-11-21) ----------
+   Headings grow with the window instead of jumping at Webflow's breakpoints (e.g. the home
+   section titles went 36 -> 56px at 768, the hero name 64 -> 100px at 992). Each one runs from
+   its phone size at 390px to its desktop size at 1600px, so phones and wide screens look as
+   before; tablets and laptops in between get the in-between size. rem + vw keeps browser zoom
+   working (pure vw would not grow with Cmd +). Body text is not scaled: it stays 16/18px. */
+.heading-style-serif-h2 { font-size: clamp(3rem, 1.952rem + 4.298vw, 6.25rem); } /* hero name, Work heading: 48px -> 100px */
+.heading-style-section,
+.heading-style-h2.heading-style-section { font-size: clamp(2.25rem, 1.847rem + 1.653vw, 3.5rem); } /* home section titles: 36px -> 56px */
+.project-title { font-size: clamp(1.8rem, 1.413rem + 1.587vw, 3rem); } /* project cards: 28.8px -> 48px */
+.descripted-section > .heading-style-h5 { font-size: clamp(1.25rem, 0.8471rem + 1.653vw, 2.5rem); } /* case-study section titles: 20px -> 40px */
+.heading-style-serif-4 { font-size: clamp(1.5rem, 0.6942rem + 3.306vw, 4rem); } /* case-study hero title: 24px -> 64px */
+.rsm-name { font-size: clamp(1.75rem, 1.508rem + 0.9917vw, 2.5rem); } /* resume name: 28px -> 40px */
+.footer-serif-title { font-size: clamp(3.75rem, 1.736rem + 8.264vw, 10rem); } /* footer "Let's talk": 60px -> 160px */
+.looping-text,
+.asterisk-yellow,
+.asterisk-orange { font-size: clamp(5rem, 2.744rem + 9.256vw, 12rem); } /* footer marquee and asterisks: 80px -> 192px */

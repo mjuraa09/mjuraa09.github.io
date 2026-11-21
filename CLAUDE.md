@@ -77,6 +77,10 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
 - Lazy case screenshots must keep their box before they load (`.project-image:has(.hero-image)` in
   `css/custom.css`): without it they are 0px tall, the page grows ~4,500px while scrolling and a step link
   lands screens short. After touching that markup, click a far step on a fresh load and check it lands.
+- Fluid headings (2026-11-21, end of `css/custom.css`): display headings use `clamp(rem, rem + vw, rem)`
+  from their phone size at 390px to their desktop size at 1600px, overriding Webflow's breakpoint sizes.
+  Body text is never scaled (16/18px everywhere: readability depends on absolute size and line length).
+  To resize a heading, change its two end sizes there, not the Webflow media queries.
 - `js/activity.js` + the "Activity section" block in `css/custom.css` – home page heatmap (GitHub / Working with AI
   tabs) drawn from `data/activity.json`. Tests serve `tests/fixtures/activity.json` and pin the date
   (`tests/fixed-activity.js`), so refreshing the real data never breaks screenshots.
