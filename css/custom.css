@@ -1045,7 +1045,7 @@ picture {
   width: 100%;
   height: 100%;
 }
-.contact-hero-bg { z-index: -1; }
+.contact-hero-bg img { z-index: -2; }   /* <picture> is display: contents (global rule): the img itself sits under the shader */
 .contact-hero-shader { position: absolute; inset: 0; z-index: -1; }   /* live canvas (js/contact-shader.js) */
 .contact-hero-shader > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .contact-hero-bg img { object-fit: cover; }
