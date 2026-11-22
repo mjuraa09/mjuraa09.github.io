@@ -919,51 +919,126 @@ picture {
   color-scheme: dark;
 }
 
-/* Theme switch: three icons on a pill, a thumb slides under the chosen one. */
+/* Theme switch (Figma 1491:7579 closed, 1491:9250 open): a 40px round button showing the
+   active mode; it opens a vertical pill (System / Light / Dark) over itself, the surface at
+   90% with a light backdrop blur. Active icon full ink, the others 40%.
+   Motion: the pill unrolls downward from the button on the site's spring, the icons follow
+   30ms apart; on a pick the button's icon turns into the new one and the pill rolls back.
+   js/theme.js drives open/close (.is-open) and the choice (data-current). */
 .theme-switch {
-  --ts-size: 30px;
+  --ts-ink: var(--black);
+  --ts-line: rgb(var(--ink-rgb) / .14);
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  padding: 3px;
-  border: 1px solid rgb(var(--ink-rgb) / .14);
-  border-radius: 999px;
+  width: 40px;
+  height: 40px;
   margin-right: 8px;
+  flex: none;
 }
-.theme-switch::before {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: var(--ts-size);
-  height: var(--ts-size);
-  border-radius: 999px;
-  background: var(--black);
-  transform: translateX(calc(var(--ts-index, 0) * (var(--ts-size) + 2px)));
-  transition: transform var(--motion-duration-slow, 400ms) var(--motion-ease-spring, ease);
-}
-.theme-switch:not(.is-ready)::before { transition: none; }
-.theme-switch button {
+.theme-switch-trigger {
   position: relative;
   display: grid;
   place-items: center;
-  width: var(--ts-size);
-  height: var(--ts-size);
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--ts-line);
+  border-radius: 999px;
+  background: none;
+  color: var(--ts-ink);
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.theme-switch-trigger:hover { border-color: rgb(var(--ink-rgb) / .3); }
+.theme-switch-trigger:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+/* The three icons are stacked; the active one is shown, a change turns one into the other. */
+.theme-switch-trigger svg {
+  grid-area: 1 / 1;
+  width: 16px;
+  height: 16px;
+  opacity: 0;
+  transform: rotate(-70deg) scale(.5);
+  transition: opacity 200ms ease, transform var(--motion-duration-slow, 400ms) var(--motion-ease-spring, ease);
+}
+.theme-switch[data-current="system"] .theme-switch-trigger [data-icon="system"],
+.theme-switch[data-current="light"] .theme-switch-trigger [data-icon="light"],
+.theme-switch[data-current="dark"] .theme-switch-trigger [data-icon="dark"] { opacity: 1; transform: none; }
+.theme-switch.is-open .theme-switch-trigger svg { opacity: 0; transition-duration: 120ms; }
+
+.theme-switch-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 40px;
+  padding: 3px;            /* + the 1px border = Figma's 4px */
+  border: 1px solid var(--ts-line);
+  border-radius: 999px;
+  background: rgb(from var(--background-color--2nd-background) r g b / .9);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  /* closed: only the top 40px (where the button is), and invisible */
+  clip-path: inset(0 0 calc(100% - 40px) 0 round 20px);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    clip-path 260ms cubic-bezier(.4, 0, .2, 1),
+    opacity 160ms ease 100ms,
+    visibility 0s linear 260ms;
+}
+@supports not (color: rgb(from red r g b)) {
+  .theme-switch-menu { background: var(--background-color--secondary-85); }
+}
+.theme-switch.is-open .theme-switch-menu {
+  clip-path: inset(0 round 20px);
+  opacity: 1;
+  visibility: visible;
+  transition:
+    clip-path 460ms var(--motion-ease-spring, ease),
+    opacity 120ms ease,
+    visibility 0s;
+}
+.theme-switch-menu button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border: 0;
   border-radius: 999px;
   background: none;
-  color: rgb(var(--ink-rgb) / .55);
+  color: rgb(var(--ink-rgb) / .4);
   cursor: pointer;
-  transition: color 150ms ease;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: color 150ms ease, background-color 150ms ease, opacity 120ms ease, transform 120ms ease;
   -webkit-tap-highlight-color: transparent;
 }
-.theme-switch button:hover { color: var(--black); }
-.theme-switch button[aria-checked="true"] { color: var(--white); }
-.theme-switch button:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
-.theme-switch svg { width: 16px; height: 16px; }
-@media (prefers-reduced-motion: reduce) { .theme-switch::before { transition: none; } }
+.theme-switch.is-open .theme-switch-menu button {
+  opacity: 1;
+  transform: none;
+  transition:
+    color 150ms ease, background-color 150ms ease,
+    opacity 220ms ease calc(60ms + var(--i, 0) * 30ms),
+    transform 420ms var(--motion-ease-spring, ease) calc(40ms + var(--i, 0) * 30ms);
+}
+.theme-switch-menu button:hover { color: rgb(var(--ink-rgb) / .75); background: rgb(var(--ink-rgb) / .06); }
+.theme-switch-menu button[aria-checked="true"] { color: var(--ts-ink); }
+.theme-switch-menu button:focus-visible { outline: 2px solid var(--violet); outline-offset: -2px; }
+.theme-switch-menu svg { width: 16px; height: 16px; }
+/* The theme change itself spreads from the switch as a circle (js/theme.js, View Transitions). */
+::view-transition-old(root),
+::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+@media (prefers-reduced-motion: reduce) {
+  .theme-switch-trigger svg,
+  .theme-switch-menu,
+  .theme-switch.is-open .theme-switch-menu,
+  .theme-switch-menu button,
+  .theme-switch.is-open .theme-switch-menu button { transition-duration: 0s; transition-delay: 0s; }
+}
 
 /* Dark mode: colours Webflow wrote as literals instead of variables. */
 .is-dark .project-stat-desc { color: rgb(var(--ink-rgb) / .85); }

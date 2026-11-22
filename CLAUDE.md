@@ -81,14 +81,16 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   from their phone size at 390px to their desktop size at 1600px, overriding Webflow's breakpoint sizes.
   Body text is never scaled (16/18px everywhere: readability depends on absolute size and line length).
   To resize a heading, change its two end sizes there, not the Webflow media queries.
-- Dark mode (2026-11-21): switch System / Light / Dark in the navbar menu (`.theme-switch`, `js/theme.js`).
+- Dark mode (2026-11-21): switch System / Light / Dark in the navbar menu, after "Get in touch" (`.theme-switch`,
+  `js/theme.js`; Figma 1491:7579 closed / 1491:9250 open, 2026-11-22): a round button that opens a vertical
+  menu over itself, theme changes spread as a circle from it (View Transitions).
   A one-line script in every page's `<head>` (before the CSS) reads localStorage `theme`, sets `<html data-theme>`
   for an explicit choice and the class `.is-dark` whenever the page is dark, so there is no light flash.
   The dark palette is the `:root.is-dark` block in `css/custom.css` (same variable names); style any dark-only
   fix with `.is-dark …` in the "Dark mode" section. Never write a colour as a literal: use the variables, or
   `rgb(var(--ink-rgb) / a)` for text tones. Literals Webflow left behind are overridden there; Lottie colours
   are recoloured through `[fill="rgb(…)"]` selectors. `tests/states.spec.js` has dark-mode screenshots.
-  A new page needs the `<head>` snippet, the switch markup before `.nav-button-wrap` and `js/theme.js`.
+  A new page needs the `<head>` snippet, the switch markup after `.nav-button-wrap` and `js/theme.js`.
 - `js/activity.js` + the "Activity section" block in `css/custom.css` – home page heatmap (GitHub / Working with AI
   tabs) drawn from `data/activity.json`. Tests serve `tests/fixtures/activity.json` and pin the date
   (`tests/fixed-activity.js`), so refreshing the real data never breaks screenshots.
