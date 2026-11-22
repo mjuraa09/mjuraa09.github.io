@@ -928,6 +928,7 @@ picture {
 .theme-switch {
   --ts-ink: var(--black);
   --ts-line: rgb(var(--ink-rgb) / .14);
+  --ts-surface: rgb(from var(--background-color--2nd-background) r g b / .9);
   position: relative;
   width: 40px;
   height: 40px;
@@ -943,7 +944,9 @@ picture {
   padding: 0;
   border: 1px solid var(--ts-line);
   border-radius: 999px;
-  background: none;
+  background: var(--ts-surface);   /* same surface as the open menu: 90% + backdrop blur */
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
   color: var(--ts-ink);
   cursor: pointer;
   transition: border-color 150ms ease, background-color 150ms ease;
@@ -977,7 +980,7 @@ picture {
   padding: 3px;            /* + the 1px border = Figma's 4px */
   border: 1px solid var(--ts-line);
   border-radius: 999px;
-  background: rgb(from var(--background-color--2nd-background) r g b / .9);
+  background: var(--ts-surface);
   -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
   /* closed: only the top 40px (where the button is), and invisible */
@@ -990,7 +993,7 @@ picture {
     visibility 0s linear 260ms;
 }
 @supports not (color: rgb(from red r g b)) {
-  .theme-switch-menu { background: var(--background-color--secondary-85); }
+  .theme-switch { --ts-surface: var(--background-color--secondary-85); }
 }
 .theme-switch.is-open .theme-switch-menu {
   clip-path: inset(0 round 20px);
