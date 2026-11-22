@@ -4,10 +4,9 @@
 // applies both before the first paint, so a dark page never flashes light. Styles: "Dark mode"
 // and "Theme switch" in css/custom.css.
 //
-// The button opens a vertical menu over itself (.is-open). Picking a mode updates the button's
-// icon, closes the menu, and — when the page actually turns light/dark — the new theme spreads
-// from the switch as a circle (View Transitions; an instant swap where unsupported or with
-// reduced motion).
+// The button opens a vertical menu over itself (.is-open). Picking a mode closes the menu at once
+// and blur-swaps the button's icon; when the page actually turns light/dark it cross-fades as in
+// the design system (View Transitions; an instant swap where unsupported or with reduced motion).
 (function () {
   var root = document.documentElement;
   var order = ['system', 'light', 'dark'];
@@ -39,23 +38,16 @@
     });
   }
 
-  // Theme change: a circle of the new theme grows from the switch.
-  function apply(choice, from) {
+  // Theme change: the whole page cross-fades (View Transitions — the browser snapshots old and
+  // new and fades one into the other, one composited layer instead of hundreds of colour tweens;
+  // timing in css/custom.css), as in the design system's ThemeMenu. Not under reduced motion,
+  // and browsers without the API just switch.
+  function apply(choice, after) {
     var change = isDark(choice) !== root.classList.contains('is-dark');
-    var run = function () { setRoot(choice); };
     save(choice);
-    sync(choice);
-    if (!change || reduced.matches || !document.startViewTransition || !from) { run(); return; }
-    var r = from.getBoundingClientRect();
-    var x = r.left + r.width / 2, y = r.top + r.height / 2;
-    var end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-    var t = document.startViewTransition(run);
-    t.ready.then(function () {
-      root.animate(
-        { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + end + 'px at ' + x + 'px ' + y + 'px)'] },
-        { duration: 560, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' }
-      );
-    }).catch(function () {});
+    var run = function () { setRoot(choice); sync(choice); if (after) after(); };
+    if (!change || reduced.matches || !document.startViewTransition) { run(); return; }
+    document.startViewTransition(run);
   }
 
   function open(sw, focusChoice) {
@@ -88,9 +80,8 @@
       sw.querySelector('.theme-switch-menu').addEventListener('click', function (e) {
         var b = e.target.closest('[data-theme-value]');
         if (!b) return;
-        apply(b.getAttribute('data-theme-value'), trigger);
-        // let the pick register in the menu before it rolls back up
-        setTimeout(function () { close(sw, e.detail === 0); }, 160);
+        var kb = e.detail === 0; // keyboard "click": give focus back to the button
+        apply(b.getAttribute('data-theme-value'), function () { close(sw, kb); });
       });
       // Radio-group keys inside the menu: arrows move the choice, Escape closes.
       sw.addEventListener('keydown', function (e) {
@@ -100,7 +91,7 @@
         if (!d) return;
         e.preventDefault();
         var next = order[(order.indexOf(stored()) + d + order.length) % order.length];
-        apply(next, trigger);
+        apply(next);
         var b = sw.querySelector('[data-theme-value="' + next + '"]');
         if (b) b.focus();
       });

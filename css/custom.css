@@ -955,17 +955,22 @@ picture {
 .theme-switch-trigger:hover { border-color: rgb(var(--ink-rgb) / .3); }
 .theme-switch-trigger:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
 /* The three icons are stacked; the active one is shown, a change turns one into the other. */
-.theme-switch-trigger svg {
+.theme-switch-glyph svg {
   grid-area: 1 / 1;
   width: 16px;
   height: 16px;
+  /* the design system's blur swap (swap-blur-in/out): blur 8px, glyph scale .25, 250ms ease-in-out */
   opacity: 0;
-  transform: rotate(-70deg) scale(.5);
-  transition: opacity 200ms ease, transform var(--motion-duration-slow, 400ms) var(--motion-ease-spring, ease);
+  transform: scale(.25);
+  filter: blur(8px);
+  transition:
+    opacity var(--motion-duration-fast, 250ms) ease-in-out,
+    transform var(--motion-duration-fast, 250ms) ease-in-out,
+    filter var(--motion-duration-fast, 250ms) ease-in-out;
 }
 .theme-switch[data-current="system"] .theme-switch-trigger [data-icon="system"],
 .theme-switch[data-current="light"] .theme-switch-trigger [data-icon="light"],
-.theme-switch[data-current="dark"] .theme-switch-trigger [data-icon="dark"] { opacity: 1; transform: none; }
+.theme-switch[data-current="dark"] .theme-switch-trigger [data-icon="dark"] { opacity: 1; transform: none; filter: none; }
 .theme-switch.is-open .theme-switch-trigger svg { opacity: 0; transition-duration: 120ms; }
 
 .theme-switch-menu {
@@ -987,10 +992,11 @@ picture {
   clip-path: inset(0 0 calc(100% - 40px) 0 round 20px);
   opacity: 0;
   visibility: hidden;
+  /* close: rolls up on the smooth-out curve and dissolves into the button as it lands */
   transition:
-    clip-path 260ms cubic-bezier(.4, 0, .2, 1),
-    opacity 160ms ease 100ms,
-    visibility 0s linear 260ms;
+    clip-path 340ms var(--motion-ease-smooth-out, cubic-bezier(.22, 1, .36, 1)),
+    opacity 200ms ease-in-out 140ms,
+    visibility 0s linear 340ms;
 }
 @supports not (color: rgb(from red r g b)) {
   .theme-switch { --ts-surface: var(--background-color--secondary-85); }
@@ -1017,7 +1023,7 @@ picture {
   cursor: pointer;
   opacity: 0;
   transform: translateY(-6px);
-  transition: color 150ms ease, background-color 150ms ease, opacity 120ms ease, transform 120ms ease;
+  transition: color 150ms ease, background-color 150ms ease, opacity 160ms ease-in-out, transform 340ms var(--motion-ease-smooth-out, ease);
   -webkit-tap-highlight-color: transparent;
 }
 .theme-switch.is-open .theme-switch-menu button {
@@ -1032,9 +1038,20 @@ picture {
 .theme-switch-menu button[aria-checked="true"] { color: var(--ts-ink); }
 .theme-switch-menu button:focus-visible { outline: 2px solid var(--violet); outline-offset: -2px; }
 .theme-switch-menu svg { width: 16px; height: 16px; }
-/* The theme change itself spreads from the switch as a circle (js/theme.js, View Transitions). */
+/* Theme change: the design system's page-wide cross-fade (View Transitions, js/theme.js), the
+   panel beat (400ms) on a symmetric curve, as both snapshots are on screen at once. Only the
+   button's glyph has its own layer: the old snapshot is dropped and the live one shown as is, so
+   its blur swap plays untouched by the fade (DS globals.css, "theme-icon"); the button's surface
+   and the menu fade with the page. */
 ::view-transition-old(root),
-::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) {
+  animation-duration: var(--motion-duration-slow, 400ms);
+  animation-timing-function: ease-in-out;
+}
+.theme-switch-glyph { display: grid; place-items: center; view-transition-name: theme-icon; }
+::view-transition-group(theme-icon),
+::view-transition-new(theme-icon) { animation: none; }
+::view-transition-old(theme-icon) { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .theme-switch-trigger svg,
   .theme-switch-menu,
