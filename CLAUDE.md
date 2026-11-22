@@ -81,11 +81,11 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   from their phone size at 390px to their desktop size at 1600px, overriding Webflow's breakpoint sizes.
   Body text is never scaled (16/18px everywhere: readability depends on absolute size and line length).
   To resize a heading, change its two end sizes there, not the Webflow media queries.
-- Dark mode (2026-11-21): switch System / Light / Dark in the navbar menu, after "Get in touch" (`.theme-switch`,
-  `js/theme.js`; Figma 1491:7579 closed / 1491:9250 open, 2026-11-22): a round button that opens a vertical
-  menu over itself. A pick cross-fades the page at once as in the design system (View Transitions, 400ms
-  ease-in-out) with the menu still open; then the chosen icon rises to the button's place while the menu
-  shrinks into the button (real height animated, so the border follows).
+- Dark mode (2026-11-21): one round button in the navbar menu, after "Get in touch" (`.theme-switch`,
+  `js/theme.js`; Figma 1491:7579). The page starts in the system's mode; a click flips light <-> dark and the
+  pick is remembered from then on (localStorage `theme`). The icon shows the mode on screen and blur-swaps;
+  the page cross-fades as in the design system (View Transitions, 400ms ease-in-out). A dropdown with
+  System / Light / Dark was tried on 2026-11-22 and dropped as too fiddly for the navbar.
   A one-line script in every page's `<head>` (before the CSS) reads localStorage `theme`, sets `<html data-theme>`
   for an explicit choice and the class `.is-dark` whenever the page is dark, so there is no light flash.
   The dark palette is the `:root.is-dark` block in `css/custom.css` (same variable names); style any dark-only

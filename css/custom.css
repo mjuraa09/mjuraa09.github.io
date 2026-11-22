@@ -919,12 +919,13 @@ picture {
   color-scheme: dark;
 }
 
-/* Theme switch (Figma 1491:7579 closed, 1491:9250 open): a 40px round button showing the
-   active mode; it opens a vertical pill (System / Light / Dark) over itself, the surface at
-   90% with a light backdrop blur. Active icon full ink, the others 40%.
-   Motion: the pill unrolls downward from the button on the site's spring, the icons follow
-   30ms apart; on a pick the button's icon turns into the new one and the pill rolls back.
-   js/theme.js drives open/close (.is-open) and the choice (data-current). */
+/* Theme switch: one round button after "Get in touch" (Figma 1491:7579). It shows the mode on
+   screen (sun in light, moon in dark) and a click flips light <-> dark; the page starts in the
+   system's mode and keeps the visitor's pick from then on (js/theme.js). The surface is the
+   2nd background at 90% with a light backdrop blur.
+   The icon changes with the design system's blur swap (swap-blur-in/out: blur 8px, glyph
+   scale .25, 250ms ease-in-out); it has its own view-transition layer so the page cross-fade
+   below does not cover it. */
 .theme-switch {
   --ts-ink: var(--black);
   --ts-line: rgb(var(--ink-rgb) / .14);
@@ -935,6 +936,9 @@ picture {
   margin-right: 8px;
   flex: none;
 }
+@supports not (color: rgb(from red r g b)) {
+  .theme-switch { --ts-surface: var(--background-color--secondary-85); }
+}
 .theme-switch-trigger {
   position: relative;
   display: grid;
@@ -944,22 +948,22 @@ picture {
   padding: 0;
   border: 1px solid var(--ts-line);
   border-radius: 999px;
-  background: var(--ts-surface);   /* same surface as the open menu: 90% + backdrop blur */
+  background: var(--ts-surface);
   -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
   color: var(--ts-ink);
   cursor: pointer;
-  transition: border-color 150ms ease, background-color 150ms ease;
+  transition: border-color 150ms ease, transform 150ms ease;
   -webkit-tap-highlight-color: transparent;
 }
 .theme-switch-trigger:hover { border-color: rgb(var(--ink-rgb) / .3); }
+.theme-switch-trigger:active { transform: scale(.96); }
 .theme-switch-trigger:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
-/* The three icons are stacked; the active one is shown, a change turns one into the other. */
+.theme-switch-glyph { display: grid; place-items: center; view-transition-name: theme-icon; }
 .theme-switch-glyph svg {
   grid-area: 1 / 1;
   width: 16px;
   height: 16px;
-  /* the design system's blur swap (swap-blur-in/out): blur 8px, glyph scale .25, 250ms ease-in-out */
   opacity: 0;
   transform: scale(.25);
   filter: blur(8px);
@@ -968,115 +972,25 @@ picture {
     transform var(--motion-duration-fast, 250ms) ease-in-out,
     filter var(--motion-duration-fast, 250ms) ease-in-out;
 }
-.theme-switch[data-current="system"] .theme-switch-trigger [data-icon="system"],
-.theme-switch[data-current="light"] .theme-switch-trigger [data-icon="light"],
-.theme-switch[data-current="dark"] .theme-switch-trigger [data-icon="dark"] { opacity: 1; transform: none; filter: none; }
-.theme-switch.is-open .theme-switch-trigger [data-icon] { opacity: 0; transition-duration: 120ms; } /* beats the active-icon rule */
-
-.theme-switch-menu {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  width: 40px;
-  height: 40px;            /* closed = exactly the button; open = 108px (3 x 32 + 2 x 2 + 2 x 4) */
-  padding: 3px;            /* + the 1px border = Figma's 4px */
-  overflow: hidden;
-  border: 1px solid var(--ts-line);
-  border-radius: 20px;
-  background: var(--ts-surface);
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
-  opacity: 0;
-  visibility: hidden;
-  /* The real height animates (not a clip mask), so the border always follows the edge.
-     Close without a pick: rolls up on smooth-out, then dissolves into the button. */
-  transition:
-    height 340ms var(--motion-ease-smooth-out, cubic-bezier(.22, 1, .36, 1)),
-    opacity 160ms ease-in-out 200ms,
-    visibility 0s linear 360ms;
-}
-@supports not (color: rgb(from red r g b)) {
-  .theme-switch { --ts-surface: var(--background-color--secondary-85); }
-}
-.theme-switch.is-open .theme-switch-menu {
-  height: 108px;
-  opacity: 1;
-  visibility: visible;
-  transition:
-    height 460ms var(--motion-ease-spring, ease),
-    opacity 120ms ease,
-    visibility 0s;
-}
-.theme-switch-menu button {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: none;
-  color: rgb(var(--ink-rgb) / .4);
-  cursor: pointer;
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: color 150ms ease, background-color 150ms ease, opacity 160ms ease-in-out, transform 340ms var(--motion-ease-smooth-out, ease);
-  -webkit-tap-highlight-color: transparent;
-}
-.theme-switch.is-open .theme-switch-menu button {
-  opacity: 1;
-  transform: none;
-  transition:
-    color 150ms ease, background-color 150ms ease,
-    opacity 220ms ease calc(60ms + var(--i, 0) * 30ms),
-    transform 420ms var(--motion-ease-spring, ease) calc(40ms + var(--i, 0) * 30ms);
-}
-/* A pick (js/theme.js, .is-picking): the chosen icon rises to the top slot — where the button's
-   icon sits — the others fade, and the pill shrinks to the button around it. When it lands the
-   menu is swapped for the button with no transition (.is-settling): same surface, same border,
-   same icon in the same place, so the hand-over is invisible. */
-.theme-switch.is-open.is-picking .theme-switch-menu {
-  height: 40px;
-  transition: height 380ms var(--motion-ease-smooth-out, cubic-bezier(.22, 1, .36, 1));
-}
-.theme-switch.is-picking .theme-switch-menu button {
-  background: none;
-  opacity: 0;
-  transition: opacity 160ms ease-in-out, color 150ms ease;
-}
-.theme-switch.is-picking .theme-switch-menu button[aria-checked="true"] {
-  opacity: 1;
-  transform: translateY(var(--pick-shift, 0px));
-  transition: transform 380ms var(--motion-ease-smooth-out, cubic-bezier(.22, 1, .36, 1)), color 150ms ease;
-}
-.theme-switch.is-settling,
-.theme-switch.is-settling * { transition: none !important; }
-.theme-switch-menu button:hover { color: rgb(var(--ink-rgb) / .75); background: rgb(var(--ink-rgb) / .06); }
-.theme-switch-menu button[aria-checked="true"] { color: var(--ts-ink); }
-.theme-switch-menu button:focus-visible { outline: 2px solid var(--violet); outline-offset: -2px; }
-.theme-switch-menu svg { width: 16px; height: 16px; }
+:root:not(.is-dark) .theme-switch-glyph [data-icon="light"],
+:root.is-dark .theme-switch-glyph [data-icon="dark"] { opacity: 1; transform: none; filter: none; }
+.theme-switch:not(.is-ready) .theme-switch-glyph svg { transition: none; } /* no swap on load */
 /* Theme change: the design system's page-wide cross-fade (View Transitions, js/theme.js), the
-   panel beat (400ms) on a symmetric curve, as both snapshots are on screen at once. Unlike the
-   DS, the button's glyph needs no layer of its own: the pick has already put the new icon in
-   place before the colours change, so it simply fades to its new colour with the page. */
+   panel beat (400ms) on a symmetric curve, as both snapshots are on screen at once. The button's
+   glyph is lifted out (DS globals.css, "theme-icon"): its old snapshot is dropped and the live one
+   shown as is, so the blur swap plays untouched by the fade. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation-duration: var(--motion-duration-slow, 400ms);
   animation-timing-function: ease-in-out;
 }
-.theme-switch-glyph { display: grid; place-items: center; }
+::view-transition-group(theme-icon),
+::view-transition-new(theme-icon) { animation: none; }
+::view-transition-old(theme-icon) { display: none; }
 @media (prefers-reduced-motion: reduce) {
-  .theme-switch-trigger svg,
-  .theme-switch-menu,
-  .theme-switch.is-open .theme-switch-menu,
-  .theme-switch-menu button,
-  .theme-switch.is-open .theme-switch-menu button { transition-duration: 0s; transition-delay: 0s; }
+  .theme-switch-glyph svg, .theme-switch-trigger { transition-duration: 0s; }
 }
+
 
 /* Dark mode: colours Webflow wrote as literals instead of variables. */
 .is-dark .project-stat-desc { color: rgb(var(--ink-rgb) / .85); }

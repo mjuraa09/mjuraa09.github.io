@@ -117,18 +117,25 @@ test.describe('dark mode', () => {
   test('switch to dark from a light system, kept on the next page', async ({ page }) => {
     await open(page, 'index.html');
     await page.locator('.theme-switch-trigger').click();
-    await page.waitForTimeout(700);
-    await page.mouse.move(700, 500); // off the menu, so no hover tint is caught
-    await expect(page).toHaveScreenshot('theme-switch-open.png', { clip: { x: 0, y: 0, width: 1440, height: 160 } });
-    await page.locator('.theme-switch [data-theme-value="dark"]').click();
     await page.mouse.move(700, 500);
-    await page.waitForTimeout(1200);
-    await expect(page.locator('.theme-switch')).not.toHaveClass(/is-open/);
+    await page.waitForTimeout(900);
     await expect(page.locator('html')).toHaveClass(/is-dark/);
     await expect(page).toHaveScreenshot('theme-switch-dark.png', { clip: { x: 0, y: 0, width: 1440, height: 140 } });
     await open(page, 'resume.html');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-    await expect(page.locator('.theme-switch [data-theme-value="dark"]')).toHaveAttribute('aria-checked', 'true');
+    await expect(page.locator('html')).toHaveClass(/is-dark/);
+  });
+
+  test('switch to light from a dark system is remembered', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await open(page, 'index.html');
+    await expect(page.locator('html')).toHaveClass(/is-dark/);
+    await page.locator('.theme-switch-trigger').click();
+    await page.waitForTimeout(900);
+    await expect(page.locator('html')).not.toHaveClass(/is-dark/);
+    await open(page, 'resume.html');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+    await expect(page.locator('html')).not.toHaveClass(/is-dark/);
   });
 });
 
