@@ -922,14 +922,14 @@ picture {
 /* Theme switch: one round button after "Get in touch" (Figma 1491:7579). It shows the mode on
    screen (sun in light, moon in dark) and a click flips light <-> dark; the page starts in the
    system's mode and keeps the visitor's pick from then on (js/theme.js). The surface is the
-   2nd background at 90% with a light backdrop blur.
+   page's background (1st) at 90% with a light backdrop blur.
    The icon changes with the design system's blur swap (swap-blur-in/out: blur 8px, glyph
    scale .25, 250ms ease-in-out); it has its own view-transition layer so the page cross-fade
    below does not cover it. */
 .theme-switch {
   --ts-ink: var(--black);
   --ts-line: rgb(var(--ink-rgb) / .14);
-  --ts-surface: rgb(from var(--background-color--2nd-background) r g b / .9);
+  --ts-surface: rgb(from var(--background-color--1st-background) r g b / .9);   /* the page's own background */
   position: relative;
   width: 40px;
   height: 40px;
@@ -937,7 +937,7 @@ picture {
   flex: none;
 }
 @supports not (color: rgb(from red r g b)) {
-  .theme-switch { --ts-surface: var(--background-color--secondary-85); }
+  .theme-switch { --ts-surface: var(--background-color--primary-85); }
 }
 .theme-switch-trigger {
   position: relative;
