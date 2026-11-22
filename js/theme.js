@@ -4,10 +4,10 @@
 // applies both before the first paint, so a dark page never flashes light. Styles: "Dark mode"
 // and "Theme switch" in css/custom.css.
 //
-// The button opens a vertical menu over itself (.is-open). Picking a mode sends the chosen icon
-// up to the button's place while the menu shrinks into the button; then, when the page actually
-// turns light/dark, it cross-fades as in the design system (View Transitions; an instant swap
-// where unsupported or with reduced motion).
+// The button opens a vertical menu over itself (.is-open). Picking a mode cross-fades the page to
+// the new colours at once, as in the design system (View Transitions; an instant swap where
+// unsupported or with reduced motion); then the chosen icon rises to the button's place while the
+// menu shrinks into the button.
 (function () {
   var root = document.documentElement;
   var order = ['system', 'light', 'dark'];
@@ -43,37 +43,41 @@
   // new and fades one into the other, one composited layer instead of hundreds of colour tweens;
   // timing in css/custom.css), as in the design system's ThemeMenu. Not under reduced motion,
   // and browsers without the API just switch.
+  // Returns a promise that settles once the new colours are on screen.
   function apply(choice) {
     var change = isDark(choice) !== root.classList.contains('is-dark');
     save(choice);
     sync(choice);
     var run = function () { setRoot(choice); };
-    if (!change || reduced.matches || !document.startViewTransition) { run(); return; }
-    document.startViewTransition(run);
+    if (!change || reduced.matches || !document.startViewTransition) { run(); return Promise.resolve(); }
+    var t = document.startViewTransition(run);
+    return t.finished.catch(function () {});
   }
 
-  // A pick: the chosen icon rises to the top slot (where the button's icon sits), the others
-  // fade and the pill shrinks to the button around it (.is-picking, css/custom.css). When it
-  // lands the menu is swapped for the button without a transition — same surface, border and
-  // icon in the same place — and then the page cross-fades to the new colours.
+  // A pick: the colours change at once (the menu stays open through the cross-fade, the pick
+  // lit up); once they have settled the menu closes — the chosen icon rises to the top slot
+  // (where the button's icon sits), the others fade and the pill shrinks to the button around it
+  // (.is-picking, css/custom.css). When it lands the menu is swapped for the button without a
+  // transition: same surface, border and icon in the same place.
   var PICK_MS = 380, SLOT = 34; // 32px item + 2px gap
   function pick(sw, choice, refocus) {
     var b = sw.querySelector('[data-theme-value="' + choice + '"]');
-    save(choice);
-    sync(choice);
-    if (reduced.matches) { close(sw, refocus); apply(choice); return; }
-    b.style.setProperty('--pick-shift', -(order.indexOf(choice) * SLOT) + 'px');
-    sw.classList.add('is-picking');
-    clearTimeout(sw._pickTimer);
-    sw._pickTimer = setTimeout(function () {
-      sw.classList.add('is-settling');
-      sw.classList.remove('is-picking');
-      close(sw, refocus);
-      void sw.offsetWidth; // commit the swap before transitions come back
-      sw.classList.remove('is-settling');
-      b.style.removeProperty('--pick-shift');
-      apply(choice);
-    }, PICK_MS);
+    sw.classList.add('is-busy');
+    var settle = function () {
+      if (reduced.matches) { close(sw, refocus); sw.classList.remove('is-busy'); return; }
+      b.style.setProperty('--pick-shift', -(order.indexOf(choice) * SLOT) + 'px');
+      sw.classList.add('is-picking');
+      clearTimeout(sw._pickTimer);
+      sw._pickTimer = setTimeout(function () {
+        sw.classList.add('is-settling');
+        sw.classList.remove('is-picking');
+        close(sw, refocus);
+        void sw.offsetWidth; // commit the swap before transitions come back
+        sw.classList.remove('is-settling', 'is-busy');
+        b.style.removeProperty('--pick-shift');
+      }, PICK_MS);
+    };
+    apply(choice).then(settle);
   }
 
   function open(sw, focusChoice) {
@@ -106,7 +110,7 @@
       sw.querySelector('.theme-switch-menu').addEventListener('click', function (e) {
         var b = e.target.closest('[data-theme-value]');
         if (!b) return;
-        if (sw.classList.contains('is-picking')) return;
+        if (sw.classList.contains('is-busy')) return;
         pick(sw, b.getAttribute('data-theme-value'), e.detail === 0); // keyboard "click": focus back to the button
       });
       // Radio-group keys inside the menu: arrows move the choice, Escape closes.
