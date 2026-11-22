@@ -971,7 +971,7 @@ picture {
 .theme-switch[data-current="system"] .theme-switch-trigger [data-icon="system"],
 .theme-switch[data-current="light"] .theme-switch-trigger [data-icon="light"],
 .theme-switch[data-current="dark"] .theme-switch-trigger [data-icon="dark"] { opacity: 1; transform: none; filter: none; }
-.theme-switch.is-open .theme-switch-trigger svg { opacity: 0; transition-duration: 120ms; }
+.theme-switch.is-open .theme-switch-trigger [data-icon] { opacity: 0; transition-duration: 120ms; } /* beats the active-icon rule */
 
 .theme-switch-menu {
   position: absolute;

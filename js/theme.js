@@ -42,12 +42,18 @@
   // new and fades one into the other, one composited layer instead of hundreds of colour tweens;
   // timing in css/custom.css), as in the design system's ThemeMenu. Not under reduced motion,
   // and browsers without the API just switch.
+  // `after` runs once the colours have settled: the menu stays open through the cross-fade (it
+  // fades into the new colours with the page) and only then rolls up, so the roll-up is seen
+  // instead of being lost inside the fade.
   function apply(choice, after) {
     var change = isDark(choice) !== root.classList.contains('is-dark');
     save(choice);
-    var run = function () { setRoot(choice); sync(choice); if (after) after(); };
-    if (!change || reduced.matches || !document.startViewTransition) { run(); return; }
-    document.startViewTransition(run);
+    sync(choice); // the pick lights up in the menu at once, before the colours change
+    var run = function () { setRoot(choice); };
+    if (!change || reduced.matches || !document.startViewTransition) { run(); if (after) after(); return; }
+    var t = document.startViewTransition(run);
+    var done = function () { if (after) after(); };
+    t.finished.then(done, done);
   }
 
   function open(sw, focusChoice) {
