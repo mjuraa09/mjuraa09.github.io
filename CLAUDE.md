@@ -83,8 +83,9 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   To resize a heading, change its two end sizes there, not the Webflow media queries.
 - Dark mode (2026-11-21): switch System / Light / Dark in the navbar menu, after "Get in touch" (`.theme-switch`,
   `js/theme.js`; Figma 1491:7579 closed / 1491:9250 open, 2026-11-22): a round button that opens a vertical
-  menu over itself. A theme change cross-fades the page as in the design system (View Transitions, 400ms
-  ease-in-out; only the button glyph keeps its own layer and blur-swaps).
+  menu over itself. A pick sends the chosen icon up to the button's place while the menu shrinks into the
+  button (real height animated, so the border follows), then the page cross-fades as in the design system
+  (View Transitions, 400ms ease-in-out).
   A one-line script in every page's `<head>` (before the CSS) reads localStorage `theme`, sets `<html data-theme>`
   for an explicit choice and the class `.is-dark` whenever the page is dark, so there is no light flash.
   The dark palette is the `:root.is-dark` block in `css/custom.css` (same variable names); style any dark-only

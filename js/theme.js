@@ -4,9 +4,10 @@
 // applies both before the first paint, so a dark page never flashes light. Styles: "Dark mode"
 // and "Theme switch" in css/custom.css.
 //
-// The button opens a vertical menu over itself (.is-open). Picking a mode closes the menu at once
-// and blur-swaps the button's icon; when the page actually turns light/dark it cross-fades as in
-// the design system (View Transitions; an instant swap where unsupported or with reduced motion).
+// The button opens a vertical menu over itself (.is-open). Picking a mode sends the chosen icon
+// up to the button's place while the menu shrinks into the button; then, when the page actually
+// turns light/dark, it cross-fades as in the design system (View Transitions; an instant swap
+// where unsupported or with reduced motion).
 (function () {
   var root = document.documentElement;
   var order = ['system', 'light', 'dark'];
@@ -42,18 +43,37 @@
   // new and fades one into the other, one composited layer instead of hundreds of colour tweens;
   // timing in css/custom.css), as in the design system's ThemeMenu. Not under reduced motion,
   // and browsers without the API just switch.
-  // `after` runs once the colours have settled: the menu stays open through the cross-fade (it
-  // fades into the new colours with the page) and only then rolls up, so the roll-up is seen
-  // instead of being lost inside the fade.
-  function apply(choice, after) {
+  function apply(choice) {
     var change = isDark(choice) !== root.classList.contains('is-dark');
     save(choice);
-    sync(choice); // the pick lights up in the menu at once, before the colours change
+    sync(choice);
     var run = function () { setRoot(choice); };
-    if (!change || reduced.matches || !document.startViewTransition) { run(); if (after) after(); return; }
-    var t = document.startViewTransition(run);
-    var done = function () { if (after) after(); };
-    t.finished.then(done, done);
+    if (!change || reduced.matches || !document.startViewTransition) { run(); return; }
+    document.startViewTransition(run);
+  }
+
+  // A pick: the chosen icon rises to the top slot (where the button's icon sits), the others
+  // fade and the pill shrinks to the button around it (.is-picking, css/custom.css). When it
+  // lands the menu is swapped for the button without a transition — same surface, border and
+  // icon in the same place — and then the page cross-fades to the new colours.
+  var PICK_MS = 380, SLOT = 34; // 32px item + 2px gap
+  function pick(sw, choice, refocus) {
+    var b = sw.querySelector('[data-theme-value="' + choice + '"]');
+    save(choice);
+    sync(choice);
+    if (reduced.matches) { close(sw, refocus); apply(choice); return; }
+    b.style.setProperty('--pick-shift', -(order.indexOf(choice) * SLOT) + 'px');
+    sw.classList.add('is-picking');
+    clearTimeout(sw._pickTimer);
+    sw._pickTimer = setTimeout(function () {
+      sw.classList.add('is-settling');
+      sw.classList.remove('is-picking');
+      close(sw, refocus);
+      void sw.offsetWidth; // commit the swap before transitions come back
+      sw.classList.remove('is-settling');
+      b.style.removeProperty('--pick-shift');
+      apply(choice);
+    }, PICK_MS);
   }
 
   function open(sw, focusChoice) {
@@ -86,8 +106,8 @@
       sw.querySelector('.theme-switch-menu').addEventListener('click', function (e) {
         var b = e.target.closest('[data-theme-value]');
         if (!b) return;
-        var kb = e.detail === 0; // keyboard "click": give focus back to the button
-        apply(b.getAttribute('data-theme-value'), function () { close(sw, kb); });
+        if (sw.classList.contains('is-picking')) return;
+        pick(sw, b.getAttribute('data-theme-value'), e.detail === 0); // keyboard "click": focus back to the button
       });
       // Radio-group keys inside the menu: arrows move the choice, Escape closes.
       sw.addEventListener('keydown', function (e) {
