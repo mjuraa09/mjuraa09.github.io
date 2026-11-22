@@ -93,6 +93,10 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   `rgb(var(--ink-rgb) / a)` for text tones. Literals Webflow left behind are overridden there; Lottie colours
   are recoloured through `[fill="rgb(…)"]` selectors. `tests/states.spec.js` has dark-mode screenshots.
   A new page needs the `<head>` snippet, the switch markup after `.nav-button-wrap` and `js/theme.js`.
+- Contact page (2026-11-22, Figma 1502:1585): one rounded hero filled with a still frame of Paper's
+  "Warp" shader (settings in the "Contact page" block of `css/custom.css`, files in `images/contact/`) and a
+  frosted card with e-mail, phone and social links. The old Webflow form is gone: it only worked on Webflow
+  hosting. A new frame: render it with `@paper-design/shaders` (ShaderMount, `frame` = ms) at 2496x1892.
 - `js/activity.js` + the "Activity section" block in `css/custom.css` – home page heatmap (GitHub / Working with AI
   tabs) drawn from `data/activity.json`. Tests serve `tests/fixtures/activity.json` and pin the date
   (`tests/fixed-activity.js`), so refreshing the real data never breaks screenshots.
