@@ -96,7 +96,7 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
 - Contact page (2026-11-22, Figma 1502:1585): one rounded hero with Paper's "Warp" shader running live
   (`js/contact-shader.js`, a Warp-only esbuild bundle of `@paper-design/shaders` in `js/vendor/paper-warp.js`)
   over a still of its frame 0 (`images/contact/`), and a frosted card with e-mail, phone and social links.
-  The still is what shows under reduced motion, without WebGL and in tests (`navigator.webdriver`). No footer
+  The still is what shows under reduced motion, without WebGL and in tests (`window.__stillShader`, set in `tests/fixed-activity.js`). No footer
   on this page, and the old Webflow form is gone (it only worked on Webflow hosting). Shader settings live
   in the script; if they change, re-render the still at 2496x1892 with ShaderMount `frame` 0.
 - `js/activity.js` + the "Activity section" block in `css/custom.css` – home page heatmap (GitHub / Working with AI

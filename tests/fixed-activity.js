@@ -4,5 +4,8 @@
 // (only the section's date: freezing the whole page clock would stall Webflow's animations).
 export async function freezeActivity(page) {
   await page.route('**/data/activity.json', (route) => route.fulfill({ path: 'tests/fixtures/activity.json' }));
-  await page.addInitScript(() => { window.__activityToday = '2026-11-12'; });
+  await page.addInitScript(() => {
+    window.__activityToday = '2026-11-12';
+    window.__stillShader = true; // contact hero: the still frame, not the live shader (js/contact-shader.js)
+  });
 }
