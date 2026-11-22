@@ -93,10 +93,12 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   `rgb(var(--ink-rgb) / a)` for text tones. Literals Webflow left behind are overridden there; Lottie colours
   are recoloured through `[fill="rgb(…)"]` selectors. `tests/states.spec.js` has dark-mode screenshots.
   A new page needs the `<head>` snippet, the switch markup after `.nav-button-wrap` and `js/theme.js`.
-- Contact page (2026-11-22, Figma 1502:1585): one rounded hero filled with a still frame of Paper's
-  "Warp" shader (settings in the "Contact page" block of `css/custom.css`, files in `images/contact/`) and a
-  frosted card with e-mail, phone and social links. The old Webflow form is gone: it only worked on Webflow
-  hosting. A new frame: render it with `@paper-design/shaders` (ShaderMount, `frame` = ms) at 2496x1892.
+- Contact page (2026-11-22, Figma 1502:1585): one rounded hero with Paper's "Warp" shader running live
+  (`js/contact-shader.js`, a Warp-only esbuild bundle of `@paper-design/shaders` in `js/vendor/paper-warp.js`)
+  over a still of its frame 0 (`images/contact/`), and a frosted card with e-mail, phone and social links.
+  The still is what shows under reduced motion, without WebGL and in tests (`navigator.webdriver`). No footer
+  on this page, and the old Webflow form is gone (it only worked on Webflow hosting). Shader settings live
+  in the script; if they change, re-render the still at 2496x1892 with ShaderMount `frame` 0.
 - `js/activity.js` + the "Activity section" block in `css/custom.css` – home page heatmap (GitHub / Working with AI
   tabs) drawn from `data/activity.json`. Tests serve `tests/fixtures/activity.json` and pin the date
   (`tests/fixed-activity.js`), so refreshing the real data never breaks screenshots.

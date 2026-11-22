@@ -1015,6 +1015,10 @@ picture {
 .is-dark [data-animation-type="lottie"] svg [stroke="rgb(211,206,199)"] { stroke: var(--neutral--border); }
 .is-dark [data-animation-type="lottie"] svg [fill="rgb(99,96,233)"] { fill: var(--violet); }
 
+/* Monospace labels: Webflow gave the project number/tags and the resume tags the system stack
+   (ui-monospace, SF Mono, Roboto Mono); the site's mono is Geist Mono everywhere. */
+.project-num, .project-tag, .rsm-tag { font-family: 'Geist Mono', monospace; }
+
 /* Contact page (2026-11-22, Figma 1502:1585): one rounded hero under the navbar, filled with a
    still frame of Paper's "Warp" shader (shaders.paper.design/warp, colours #1d1d1b #f49762
    #efb525 #faf9f5, checks, scale 2.5, frame 0; rendered at 2496x1892 and kept in
@@ -1042,6 +1046,8 @@ picture {
   height: 100%;
 }
 .contact-hero-bg { z-index: -1; }
+.contact-hero-shader { position: absolute; inset: 0; z-index: -1; }   /* live canvas (js/contact-shader.js) */
+.contact-hero-shader > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .contact-hero-bg img { object-fit: cover; }
 .contact-card {
   display: flex;
@@ -1083,7 +1089,7 @@ picture {
   font-size: clamp(1.25rem, .95rem + 1.2vw, 1.75rem);
 }
 .contact-card-email:hover,
-.contact-card-phone:hover { color: var(--neutral--grey); }
+.contact-card-phone:hover { color: var(--orange); }   /* the orange of the "Get in touch" arrow */
 .contact-card-divider {
   width: 100%;
   height: 1px;
