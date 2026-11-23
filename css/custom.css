@@ -908,7 +908,7 @@ picture {
   --black-pure: #fff;
   --white: #151513;
   --white-90: #151513e6;
-  --neutral--border: #37352f;
+  --neutral--border: #45423a;   /* 1.8:1 on the page, 1.5:1 on cards: the contrast #d3cec7 has in light */
   --neutral--grey: #8f8d85;
   --neutral--light-grey: #5d5b55;
   --neutral--dark-neutrail: #b3ab95;
@@ -1003,6 +1003,15 @@ picture {
 .is-dark .paragraph-violet { color: var(--violet); }                    /* resume "[ Key Impact ]" */
 .is-dark .button.w-button { color: var(--white); }                     /* 404 "Go Home" */
 .is-dark .work-info-text { color: rgb(var(--ink-rgb) / .7); }
+.is-dark .project-tag { border-color: rgb(var(--ink-rgb) / .18); }
+.is-dark .contact-card-divider { background-color: rgb(var(--ink-rgb) / .16); }   /* the card is 90% see-through over the orange */   /* was #14130f2e: dark on dark */
+/* Project card hover cursor: Webflow's dark glass (#1d1f21 at 25%) vanishes on dark; in dark it is
+   cream glass at the same strength. The white "+" stays white. */
+.is-dark .cursor { background-color: rgb(var(--ink-rgb) / .25); }
+/* Case-study step icons (Figma 1493:169, 1493:280): a lighter tile and a light-sand glyph. */
+.is-dark .icon-block { background-color: #3a3830; }
+.is-dark .icon-block svg[fill="#79776d" i],
+.is-dark .icon-block svg [fill="#79776d" i] { fill: #cec3a4; }
 /* Steps bar below 992px: Webflow's .w-nav-link default is #222. */
 .is-dark .steps-process .work-bottom-item.w-nav-link { color: rgb(var(--ink-rgb) / .6); }
 .is-dark .steps-process .work-bottom-item.w-nav-link.w--current,
