@@ -903,6 +903,7 @@ picture {
 :root {
   --ink-rgb: 26 26 26;
   --case-card-bg: rgb(229 227 220 / .5);
+  --icon-ink: #79776d;   /* step icons: one shade for both layers */
   color-scheme: light;
 }
 :root.is-dark {
@@ -926,6 +927,7 @@ picture {
   --green: #35c27a;
   --ink-rgb: 236 235 228;
   --case-card-bg: rgb(43 42 38 / .7);
+  --icon-ink: #cec3a4;
   color-scheme: dark;
 }
 
@@ -1156,3 +1158,8 @@ picture {
    and only on the light (300) text: .change-3 is a 400 line and keeps Cal Sans Text. */
 .case-alt .text-size-regular:not(.change-3),
 .case-alt .work-info-text.text-mute { font-family: 'Cal Sans UI', Calsanstext, Arial, sans-serif; }
+
+/* Nucleo UI icons (test on RD:IR, Figma 1519:20: Process, Next Steps). Outline-duo 18px grid drawn
+   at 24px in the 40px tile: the 1.5 stroke lands at 2px, as the old Phosphor icons. Both layers are
+   currentColor (the soft one at 30%), so the icon is one shade: --icon-ink, light and dark. */
+.icon-block .nc-icon { display: block; width: 24px; height: 24px; margin: 4px; color: var(--icon-ink); }   /* centred in the 32px embed box */
