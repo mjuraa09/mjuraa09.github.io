@@ -1032,7 +1032,7 @@ picture {
   justify-content: center;
   height: calc(100svh - 9rem);
   min-height: 34rem;
-  margin: .375rem 6rem 4.5rem;
+  margin: .375rem max(6rem, (100% - 1440px) / 2) 4.5rem;   /* page gutters, at most 1440px wide (centred) */
   padding: 1.5rem;
   border-radius: 2rem;
   overflow: hidden;
