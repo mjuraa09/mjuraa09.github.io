@@ -63,6 +63,9 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   `@font-face` rules for Geist Mono and Funnel Display. Every font is self-hosted in `fonts/`; nothing loads
   from Google Fonts (removed 2026-11-16: Geist Mono drawn from Google made `resume.html` screenshots flaky).
   Only the latin + latin-ext subsets are kept; add another subset from Google's CSS if new text needs it.
+  Case-study body copy (`.case-alt`, the 300 text) is Cal Sans UI Light as in Figma, not Webflow's heavier
+  Cal Sans Text Light: `fonts/CalSansUI-Light.woff2`, from the designer's local Cal Sans UI set (cal.com's
+  repo only ships 400-700).
 - `js/site.js` – reveal on load, `smoothScrollTo` (back-to-top and the case-study steps), case-study
   scrollspy. The steps nav replaces Webflow's anchor scroll: it listens on the steps `.w-nav-menu` and
   stops the event before it reaches the document handler in `js/webflow.js`. Durations cap at 700 ms
