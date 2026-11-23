@@ -1032,7 +1032,7 @@ picture {
   justify-content: center;
   height: calc(100svh - 9rem);
   min-height: 34rem;
-  margin: .375rem max(6rem, (100% - 1440px) / 2) 4.5rem;   /* page gutters, at most 1440px wide (centred) */
+  margin: .375rem max(6rem, (100% - 1440px) / 2) 1.25rem;   /* page gutters, at most 1440px wide (centred) */
   padding: 1.5rem;
   border-radius: 2rem;
   overflow: hidden;
@@ -1049,6 +1049,10 @@ picture {
 .contact-hero-shader { position: absolute; inset: 0; z-index: -1; }   /* live canvas (js/contact-shader.js) */
 .contact-hero-shader > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .contact-hero-bg img { object-fit: cover; }
+/* The footer's credit line, without the footer bar: bottom left under the hero, aligned with its
+   edge. Hero margin 1.25rem + line 1.125rem + 2.125rem = the 4.5rem the hero had below it. */
+.contact-credit { margin: 0 max(6rem, (100% - 1440px) / 2) 2.125rem; }
+.contact-credit .footer_credit-text { margin-top: 0; line-height: 1.5; }
 .contact-card {
   display: flex;
   flex-direction: column;
@@ -1096,9 +1100,11 @@ picture {
   background-color: var(--neutral--border);
 }
 @media screen and (max-width: 991px) {
-  .contact-hero { margin-left: 4rem; margin-right: 4rem; }
+  .contact-hero,
+  .contact-credit { margin-left: 4rem; margin-right: 4rem; }
 }
 @media screen and (max-width: 767px) {
-  .contact-hero { margin: .375rem 1rem 3rem; min-height: 30rem; border-radius: 1.5rem; padding: 1rem; }
+  .contact-hero { margin: .375rem 1rem 1rem; min-height: 30rem; border-radius: 1.5rem; padding: 1rem; }
+  .contact-credit { margin: 0 1rem 1.875rem; }
   .contact-card { padding: 1.5rem; }
 }
