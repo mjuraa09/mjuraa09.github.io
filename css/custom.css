@@ -1161,3 +1161,9 @@ picture {
    at 24px in the 40px tile: the 1.5 stroke lands at 2px, as the Phosphor icons they replaced. Both layers are
    currentColor (the soft one at 30%), so the icon is one shade: --icon-ink, light and dark. */
 .icon-block .nc-icon { display: block; width: 24px; height: 24px; margin: 4px; color: var(--icon-ink); }   /* centred in the 32px embed box */
+
+/* ---------- Smooth wheel scrolling (js/smooth-scroll.js) ----------
+   Lenis' own stylesheet, trimmed to what applies here. */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-stopped { overflow: clip; }
+.lenis.lenis-smooth iframe { pointer-events: none; }

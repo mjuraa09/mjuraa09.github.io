@@ -7,5 +7,6 @@ export async function freezeActivity(page) {
   await page.addInitScript(() => {
     window.__activityToday = '2026-11-12';
     window.__stillShader = true; // contact hero: the still frame, not the live shader (js/contact-shader.js)
+    window.__noSmoothScroll = true; // native scrolling, no Lenis (js/site.js, js/smooth-scroll.js)
   });
 }

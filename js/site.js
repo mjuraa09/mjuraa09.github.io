@@ -34,6 +34,32 @@ function reducedMotion() {
   return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+// Smooth wheel scrolling (js/smooth-scroll.js + js/vendor/lenis.min.js), loaded from here so no
+// page needs its own script tags. Skipped under reduced motion, on touch-first devices (no fine
+// pointer), in the visual tests (window.__noSmoothScroll, tests/fixed-activity.js) and for a tab
+// opened with ?smooth=0 (remembered for that tab; ?smooth=1 switches it back on), for comparing.
+// The two files get the same ?v=<commit> as site.js itself (the deploy stamps only HTML URLs).
+(function () {
+  const src = document.currentScript && document.currentScript.src;
+  const m = src && src.match(/^(.*\/)site\.js(\?[^#]*)?/);
+  if (!m) return;
+  const base = m[1], version = m[2] || '';
+  let off = false;
+  try {
+    const q = new URLSearchParams(location.search).get('smooth');
+    if (q !== null) sessionStorage.setItem('smooth', q === '0' ? '0' : '1');
+    off = sessionStorage.getItem('smooth') === '0';
+  } catch (e) { /* storage blocked: default (on) */ }
+  if (off || window.__noSmoothScroll || reducedMotion() || !matchMedia('(pointer: fine)').matches) return;
+  const load = (file, next) => {
+    const s = document.createElement('script');
+    s.src = base + file + version;
+    s.onload = next;
+    document.head.appendChild(s);
+  };
+  load('vendor/lenis.min.js', () => load('smooth-scroll.js'));
+})();
+
 // One scroll for the whole site: the back-to-top button and the case-study steps.
 //
 // Only the last screenful is animated. A case study is ~22000px of full-bleed screenshots,
@@ -51,6 +77,8 @@ function smoothScrollTo(top, done) {
   let start = window.scrollY;
   let dist = top - start;
   const finish = () => { if (done) done(); };
+  // Smooth-wheel trial: drop any momentum Lenis still has, or it keeps pulling the page back.
+  if (window.__lenis) window.__lenis.scrollTo(window.scrollY, { immediate: true, force: true });
   if (reducedMotion() || Math.abs(dist) < 2) { window.scrollTo(0, top); finish(); return; }
   // Up to a couple of screens the whole way is animated; past that only the last screenful
   // is, and the rest is covered at once.
