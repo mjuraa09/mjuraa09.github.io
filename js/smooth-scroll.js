@@ -3,9 +3,10 @@
 // visual tests, a tab opened with ?smooth=0).
 //
 // - Mouse wheel and trackpad only. Touch keeps the browser's own scrolling (syncTouch off).
-// - Light: lerp .12 (Lenis' default is .1), so the page settles ~0.2-0.3 s after the wheel stops.
-//   Lower = floatier, higher = closer to native. Measured 2026-11-24 on every page (75 Hz screen,
-//   60 wheel notches): no frame over 14.3 ms, none over 20 ms.
+// - Light: lerp .12 (Lenis' default is .1), so 95% of a notch is covered in ~0.4 s and the rest
+//   eases out by ~0.8 s. Lower = floatier, higher = closer to native; keep GLIDE_RATE in js/site.js equal.
+//   Measured 2026-11-24 on the home page and the three case studies (75 Hz screen, 60 synthetic
+//   wheel notches): no frame over 14.3 ms.
 // - Keyboard (arrows, space, Page Down), Ctrl+F and scrollbar drags stay native.
 // - A box that scrolls on its own keeps the wheel in its direction (allowNestedScroll): today only
 //   the case-study steps bar <=991, sideways; a vertical wheel over it still moves the page.

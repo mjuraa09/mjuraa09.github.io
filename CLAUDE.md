@@ -70,8 +70,9 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   repo only ships 400-700).
 - `js/site.js` – reveal on load, `smoothScrollTo` (back-to-top and the case-study steps), case-study
   scrollspy. The steps nav replaces Webflow's anchor scroll: it listens on the steps `.w-nav-menu` and
-  stops the event before it reaches the document handler in `js/webflow.js`. Durations cap at 700 ms
-  instead of growing with the distance, and the scrollspy is frozen until the scroll lands, so the
+  stops the event before it reaches the document handler in `js/webflow.js`. The glide brakes
+  like the wheel (exponential, `GLIDE_RATE` = Lenis' lerp × 60; keep them equal; ~1.1-1.2 s whatever the distance,
+  2026-11-24), a new click replaces it, and wheel/touch/scroll keys/mouse button cancel it. The scrollspy is frozen until the scroll lands, so the
   highlight goes straight to the step you picked. Where a step lands is `scroll-margin-top` on
   `.descripted-section` in `css/custom.css`, sized to clear the sticky navbar (and the steps bar ≤991).
   Sections have no top padding (Webflow's 80/128px is gone, 2026-11-17): 48px above and below each
@@ -110,11 +111,11 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   soft one at 30%), coloured by `--icon-ink` (#79776d light, #cec3a4 dark). The Nucleo MCP (`nucleo-icons`) finds
   them; icons.json is in `~/.nucleo/skills/ui/`.
 - Smooth wheel scrolling (2026-11-24): Lenis 1.3.28 (`js/vendor/lenis.min.js`, MIT) set up in `js/smooth-scroll.js`,
-  lerp .12 (light: settles ~0.2-0.3 s after the wheel stops). `js/site.js` loads both files, with site.js's own `?v=`,
+  lerp .12 (light: 95% of a notch in ~0.4 s, at rest by ~0.8 s). `js/site.js` loads both files, with site.js's own `?v=`,
   so no page needs script tags. Wheel and trackpad only: not under reduced motion, not on touch-first devices
   (no fine pointer), not in tests (`window.__noSmoothScroll`), not in a tab opened with `?smooth=0` (for comparing).
-  `smoothScrollTo` halts Lenis' momentum first (`window.__lenis`); the open mobile menu stops it. Measured on every
-  page: no frame over 14.3 ms. Lenis drives the scroll from the main thread, so re-measure after adding heavy media.
+  `smoothScrollTo` halts Lenis' momentum first (`window.__lenis`); the open mobile menu stops it. Measured on the
+  home page and the three case studies (synthetic wheel): no frame over 14.3 ms. Lenis drives the scroll from the main thread, so re-measure after adding heavy media.
 - `js/activity.js` + the "Activity section" block in `css/custom.css` – home page heatmap (GitHub / Working with AI
   tabs) drawn from `data/activity.json`. Tests serve `tests/fixtures/activity.json` and pin the date
   (`tests/fixed-activity.js`), so refreshing the real data never breaks screenshots.

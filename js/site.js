@@ -69,15 +69,23 @@ function reducedMotion() {
 // screens of painting however far the target is, so every jump runs at the same speed and
 // lands the same way. (For reference: Webflow's own anchor scroll takes 472*ln(d+125)-2000
 // ms, ~2.4s across a case study, and the browser's native smooth scroll ~1.8s.)
-// The curve is the design system's `smooth-out`: leaves quickly, sets down gently. A wheel
-// or a finger cancels it, so the page never fights someone who decided to scroll themselves.
+// The braking is the same as the wheel's (Lenis, js/smooth-scroll.js): each moment the page covers
+// a fixed share of what is left, so it slows down all the way in and sets down softly, ~1.1 s for
+// a screen. GLIDE_RATE is Lenis' lerp * 60 per second: change the two together. The first 120 ms
+// ramp up, so it doesn't set off with a jerk. A wheel, a finger, a scroll key or the mouse button
+// (scrollbar) cancels it, so the page never fights someone who decided to scroll themselves, and
+// a new glide replaces the one under way.
+const GLIDE_RATE = 0.12 * 60;
+const GLIDE_RAMP = 0.12; // seconds
+let stopGlide = null;
 function smoothScrollTo(top, done) {
+  if (stopGlide) stopGlide();
   const max = document.documentElement.scrollHeight - window.innerHeight;
   top = Math.max(0, Math.min(Math.round(top), max));
   let start = window.scrollY;
   let dist = top - start;
   const finish = () => { if (done) done(); };
-  // Smooth-wheel trial: drop any momentum Lenis still has, or it keeps pulling the page back.
+  // Drop any momentum Lenis still has from the wheel, or it keeps pulling the page back.
   if (window.__lenis) window.__lenis.scrollTo(window.scrollY, { immediate: true, force: true });
   if (reducedMotion() || Math.abs(dist) < 2) { window.scrollTo(0, top); finish(); return; }
   // Up to a couple of screens the whole way is animated; past that only the last screenful
@@ -90,14 +98,23 @@ function smoothScrollTo(top, done) {
     dist = top - start;
     jumped = true;
   }
-  const duration = Math.min(520, Math.max(280, Math.abs(dist) * 0.35));
-  const ease = (t) => 1 - Math.pow(1 - t, 5); // cubic-bezier(.22,1,.36,1), the DS's smooth-out
-  const events = ['wheel', 'touchstart'];
-  let startTime = null;
+  const keys = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '];
+  const events = ['wheel', 'touchstart', 'mousedown', 'keydown'];
+  let last = null;
+  let t = 0;
   let stopped = false;
-  function cleanup() { events.forEach((ev) => window.removeEventListener(ev, cancel)); }
-  function cancel() { stopped = true; cleanup(); finish(); }
+  function cleanup() {
+    stopped = true;
+    stopGlide = null;
+    events.forEach((ev) => window.removeEventListener(ev, cancel));
+  }
+  function cancel(e) {
+    if (e && e.type === 'keydown' && !keys.includes(e.key)) return;
+    cleanup();
+    finish();
+  }
   events.forEach((ev) => window.addEventListener(ev, cancel, { passive: true }));
+  stopGlide = cancel;
   // After a jump the browser still has a screen of case-study artwork to paint, which on a
   // long page costs over 100ms. Let that frame pass before the clock starts, so the stall
   // lands on a page standing still instead of halfway through the glide.
@@ -105,10 +122,14 @@ function smoothScrollTo(top, done) {
   function step(now) {
     if (stopped) return;
     if (skip > 0) { skip--; requestAnimationFrame(step); return; }
-    if (startTime === null) startTime = now;
-    const p = Math.min(1, (now - startTime) / duration);
-    window.scrollTo(0, Math.round(start + dist * ease(p)));
-    if (p < 1) { requestAnimationFrame(step); return; }
+    // A slow frame holds the glide up instead of making it leap.
+    if (last !== null) t += Math.min(now - last, 34) / 1000;
+    last = now;
+    const ran = t < GLIDE_RAMP ? t * t / (2 * GLIDE_RAMP) : t - GLIDE_RAMP / 2;
+    const left = dist * Math.exp(-GLIDE_RATE * ran);
+    // Not rounded: on a 2x screen half pixels keep the slow end of it smooth.
+    if (Math.abs(left) > 0.5) { window.scrollTo(0, top - left); requestAnimationFrame(step); return; }
+    window.scrollTo(0, top);
     cleanup();
     finish();
   }
@@ -126,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Case studies: the steps navigation (no-op on other pages).
-// Clicking a step scrolls with the browser's own smooth scroll instead of Webflow's, whose
+// Clicking a step scrolls with smoothScrollTo() above instead of Webflow's scroll, whose
 // duration grows with the distance (472*ln(d+125)-2000 ms — ~2.7 s from the end of the page
 // to the top), and freezes the scrollspy until the scroll settles, so the highlight lands on
 // the step you picked rather than flicking through every one it passes.
@@ -213,6 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
     e.preventDefault();
     e.stopPropagation();
 
+    if (stopGlide) stopGlide(); // its landing would unlock the scrollspy under this one
     highlight(target.getAttribute('data-section'));
     locked = true;
     clearTimeout(unlockTimer);

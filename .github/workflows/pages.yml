@@ -19,7 +19,7 @@ concurrency:
 # Two jobs, as in GitHub's own Pages template: deploy starts only after build has finished, so the
 # uploaded artifact is registered by then. With upload and deploy in one job, deploy-pages asked for
 # the artifact 0.3 s after the upload and kept failing with "No artifacts named github-pages"
-# (2026-11-24, every re-run).
+# (2026-11-24: 5 of 6 attempts over two commits).
 jobs:
   build:
     runs-on: ubuntu-latest
