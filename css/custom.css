@@ -1020,10 +1020,8 @@ picture {
 /* Project card hover cursor: Webflow's dark glass (#1d1f21 at 25%) vanishes on dark; in dark it is
    cream glass at the same strength. The white "+" stays white. */
 .is-dark .cursor { background-color: rgb(var(--ink-rgb) / .25); }
-/* Case-study step icons (Figma 1493:169, 1493:280): a lighter tile and a light-sand glyph. */
+/* Case-study step icons (Figma 1493:169, 1493:280): a lighter tile; the glyph is --icon-ink. */
 .is-dark .icon-block { background-color: #3a3830; }
-.is-dark .icon-block svg[fill="#79776d" i],
-.is-dark .icon-block svg [fill="#79776d" i] { fill: #cec3a4; }
 /* Steps bar below 992px: Webflow's .w-nav-link default is #222. */
 .is-dark .steps-process .work-bottom-item.w-nav-link { color: rgb(var(--ink-rgb) / .6); }
 .is-dark .steps-process .work-bottom-item.w-nav-link.w--current,
@@ -1160,6 +1158,6 @@ picture {
 .case-alt .work-info-text.text-mute { font-family: 'Cal Sans UI', Calsanstext, Arial, sans-serif; }
 
 /* Nucleo UI icons (test on RD:IR, Figma 1519:20: Process, Next Steps). Outline-duo 18px grid drawn
-   at 24px in the 40px tile: the 1.5 stroke lands at 2px, as the old Phosphor icons. Both layers are
+   at 24px in the 40px tile: the 1.5 stroke lands at 2px, as the Phosphor icons they replaced. Both layers are
    currentColor (the soft one at 30%), so the icon is one shade: --icon-ink, light and dark. */
 .icon-block .nc-icon { display: block; width: 24px; height: 24px; margin: 4px; color: var(--icon-ink); }   /* centred in the 32px embed box */

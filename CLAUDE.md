@@ -102,10 +102,11 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   The still is what shows under reduced motion, without WebGL and in tests (`window.__stillShader`, set in `tests/fixed-activity.js`). No footer
   on this page, and the old Webflow form is gone (it only worked on Webflow hosting). Shader settings live
   in the script; if they change, re-render the still at 2496x1892 with ShaderMount `frame` 0.
-- Case-study step icons (`.icon-block`): RD:IR uses Nucleo UI outline-duo icons (2026-11-23, Figma 1519:20), inline
+- Case-study step icons (`.icon-block`): all three case studies use Nucleo UI outline-duo icons (RD:IR 2026-11-23,
+  Figma 1519:20; mFlota and YouMap 2026-11-24), inline
   SVG with `class="nc-icon"`, an 18px grid drawn at 24px (stroke lands at 2px). Both layers are `currentColor` (the
   soft one at 30%), coloured by `--icon-ink` (#79776d light, #cec3a4 dark). The Nucleo MCP (`nucleo-icons`) finds
-  them; icons.json is in `~/.nucleo/skills/ui/`. mFlota and YouMap still have the old Phosphor duotone icons.
+  them; icons.json is in `~/.nucleo/skills/ui/`.
 - `js/activity.js` + the "Activity section" block in `css/custom.css` – home page heatmap (GitHub / Working with AI
   tabs) drawn from `data/activity.json`. Tests serve `tests/fixtures/activity.json` and pin the date
   (`tests/fixed-activity.js`), so refreshing the real data never breaks screenshots.
