@@ -59,6 +59,8 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
 - Nothing on the site loads from Cloudflare R2 any more (2026-11-16); the buckets can be retired.
 
 ## Where custom code lives
+- Text rendering (2026-11-24): `html { -webkit-font-smoothing: antialiased }` at the top of `css/custom.css`. Macs drew
+  every glyph heavier than designed (body copy read as bold, in dark mode most of all); only macOS is affected.
 - `css/custom.css` – former Webflow custom code (reveal animation, Safari SVG fix, embed styles), and the
   `@font-face` rules for Geist Mono and Funnel Display. Every font is self-hosted in `fonts/`; nothing loads
   from Google Fonts (removed 2026-11-16: Geist Mono drawn from Google made `resume.html` screenshots flaky).

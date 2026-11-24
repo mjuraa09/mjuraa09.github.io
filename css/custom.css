@@ -1,5 +1,13 @@
 /* Site-wide custom code (moved from Webflow head/embed custom code). */
 
+/* Lighter text on macOS (2026-11-24). Chrome and Safari on a Mac otherwise draw every glyph a
+   little heavier than designed; body copy read as bold, light-on-dark most of all. Grayscale
+   antialiasing draws the true weight, as in Figma. Ignored on Windows, Linux and phones. */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /* Geist Mono and Funnel Display, self-hosted (were loaded from Google Fonts).
    The same variable woff2 files Google served (geistmono v6, funneldisplay v3), only the
    latin and latin-ext subsets the site uses, one face per subset covering every weight in use
