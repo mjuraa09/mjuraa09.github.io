@@ -226,7 +226,7 @@ picture {
   --motion-duration-slowest: 900ms;
   --cell: 22px;
   --cell-gap: 6px;
-  --cell-radius: 5px;
+  --cell-radius: calc(5px * var(--corner-scale));
   padding-top: 6rem;
 }
 .activity-section[hidden] { display: none; }
@@ -350,7 +350,7 @@ picture {
   align-items: center;
   gap: 3rem;
   padding: 2.5rem;
-  border-radius: 24px;
+  border-radius: calc(24px * var(--corner-scale));
   background-color: var(--background-color--3th-backgorund);
 }
 /* The heatmap takes up to 26 weeks; the stats get the rest, but never less than 416px. */
@@ -420,7 +420,7 @@ picture {
   flex-direction: column;
   gap: 6px;
   padding: 22px 24px;
-  border-radius: 16px;
+  border-radius: calc(16px * var(--corner-scale));
   background-color: var(--background-color--4th-background);
   text-align: left;
 }
@@ -511,18 +511,18 @@ picture {
 @media screen and (max-width: 767px) {
   .heading-style-section,
   .heading-style-h2.heading-style-section { font-size: 2.25rem; }
-  .activity-section { --cell: 14px; --cell-gap: 4px; --cell-radius: 3px; padding-top: 4rem; }
+  .activity-section { --cell: 14px; --cell-gap: 4px; --cell-radius: calc(3px * var(--corner-scale)); padding-top: 4rem; }
   .activity-head { margin-bottom: 1.5rem; }
   .activity-heading { gap: .625rem; }
   .activity-tab { padding: 10px 16px; font-size: .875rem; }
-  .activity-card { padding: 24px 20px 20px; border-radius: 20px; gap: 1.5rem; }
+  .activity-card { padding: 24px 20px 20px; border-radius: calc(20px * var(--corner-scale)); gap: 1.5rem; }
   .activity-heatmap { gap: 8px; }
   .activity-months span { font-size: .6875rem; }
   .activity-legend { flex-direction: column; align-items: flex-start; gap: 6px; padding-top: 8px; }
   .activity-scale { gap: 5px; }
   .activity-legend i { width: 12px; height: 12px; }
   .activity-stats { gap: .75rem; }
-  .activity-stat { gap: 4px; padding: 16px; border-radius: 14px; }
+  .activity-stat { gap: 4px; padding: 16px; border-radius: calc(14px * var(--corner-scale)); }
   .activity-stat-value { --lh: 1em; font-size: 1.75rem; }
   .activity-stat-label { font-size: .8125rem; }
 }
@@ -1089,7 +1089,7 @@ picture {
   min-height: 34rem;
   margin: .375rem max(6rem, (100% - 1440px) / 2) 1.25rem;   /* page gutters, at most 1440px wide (centred) */
   padding: 1.5rem;
-  border-radius: 2rem;
+  border-radius: calc(2rem * var(--corner-scale));
   overflow: hidden;
   isolation: isolate;
 }
@@ -1116,7 +1116,7 @@ picture {
   width: 31.25rem;
   max-width: 100%;
   padding: 2rem;
-  border-radius: 1.625rem;
+  border-radius: calc(1.625rem * var(--corner-scale));
   background-color: var(--background-color--secondary-85);
   background-color: rgb(from var(--background-color--5th-backgorund) r g b / .9);
   -webkit-backdrop-filter: blur(5px);
@@ -1143,7 +1143,7 @@ picture {
   top: 50%;
   margin-top: -.75rem;
   padding: .25rem .5rem;
-  border-radius: .375rem;
+  border-radius: calc(.375rem * var(--corner-scale));
   background: var(--black);
   color: var(--white);
   font-family: 'Geist Mono', monospace;
@@ -1183,7 +1183,7 @@ picture {
   .contact-credit { margin-left: 4rem; margin-right: 4rem; }
 }
 @media screen and (max-width: 767px) {
-  .contact-hero { margin: .375rem 1rem 1rem; min-height: 30rem; border-radius: 1.5rem; padding: 1rem; }
+  .contact-hero { margin: .375rem 1rem 1rem; min-height: 30rem; border-radius: calc(1.5rem * var(--corner-scale)); padding: 1rem; }
   .contact-credit { margin: 0 1rem 1.875rem; }
   .contact-card { padding: 1.5rem; }
 }
@@ -1203,3 +1203,37 @@ picture {
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-stopped { overflow: clip; }
 .lenis.lenis-smooth iframe { pointer-events: none; }
+
+/* ---------- Corner smoothing, 60% (2026-11-25) ----------
+   Figma's "corner smoothing" at 60%: the rounding starts 1.6x further from the corner and eases in, with the
+   same round middle. In CSS that is a 1.6x radius drawn as a superellipse: superellipse(1.78) stays within
+   0.017 x radius of Figma's curve (0.7px at a 40px radius). Change the smoothing = refit both numbers.
+   - A radius is written as calc(<Figma radius> * var(--corner-scale)). A new rounded box uses that too and
+     joins the list below. Never give it to pills and circles: there Figma's smoothing has no room (0%).
+   - Browsers without corner-shape (Chrome < 139, Safari < 27.3, Firefox) keep plain round corners, scale 1. */
+:root { --corner-scale: 1; }
+@supports (corner-shape: superellipse(1.78)) {
+  :root { --corner-scale: 1.6; }
+  .activity-card, .activity-stat, .activity-grid i, .activity-legend i,
+  .contact-hero, .contact-card, .copy-tip,
+  .project-row, .div-block, .project-tag, .project-stat,
+  .image-wrapper, .project-image, .icon-block, .column-text, .column-highlighted,
+  .work-left-content, .work-bottom-item, .case-accordion-summary, .case-gallery-track,
+  .rsm-left, .rsm-tag, .illustartion-3, .efx-wrap,
+  .footer-container, .footer-bottom, .footer-bottom-container { corner-shape: superellipse(1.78); }
+}
+/* Webflow's radii, scaled. Same values and breakpoints as in mateuszs-my-site.webflow.css. */
+.project-row, .div-block, .illustartion-3, .illustartion-3.size { border-radius: calc(40px * var(--corner-scale)); }
+.image-wrapper, .project-image, .rsm-left { border-radius: calc(20px * var(--corner-scale)); }
+.project-stat { border-radius: calc(18px * var(--corner-scale)); }
+.project-tag { border-radius: calc(9px * var(--corner-scale)); }
+.icon-block { border-radius: calc(8px * var(--corner-scale)); }
+.rsm-tag { border-radius: calc(6px * var(--corner-scale)); }
+.footer-container, .footer-bottom { border-top-left-radius: calc(2.5rem * var(--corner-scale)); border-top-right-radius: calc(2.5rem * var(--corner-scale)); }
+@media screen and (min-width: 992px) {
+  .work-left-content { border-radius: calc(20px * var(--corner-scale)); }
+  .work-bottom-item { border-radius: calc(.5rem * var(--corner-scale)); }
+}
+@media screen and (max-width: 479px) {
+  .footer-container, .footer-bottom-container { border-top-left-radius: calc(2rem * var(--corner-scale)); border-top-right-radius: calc(2rem * var(--corner-scale)); }
+}
