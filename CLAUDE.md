@@ -16,6 +16,8 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
     case-study scrollspy, open mobile menu, activity section).
 - `npm run test:live` – same comparison against the deployed site (https://mjuraa09.github.io).
 - `npm run baseline:update` – re-capture the baseline. Only after an intended visual change, and commit it.
+  For single pages use `npx playwright test tests/visual.spec.js -g "projects/<name>" --update-snapshots`:
+  `npm run baseline:update -- <file>` fails, because Playwright takes the file as the value of `--update-snapshots`.
 - `node tools/diff-regions.mjs <diff.png>` – lists the vertical bands where a failed comparison differs.
 - `node tools/prune-css.mjs [--write] css/x.css` – removes selectors for classes used nowhere (HTML or JS).
 - `npm run stats` – rebuilds `data/activity.json` (per-day Claude Code usage from `~/.claude/projects` and the
