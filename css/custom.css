@@ -1210,7 +1210,8 @@ html.lenis, html.lenis body { height: auto; }
    0.017 x radius of Figma's curve (0.7px at a 40px radius). Change the smoothing = refit both numbers.
    - A radius is written as calc(<Figma radius> * var(--corner-scale)). A new rounded box uses that too and
      joins the list below. Never give it to pills and circles: there Figma's smoothing has no room (0%).
-   - Browsers without corner-shape (Chrome < 139, Safari < 27.3, Firefox) keep plain round corners, scale 1. */
+   - Browsers without corner-shape keep plain round corners, scale 1 (Chrome < 139, Firefox), except Safari
+     before 27.3, which gets a clip-path at the end of this block. */
 :root { --corner-scale: 1; }
 @supports (corner-shape: superellipse(1.78)) {
   :root { --corner-scale: 1.6; }
@@ -1236,4 +1237,98 @@ html.lenis, html.lenis body { height: auto; }
 }
 @media screen and (max-width: 479px) {
   .footer-container, .footer-bottom-container { border-top-left-radius: calc(2rem * var(--corner-scale)); border-top-right-radius: calc(2rem * var(--corner-scale)); }
+}
+
+/* Safari without corner-shape (checked on 27.2): the same corners as a clip-path, the same
+   superellipse in two beziers per corner (within 0.004 x radius), so Safari matches Chrome. `font: -apple-system-body` lets only WebKit in.
+   --corner is the plain Figma radius, so each value repeats the one above it, breakpoint by breakpoint.
+   A clip-path also cuts shadows, borders and focus rings, hence: small boxes (tags, icon tiles, heatmap
+   cells) stay round, where the difference is under half a pixel; a keyboard focus inside a card
+   drops the clip; the stroked screenshots draw their 1px stroke as a background. */
+@supports (not (corner-shape: superellipse(1.78))) and (font: -apple-system-body) and (clip-path: shape(from 0 0, curve to 1px 1px with 1px 0, close)) {
+  .project-row, .div-block, .illustartion-3, .efx-wrap { --corner: 40px; }
+  .image-wrapper, .project-image, .rsm-left { --corner: 20px; }
+  .project-stat { --corner: 18px; }
+  .column-text, .column-highlighted, .activity-stat { --corner: 16px; }
+  .activity-card { --corner: 24px; }
+  .contact-hero { --corner: 2rem; }
+  .contact-card { --corner: 1.625rem; }
+  .footer-container { --corner: 2.5rem; }
+  .project-image.stroke > .w-embed { --corner: 19px; }
+  .project-row, .div-block, .illustartion-3, .efx-wrap, .image-wrapper, .project-image, .project-image.stroke > .w-embed,
+  .rsm-left, .project-stat, .column-text, .column-highlighted, .activity-stat, .activity-card, .contact-hero, .contact-card {
+    clip-path: shape(
+      from calc(1.6 * var(--corner)) 0,
+      line to calc(100% - 1.6 * var(--corner)) 0,
+      curve to calc(100% - 0.292 * var(--corner)) calc(0.292 * var(--corner)) with calc(100% - 1.195 * var(--corner)) 0 / calc(100% - 0.612 * var(--corner)) calc(-0.028 * var(--corner)),
+      curve to 100% calc(1.6 * var(--corner)) with calc(100% - -0.028 * var(--corner)) calc(0.612 * var(--corner)) / 100% calc(1.195 * var(--corner)),
+      line to 100% calc(100% - 1.6 * var(--corner)),
+      curve to calc(100% - 0.292 * var(--corner)) calc(100% - 0.292 * var(--corner)) with 100% calc(100% - 1.195 * var(--corner)) / calc(100% - -0.028 * var(--corner)) calc(100% - 0.612 * var(--corner)),
+      curve to calc(100% - 1.6 * var(--corner)) 100% with calc(100% - 0.612 * var(--corner)) calc(100% - -0.028 * var(--corner)) / calc(100% - 1.195 * var(--corner)) 100%,
+      line to calc(1.6 * var(--corner)) 100%,
+      curve to calc(0.292 * var(--corner)) calc(100% - 0.292 * var(--corner)) with calc(1.195 * var(--corner)) 100% / calc(0.612 * var(--corner)) calc(100% - -0.028 * var(--corner)),
+      curve to 0 calc(100% - 1.6 * var(--corner)) with calc(-0.028 * var(--corner)) calc(100% - 0.612 * var(--corner)) / 0 calc(100% - 1.195 * var(--corner)),
+      line to 0 calc(1.6 * var(--corner)),
+      curve to calc(0.292 * var(--corner)) calc(0.292 * var(--corner)) with 0 calc(1.195 * var(--corner)) / calc(-0.028 * var(--corner)) calc(0.612 * var(--corner)),
+      curve to calc(1.6 * var(--corner)) 0 with calc(0.612 * var(--corner)) calc(-0.028 * var(--corner)) / calc(1.195 * var(--corner)) 0,
+      close);
+  }
+  .footer-container {
+    clip-path: shape(
+      from calc(1.6 * var(--corner)) 0,
+      line to calc(100% - 1.6 * var(--corner)) 0,
+      curve to calc(100% - 0.292 * var(--corner)) calc(0.292 * var(--corner)) with calc(100% - 1.195 * var(--corner)) 0 / calc(100% - 0.612 * var(--corner)) calc(-0.028 * var(--corner)),
+      curve to 100% calc(1.6 * var(--corner)) with calc(100% - -0.028 * var(--corner)) calc(0.612 * var(--corner)) / 100% calc(1.195 * var(--corner)),
+      line to 100% 100%,
+      line to 0 100%,
+      line to 0 calc(1.6 * var(--corner)),
+      curve to calc(0.292 * var(--corner)) calc(0.292 * var(--corner)) with 0 calc(1.195 * var(--corner)) / calc(-0.028 * var(--corner)) calc(0.612 * var(--corner)),
+      curve to calc(1.6 * var(--corner)) 0 with calc(0.612 * var(--corner)) calc(-0.028 * var(--corner)) / calc(1.195 * var(--corner)) 0,
+      close);
+  }
+  .project-image.stroke { background-color: var(--background-color--1st-background); }
+  .column-text:has(:focus-visible) { clip-path: none; }
+  @media screen and (min-width: 992px) {
+    .work-left-content { --corner: 20px; }
+    .case-alt .work-left-content:has(.steps-process) { --corner: 16px; }
+    .work-left-content {
+      clip-path: shape(
+        from calc(1.6 * var(--corner)) 0,
+        line to calc(100% - 1.6 * var(--corner)) 0,
+        curve to calc(100% - 0.292 * var(--corner)) calc(0.292 * var(--corner)) with calc(100% - 1.195 * var(--corner)) 0 / calc(100% - 0.612 * var(--corner)) calc(-0.028 * var(--corner)),
+        curve to 100% calc(1.6 * var(--corner)) with calc(100% - -0.028 * var(--corner)) calc(0.612 * var(--corner)) / 100% calc(1.195 * var(--corner)),
+        line to 100% calc(100% - 1.6 * var(--corner)),
+        curve to calc(100% - 0.292 * var(--corner)) calc(100% - 0.292 * var(--corner)) with 100% calc(100% - 1.195 * var(--corner)) / calc(100% - -0.028 * var(--corner)) calc(100% - 0.612 * var(--corner)),
+        curve to calc(100% - 1.6 * var(--corner)) 100% with calc(100% - 0.612 * var(--corner)) calc(100% - -0.028 * var(--corner)) / calc(100% - 1.195 * var(--corner)) 100%,
+        line to calc(1.6 * var(--corner)) 100%,
+        curve to calc(0.292 * var(--corner)) calc(100% - 0.292 * var(--corner)) with calc(1.195 * var(--corner)) 100% / calc(0.612 * var(--corner)) calc(100% - -0.028 * var(--corner)),
+        curve to 0 calc(100% - 1.6 * var(--corner)) with calc(-0.028 * var(--corner)) calc(100% - 0.612 * var(--corner)) / 0 calc(100% - 1.195 * var(--corner)),
+        line to 0 calc(1.6 * var(--corner)),
+        curve to calc(0.292 * var(--corner)) calc(0.292 * var(--corner)) with 0 calc(1.195 * var(--corner)) / calc(-0.028 * var(--corner)) calc(0.612 * var(--corner)),
+        curve to calc(1.6 * var(--corner)) 0 with calc(0.612 * var(--corner)) calc(-0.028 * var(--corner)) / calc(1.195 * var(--corner)) 0,
+        close);
+    }
+    .work-left-content:has(:focus-visible) { clip-path: none; }
+  }
+  @media screen and (max-width: 767px) {
+    .activity-card { --corner: 20px; }
+    .activity-stat { --corner: 14px; }
+    .contact-hero { --corner: 1.5rem; }
+  }
+  @media screen and (max-width: 479px) {
+    .footer-container, .footer-bottom-container { --corner: 2rem; }
+    .footer-bottom-container {
+      clip-path: shape(
+        from calc(1.6 * var(--corner)) 0,
+        line to calc(100% - 1.6 * var(--corner)) 0,
+        curve to calc(100% - 0.292 * var(--corner)) calc(0.292 * var(--corner)) with calc(100% - 1.195 * var(--corner)) 0 / calc(100% - 0.612 * var(--corner)) calc(-0.028 * var(--corner)),
+        curve to 100% calc(1.6 * var(--corner)) with calc(100% - -0.028 * var(--corner)) calc(0.612 * var(--corner)) / 100% calc(1.195 * var(--corner)),
+        line to 100% 100%,
+        line to 0 100%,
+        line to 0 calc(1.6 * var(--corner)),
+        curve to calc(0.292 * var(--corner)) calc(0.292 * var(--corner)) with 0 calc(1.195 * var(--corner)) / calc(-0.028 * var(--corner)) calc(0.612 * var(--corner)),
+        curve to calc(1.6 * var(--corner)) 0 with calc(0.612 * var(--corner)) calc(-0.028 * var(--corner)) / calc(1.195 * var(--corner)) 0,
+        close);
+    }
+  }
 }
