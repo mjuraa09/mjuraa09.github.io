@@ -1210,8 +1210,8 @@ html.lenis, html.lenis body { height: auto; }
    0.017 x radius of Figma's curve (0.7px at a 40px radius). Change the smoothing = refit both numbers.
    - A radius is written as calc(<Figma radius> * var(--corner-scale)). A new rounded box uses that too and
      joins the list below. Never give it to pills and circles: there Figma's smoothing has no room (0%).
-   - Browsers without corner-shape keep plain round corners, scale 1 (Chrome < 139, Firefox), except Safari
-     before 27.3, which gets a clip-path at the end of this block. */
+   - Browsers without corner-shape keep scale 1; those with clip-path shape() (Safari < 27.3, Firefox,
+     Chrome 135-138) get a clip-path at the end of this block, the rest plain round corners. */
 :root { --corner-scale: 1; }
 @supports (corner-shape: superellipse(1.78)) {
   :root { --corner-scale: 1.6; }
@@ -1239,13 +1239,14 @@ html.lenis, html.lenis body { height: auto; }
   .footer-container, .footer-bottom-container { border-top-left-radius: calc(2rem * var(--corner-scale)); border-top-right-radius: calc(2rem * var(--corner-scale)); }
 }
 
-/* Safari without corner-shape (checked on 27.2): the same corners as a clip-path, the same
-   superellipse in two beziers per corner (within 0.004 x radius), so Safari matches Chrome. `font: -apple-system-body` lets only WebKit in.
+/* Browsers without corner-shape but with clip-path shape() (Safari < 27.3, checked on 27.2; Firefox, checked on 160;
+   Chrome 135-138): the same corners as a clip-path, the same superellipse in two beziers per corner
+   (within 0.004 x radius), so they match Chrome.
    --corner is the plain Figma radius, so each value repeats the one above it, breakpoint by breakpoint.
    A clip-path also cuts shadows, borders and focus rings, hence: small boxes (tags, icon tiles, heatmap
    cells) stay round, where the difference is under half a pixel; a keyboard focus inside a card
    drops the clip; the stroked screenshots draw their 1px stroke as a background. */
-@supports (not (corner-shape: superellipse(1.78))) and (font: -apple-system-body) and (clip-path: shape(from 0 0, curve to 1px 1px with 1px 0, close)) {
+@supports (not (corner-shape: superellipse(1.78))) and (clip-path: shape(from 0 0, curve to 1px 1px with 1px 0, close)) {
   .project-row, .div-block, .illustartion-3, .efx-wrap { --corner: 40px; }
   .image-wrapper, .project-image, .rsm-left { --corner: 20px; }
   .project-stat { --corner: 18px; }

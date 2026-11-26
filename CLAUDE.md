@@ -81,8 +81,8 @@ Static portfolio site exported from Webflow (last Webflow publish 2026-11-05), n
   divider. If spacing changes, re-fit scroll-margin-top so headings still land level with the card.
 - Corner smoothing 60% as in Figma (2026-11-25, end of `css/custom.css`): a radius is written
   `calc(<Figma radius> * var(--corner-scale))` and the element is listed under `corner-shape: superellipse(1.78)`
-  (the 1.6x radius and 1.78 belong together). Pills and circles stay out. Browsers without `corner-shape`
-  (Chrome < 139, Firefox) get the plain radii; Safari < 27.3 gets the same superellipse as `clip-path: shape()`, which
+  (the 1.6x radius and 1.78 belong together). Pills and circles stay out. Browsers without `corner-shape` but
+  with `clip-path: shape()` (Safari < 27.3, Firefox incl. 160, Chrome 135-138) get the same superellipse as a clip-path, which
   repeats the radii as `--corner` (last block of the file) and cuts shadows, borders and focus rings: see its comment. Corner differences are often under the
   screenshot tolerance, so check them zoomed in.
 - Case-study steps sidebar (≥992, 2026-11-16): Figma page "Case study nav – redesign (2026-11)", Option C.
